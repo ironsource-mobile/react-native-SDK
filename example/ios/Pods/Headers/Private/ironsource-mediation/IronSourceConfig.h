@@ -1,0 +1,1 @@
+../../../../../../ios/IronSourceConfig.h

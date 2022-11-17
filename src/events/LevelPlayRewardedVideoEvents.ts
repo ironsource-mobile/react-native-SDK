@@ -1,0 +1,205 @@
+import { NativeEventEmitter, NativeModules } from 'react-native'
+import { errorAdInfoCodec, placementAdInfoCodec } from '../models/nestedCodecs'
+import {
+  ironSourceErrorCodec,
+  IronSourceError,
+  IronSourceRVPlacement,
+  IronSourceAdInfo,
+  ironSourceAdInfoCodec,
+} from '../models'
+import { decode } from '../models/utils'
+
+// The Main Module
+const { IronSourceMediation } = NativeModules
+// Event Name Constants defined on each platform
+const {
+  LP_RV_ON_AD_AVAILABLE,
+  LP_RV_ON_AD_UNAVAILABLE,
+  LP_RV_ON_AD_OPENED,
+  LP_RV_ON_AD_CLOSED,
+  LP_RV_ON_AD_REWARDED,
+  LP_RV_ON_AD_SHOW_FAILED,
+  LP_RV_ON_AD_CLICKED,
+  // Manual Load RV Events
+  LP_MANUAL_RV_ON_AD_READY,
+  LP_MANUAL_RV_ON_AD_LOAD_FAILED,
+} = IronSourceMediation.getConstants()
+
+// Create an EventEmitter to subscribe to RewardedVideoListener callbacks
+const eventEmitter = new NativeEventEmitter(IronSourceMediation)
+
+/**
+ * LevelPlay RV Listener Callback Events Handler APIs
+ */
+
+/**
+ * Android: onAdAvailable
+ *     iOS: hasAvailableAdWithAdInfo
+ */
+const onAdAvailable = {
+  setListener: (listener: (adInfo: IronSourceAdInfo) => void) => {
+    eventEmitter.removeAllListeners(LP_RV_ON_AD_AVAILABLE)
+    eventEmitter.addListener(LP_RV_ON_AD_AVAILABLE, (adInfoObj: unknown) => {
+      listener(decode(ironSourceAdInfoCodec, adInfoObj))
+    })
+  },
+  removeListener: () => eventEmitter.removeAllListeners(LP_RV_ON_AD_AVAILABLE),
+}
+
+/**
+ * Android: onAdUnavailable
+ *     iOS: hasNoAvailableAd
+ */
+const onAdUnavailable = {
+  setListener: (listener: () => void) => {
+    eventEmitter.removeAllListeners(LP_RV_ON_AD_UNAVAILABLE)
+    eventEmitter.addListener(LP_RV_ON_AD_UNAVAILABLE, () => listener())
+  },
+  removeListener: () =>
+    eventEmitter.removeAllListeners(LP_RV_ON_AD_UNAVAILABLE),
+}
+
+/**
+ * Android: onAdOpened
+ *     iOS: didOpenWithAdInfo
+ */
+const onAdOpened = {
+  setListener: (listener: (adInfo: IronSourceAdInfo) => void) => {
+    eventEmitter.removeAllListeners(LP_RV_ON_AD_OPENED)
+    eventEmitter.addListener(LP_RV_ON_AD_OPENED, (adInfoObj: unknown) => {
+      listener(decode(ironSourceAdInfoCodec, adInfoObj))
+    })
+  },
+  removeListener: () => eventEmitter.removeAllListeners(LP_RV_ON_AD_OPENED),
+}
+
+/**
+ * Android: onAdClosed
+ *     iOS: didCloseWithAdInfo
+ */
+const onAdClosed = {
+  setListener: (listener: (adInfo: IronSourceAdInfo) => void) => {
+    eventEmitter.removeAllListeners(LP_RV_ON_AD_CLOSED)
+    eventEmitter.addListener(LP_RV_ON_AD_CLOSED, (adInfoObj: unknown) => {
+      listener(decode(ironSourceAdInfoCodec, adInfoObj))
+    })
+  },
+  removeListener: () => eventEmitter.removeAllListeners(LP_RV_ON_AD_CLOSED),
+}
+
+/**
+ * Android: onAdRewarded
+ *     iOS: didReceiveRewardForPlacement
+ */
+const onAdRewarded = {
+  setListener: (
+    listener: (
+      placement: IronSourceRVPlacement,
+      adInfo: IronSourceAdInfo
+    ) => void
+  ) => {
+    eventEmitter.removeAllListeners(LP_RV_ON_AD_REWARDED)
+    eventEmitter.addListener(LP_RV_ON_AD_REWARDED, (obj: unknown) => {
+      const { placement, adInfo } = decode(placementAdInfoCodec, obj)
+      listener(placement, adInfo)
+    })
+  },
+  removeListener: () => eventEmitter.removeAllListeners(LP_RV_ON_AD_REWARDED),
+}
+
+/**
+ * Android: onAdShowFailed
+ *     iOS: didFailToShowWithError
+ */
+const onAdShowFailed = {
+  setListener: (
+    listener: (error: IronSourceError, adInfo: IronSourceAdInfo) => void
+  ) => {
+    eventEmitter.removeAllListeners(LP_RV_ON_AD_SHOW_FAILED)
+    eventEmitter.addListener(LP_RV_ON_AD_SHOW_FAILED, (obj: unknown) => {
+      const { error, adInfo } = decode(errorAdInfoCodec, obj)
+      listener(error, adInfo)
+    })
+  },
+  removeListener: () =>
+    eventEmitter.removeAllListeners(LP_RV_ON_AD_SHOW_FAILED),
+}
+
+/**
+ * Android: onAdClicked
+ *     iOS: didClick
+ */
+const onAdClicked = {
+  setListener: (
+    listener: (
+      placement: IronSourceRVPlacement,
+      adInfo: IronSourceAdInfo
+    ) => void
+  ) => {
+    eventEmitter.removeAllListeners(LP_RV_ON_AD_CLICKED)
+    eventEmitter.addListener(LP_RV_ON_AD_CLICKED, (obj: unknown) => {
+      const { placement, adInfo } = decode(placementAdInfoCodec, obj)
+      listener(placement, adInfo)
+    })
+  },
+  removeListener: () => eventEmitter.removeAllListeners(LP_RV_ON_AD_CLICKED),
+}
+
+/**
+ * Manual Load RV
+ * Android: onAdReady
+ *     iOS: didLoadWithAdInfo
+ */
+const onAdReady = {
+  setListener: (listener: (adInfo: IronSourceAdInfo) => void) => {
+    eventEmitter.removeAllListeners(LP_MANUAL_RV_ON_AD_READY)
+    eventEmitter.addListener(LP_MANUAL_RV_ON_AD_READY, (adInfoObj: unknown) => {
+      listener(decode(ironSourceAdInfoCodec, adInfoObj))
+    })
+  },
+  removeListener: () => {
+    eventEmitter.removeAllListeners(LP_MANUAL_RV_ON_AD_READY)
+  },
+}
+
+/**
+ * Manual Load RV
+ * Android: onAdLoadFailed
+ *     iOS: didFailToLoadWithError
+ */
+const onAdLoadFailed = {
+  setListener: (listener: (error: IronSourceError) => void) => {
+    eventEmitter.removeAllListeners(LP_MANUAL_RV_ON_AD_LOAD_FAILED)
+    eventEmitter.addListener(
+      LP_MANUAL_RV_ON_AD_LOAD_FAILED,
+      (errorObj: unknown) => listener(decode(ironSourceErrorCodec, errorObj))
+    )
+  },
+  removeListener: () =>
+    eventEmitter.removeAllListeners(LP_MANUAL_RV_ON_AD_LOAD_FAILED),
+}
+
+const removeAllListeners = () => {
+  onAdAvailable.removeListener()
+  onAdUnavailable.removeListener()
+  onAdOpened.removeListener()
+  onAdClosed.removeListener()
+  onAdRewarded.removeListener()
+  onAdShowFailed.removeListener()
+  onAdClicked.removeListener()
+  onAdReady.removeListener()
+  onAdLoadFailed.removeListener()
+}
+
+export const LevelPlayRewardedVideoEvents = {
+  onAdAvailable,
+  onAdUnavailable,
+  onAdOpened,
+  onAdClosed,
+  onAdRewarded,
+  onAdShowFailed,
+  onAdClicked,
+  onAdReady,
+  onAdLoadFailed,
+  removeAllListeners,
+}

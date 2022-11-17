@@ -1,0 +1,24 @@
+{
+  "name": "ironsource-mediation",
+  "version": "1.0.0",
+  "summary": "A ReactNative bridge plugin for ironSource SDK",
+  "homepage": "TBD",
+  "license": "TBD",
+  "authors": "Kohei Ando",
+  "platforms": {
+    "ios": "9.0"
+  },
+  "source": {
+    "git": "https://www.dummy.com.git",
+    "tag": "1.0.0"
+  },
+  "source_files": "ios/**/*.{h,m,mm}",
+  "dependencies": {
+    "React-Core": [
+
+    ],
+    "IronSourceSDK": [
+      "7.2.4"
+    ]
+  }
+}
