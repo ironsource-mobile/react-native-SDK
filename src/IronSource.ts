@@ -77,6 +77,12 @@ type IronSourceNativeModuleType = {
    */
   setSegment(segment: IronSourceSegment): Promise<void>
 
+  /**
+   * Android: launchTestSuite
+   *     iOS: launchTestSuite
+   */
+  launchTestSuite(): Promise<void>
+
   /** init API =============================================================**/
 
   /**

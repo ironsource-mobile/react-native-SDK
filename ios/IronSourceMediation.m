@@ -140,7 +140,7 @@ RCT_EXPORT_MODULE()
         [IronSource addImpressionDataDelegate:self];
         [IronSource setConsentViewWithDelegate:self];
         
-        //set level play listeneres
+        //set LevelPlay Listeners
         [IronSource setLevelPlayRewardedVideoDelegate:self.rvLevelPlayDelegateWrapper];
         [IronSource setLevelPlayInterstitialDelegate:self.istLevelPlayDelegateWrapper];
         [IronSource setLevelPlayBannerDelegate:self.bnLevelPlayDelegateWrapper];
@@ -178,6 +178,20 @@ RCT_EXPORT_METHOD(validateIntegration:
                   withRejecter:(RCTPromiseRejectBlock)reject) {
     [ISIntegrationHelper validateIntegration];
     return resolve(nil);
+}
+
+/**
+ @name setMetaData
+ @param key cannot be an empty string
+ @param values NSArray<NSString>
+ @return nil
+ */
+RCT_EXPORT_METHOD(launchTestSuite:
+                  (RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject)
+{
+    [IronSource launchTestSuite:self];
+    resolve(nil);
 }
 
 /**

@@ -80,7 +80,6 @@ class IronSourceMediationModule(reactContext: ReactApplicationContext) :
         sendEvent(reactApplicationContext, IronConstants.ON_INITIALIZATION_COMPLETE)
     }
 
-
     /** Base API  ============================================================================== **/
 
     /**
@@ -108,6 +107,20 @@ class IronSourceMediationModule(reactContext: ReactApplicationContext) :
     fun validateIntegration(promise: Promise) {
         currentActivity?.apply {
             IntegrationHelper.validateIntegration(this)
+            return promise.resolve(null)
+        } ?: return promise.reject(
+            E_ACTIVITY_IS_NULL,
+            "Current Activity does not exist."
+        )
+    }
+
+    /**
+     * @return null
+     */
+    @ReactMethod
+    fun launchTestSuite(promise: Promise) {
+        currentActivity?.apply {
+            IronSource.launchTestSuite(this)
             return promise.resolve(null)
         } ?: return promise.reject(
             E_ACTIVITY_IS_NULL,
@@ -392,7 +405,6 @@ class IronSourceMediationModule(reactContext: ReactApplicationContext) :
         IronSource.loadRewardedVideo()
         return promise.resolve(null)
     }
-
 
     /** IS API  ================================================================================ **/
 
