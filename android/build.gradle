@@ -65,5 +65,5 @@ dependencies {
     implementation 'com.facebook.react:react-native:+'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     // ironSource
-    implementation 'com.ironsource.sdk:mediationsdk:7.2.4.1'
+    implementation 'com.ironsource.sdk:mediationsdk:7.5.1'
 }

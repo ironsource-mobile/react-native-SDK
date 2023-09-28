@@ -30,11 +30,14 @@ const eventEmitter = new NativeEventEmitter(IronSourceMediation)
 
 /**
  * RV Listener Callback Events Handler APIs
+ * These APIs have been deprecated as of SDK 7.3.0. Please use the alternate APIs in LevelPlayRewardedVideoEvents instead.
  */
 
 /**
  * Android: onRewardedVideoAdOpened
  *     iOS: rewardedVideoDidOpen
+ *
+ * @deprecated This API has been deprecated as of SDK 7.3.0. Please use the alternate API in LevelPlayRewardedVideoEvents instead.
  */
 const onRewardedVideoAdOpened = {
   setListener: (listener: () => void) => {
@@ -47,6 +50,8 @@ const onRewardedVideoAdOpened = {
 /**
  * Android: onRewardedVideoAdClosed
  *     iOS: rewardedVideoDidClose
+ *
+ * @deprecated This API has been deprecated as of SDK 7.3.0. Please use the alternate API in LevelPlayRewardedVideoEvents instead.
  */
 const onRewardedVideoAdClosed = {
   setListener: (listener: () => void) => {
@@ -59,6 +64,8 @@ const onRewardedVideoAdClosed = {
 /**
  * Android: onRewardedVideoAvailabilityChanged
  *     iOS: rewardedVideoHasChangedAvailability
+ *
+ * @deprecated This API has been deprecated as of SDK 7.3.0. Please use the alternate API in LevelPlayRewardedVideoEvents instead.
  */
 const onRewardedVideoAvailabilityChanged = {
   setListener: (listener: (isAvailable: boolean) => void) => {
@@ -78,6 +85,8 @@ const onRewardedVideoAvailabilityChanged = {
 /**
  * Android: onRewardedVideoAdStarted
  *     iOS: rewardedVideoDidStart
+ *
+ * @deprecated This API has been deprecated as of SDK 7.3.0. Please use the alternate API in LevelPlayRewardedVideoEvents instead.
  */
 const onRewardedVideoAdStarted = {
   setListener: (listener: () => void) => {
@@ -90,6 +99,8 @@ const onRewardedVideoAdStarted = {
 /**
  * Android: onRewardedVideoAdEnded
  *     iOS: rewardedVideoDidEnd
+ *
+ * @deprecated This API has been deprecated as of SDK 7.3.0. Please use the alternate API in LevelPlayRewardedVideoEvents instead.
  */
 const onRewardedVideoAdEnded = {
   setListener: (listener: () => void) => {
@@ -102,6 +113,8 @@ const onRewardedVideoAdEnded = {
 /**
  * Android: onRewardedVideoAdRewarded
  *     iOS: didReceiveRewardForPlacement
+ *
+ * @deprecated This API has been deprecated as of SDK 7.3.0. Please use the alternate API in LevelPlayRewardedVideoEvents instead.
  */
 const onRewardedVideoAdRewarded = {
   setListener: (listener: (placement: IronSourceRVPlacement) => void) => {
@@ -116,6 +129,8 @@ const onRewardedVideoAdRewarded = {
 /**
  * Android: onRewardedVideoAdShowFailed
  *     iOS: rewardedVideoDidFailToShowWithError
+ *
+ * @deprecated This API has been deprecated as of SDK 7.3.0. Please use the alternate API in LevelPlayRewardedVideoEvents instead.
  */
 const onRewardedVideoAdShowFailed = {
   setListener: (listener: (error: IronSourceError) => void) => {
@@ -130,6 +145,8 @@ const onRewardedVideoAdShowFailed = {
 /**
  * Android: onRewardedVideoAdClicked
  *     iOS: didClickRewardedVideo
+ *
+ * @deprecated This API has been deprecated as of SDK 7.3.0. Please use the alternate API in LevelPlayRewardedVideoEvents instead.
  */
 const onRewardedVideoAdClicked = {
   setListener: (listener: (placement: IronSourceRVPlacement) => void) => {
@@ -147,6 +164,8 @@ const onRewardedVideoAdClicked = {
  * Manual Load RV
  * Android: onRewardedVideoAdReady
  *     iOS: rewardedVideoDidLoad
+ *
+ * @deprecated This API has been deprecated as of SDK 7.3.0. Please use the alternate API in LevelPlayRewardedVideoEvents instead.
  */
 const onRewardedVideoAdReady = {
   setListener: (listener: () => void) => {
@@ -162,6 +181,8 @@ const onRewardedVideoAdReady = {
  * Manual Load RV
  * Android: onRewardedVideoAdLoadFailed
  *     iOS: rewardedVideoDidFailToLoadWithError
+ *
+ * @deprecated This API has been deprecated as of SDK 7.3.0. Please use the alternate API in LevelPlayRewardedVideoEvents instead.
  */
 const onRewardedVideoAdLoadFailed = {
   setListener: (listener: (error: IronSourceError) => void) => {
@@ -173,6 +194,9 @@ const onRewardedVideoAdLoadFailed = {
   removeListener: () => eventEmitter.removeAllListeners(ON_RV_AD_LOAD_FAILED),
 }
 
+/**
+ * @deprecated This API has been deprecated as of SDK 7.3.0. Please use the alternate API in LevelPlayRewardedVideoEvents instead.
+ */
 const removeAllListeners = () => {
   onRewardedVideoAdOpened.removeListener()
   onRewardedVideoAdClosed.removeListener()
@@ -186,6 +210,9 @@ const removeAllListeners = () => {
   onRewardedVideoAdLoadFailed.removeListener()
 }
 
+/**
+ * @deprecated This class has been deprecated as of SDK 7.3.0. Please use LevelPlayRewardedVideoEvents instead.
+ */
 export const RewardedVideoEvents = {
   onRewardedVideoAdOpened,
   onRewardedVideoAdClosed,

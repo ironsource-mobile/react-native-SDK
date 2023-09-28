@@ -20,11 +20,14 @@ const eventEmitter = new NativeEventEmitter(IronSourceMediation)
 
 /**
  * IS Listener Callback Events Handler APIs
+ * These APIs have been deprecated as of SDK 7.3.0. Please use the alternate APIs in LevelPlayInterstitialEvents instead.
  */
 
 /**
  * Android: onInterstitialAdReady
  *     iOS: interstitialDidLoad
+ *
+ * @deprecated This API has been deprecated as of SDK 7.3.0. Please use the alternate API in LevelPlayInterstitialEvents instead.
  */
 const onInterstitialAdReady = {
   setListener: (listener: () => void) => {
@@ -37,6 +40,8 @@ const onInterstitialAdReady = {
 /**
  * Android: onInterstitialAdLoadFailed
  *     iOS: interstitialDidFailToLoadWithError
+ *
+ * @deprecated This API has been deprecated as of SDK 7.3.0. Please use the alternate API in LevelPlayInterstitialEvents instead.
  */
 const onInterstitialAdLoadFailed = {
   setListener: (listener: (error: IronSourceError) => void) => {
@@ -51,6 +56,8 @@ const onInterstitialAdLoadFailed = {
 /**
  * Android: onInterstitialAdOpened
  *     iOS: interstitialDidOpen
+ *
+ * @deprecated This API has been deprecated as of SDK 7.3.0. Please use the alternate API in LevelPlayInterstitialEvents instead.
  */
 const onInterstitialAdOpened = {
   setListener: (listener: () => void) => {
@@ -63,6 +70,8 @@ const onInterstitialAdOpened = {
 /**
  * Android: onInterstitialAdClosed
  *     iOS: interstitialDidClose
+ *
+ * @deprecated This API has been deprecated as of SDK 7.3.0. Please use the alternate API in LevelPlayInterstitialEvents instead.
  */
 const onInterstitialAdClosed = {
   setListener: (listener: () => void) => {
@@ -75,6 +84,8 @@ const onInterstitialAdClosed = {
 /**
  * Android: onInterstitialAdShowSucceeded
  *     iOS: interstitialDidShow
+ *
+ * @deprecated This API has been deprecated as of SDK 7.3.0. Please use the alternate API in LevelPlayInterstitialEvents instead.
  */
 const onInterstitialAdShowSucceeded = {
   setListener: (listener: () => void) => {
@@ -88,6 +99,8 @@ const onInterstitialAdShowSucceeded = {
 /**
  * Android: onInterstitialAdShowFailed
  *     iOS: interstitialDidFailToShowWithError
+ *
+ * @deprecated This API has been deprecated as of SDK 7.3.0. Please use the alternate API in LevelPlayInterstitialEvents instead.
  */
 const onInterstitialAdShowFailed = {
   setListener: (listener: (error: IronSourceError) => void) => {
@@ -102,6 +115,8 @@ const onInterstitialAdShowFailed = {
 /**
  * Android: onInterstitialAdClicked
  *     iOS: didClickInterstitial
+ *
+ * @deprecated This API has been deprecated as of SDK 7.3.0. Please use the alternate API in LevelPlayInterstitialEvents instead.
  */
 const onInterstitialAdClicked = {
   setListener: (listener: () => void) => {
@@ -111,6 +126,9 @@ const onInterstitialAdClicked = {
   removeListener: () => eventEmitter.removeAllListeners(ON_IS_AD_CLICKED),
 }
 
+/**
+ * @deprecated This API has been deprecated as of SDK 7.3.0. Please use the alternate API in LevelPlayInterstitialEvents instead.
+ */
 const removeAllListeners = () => {
   onInterstitialAdReady.removeListener()
   onInterstitialAdLoadFailed.removeListener()
@@ -121,6 +139,9 @@ const removeAllListeners = () => {
   onInterstitialAdClicked.removeListener()
 }
 
+/**
+ * @deprecated This class has been deprecated as of SDK 7.3.0. Please use LevelPlayInterstitialEvents instead.
+ */
 export const InterstitialEvents = {
   onInterstitialAdReady,
   onInterstitialAdLoadFailed,

@@ -324,6 +324,74 @@ RCT_EXPORT_METHOD(setMetaData:(nonnull NSString *) key
     return resolve(nil);
 }
 
+/**
+ @name launchTestSuite
+ @return nil
+ */
+RCT_EXPORT_METHOD(launchTestSuite:(RCTPromiseResolveBlock) resolve
+                  withRejecter:(RCTPromiseRejectBlock) reject)  {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [IronSource launchTestSuite:[self getRootViewController]];
+        return resolve(nil);
+    });
+}
+
+/**
+ @name setWaterfallConfiguration
+ @return nil
+ */
+RCT_EXPORT_METHOD(setWaterfallConfiguration:(nonnull NSNumber *) ceiling
+                  withFloor: (nonnull NSNumber *) floor
+                  withAdUnit:(nonnull NSString*) adUnit
+                  withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject)    {
+    ISAdUnit* parsedAdUnit = [self parseAdUnit:adUnit];
+    if (!parsedAdUnit){
+        return reject(E_ILLEGAL_ARGUMENT, [NSString stringWithFormat: @"Unsupported ad unit: %@", adUnit], nil);
+    }
+
+    // Define a WaterallConfigurationBuilder
+    ISWaterfallConfigurationBuilder *builder = [ISWaterfallConfiguration builder];
+    // Build the WaterfallConfiguration and add data to constrain or control a waterfall
+    [builder setCeiling:ceiling];
+    [builder setFloor:floor];
+    ISWaterfallConfiguration *configuration = [builder build];
+    //set a configuration for an ad unit
+    [IronSource setWaterfallConfiguration:configuration forAdUnit:parsedAdUnit];
+    return resolve(nil);
+}
+
+/**
+ @name clearWaterfallConfiguration
+ @return nil
+ */
+RCT_EXPORT_METHOD(clearWaterfallConfiguration:(nonnull NSString*) adUnit
+                  withResolver:(RCTPromiseResolveBlock) resolve
+                  withRejecter:(RCTPromiseRejectBlock) reject) {
+    ISAdUnit* parsedAdUnit = [self parseAdUnit:adUnit];
+    if (!parsedAdUnit){
+        return reject(E_ILLEGAL_ARGUMENT, [NSString stringWithFormat: @"Unsupported ad unit: %@", adUnit], nil);
+    }
+
+    ISWaterfallConfiguration *clearConfiguration = [ISWaterfallConfiguration clear];
+    [IronSource setWaterfallConfiguration:clearConfiguration forAdUnit:parsedAdUnit];
+    return resolve(nil);
+}
+
+- (ISAdUnit*) parseAdUnit:(NSString*) adUnit {
+    if([adUnit isEqualToString:REWARDED_VIDEO]){
+        return [ISAdUnit IS_AD_UNIT_REWARDED_VIDEO];
+    } else if ([adUnit isEqualToString:INTERSTITIAL]){
+        return [ISAdUnit IS_AD_UNIT_INTERSTITIAL];
+    } else if ([adUnit isEqualToString:OFFERWALL]){
+        return [ISAdUnit IS_AD_UNIT_OFFERWALL];
+    } else if ([adUnit isEqualToString:BANNER]){
+        return [ISAdUnit IS_AD_UNIT_BANNER];
+    } else {
+        return nil;
+    }
+}
+
 #pragma mark - Init API =========================================================================
 
 /**

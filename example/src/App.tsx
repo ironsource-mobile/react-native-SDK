@@ -21,7 +21,6 @@ import BannerSection from './sections/BannerSection'
 import InterstitialSection from './sections/InterstitialSection'
 import OfferwallSection from './sections/OfferwallSection'
 import RewardedVideoSection from './sections/RewardedVideoSection'
-import ManualLoadRewardedVideoSection from './sections/ManualLoadRewardedVideoSection'
 import HeaderImage from './components/HeaderImage'
 import { p, prettyJSON } from './util'
 import IOSSection from './sections/IOSSection'
@@ -29,8 +28,8 @@ import IOSSection from './sections/IOSSection'
 const APP_USER_ID = 'some-unique-application-user-id'
 const APP_KEY = Platform.OS === 'android' ? '10d75fdcd' : '1100aed35'
 
-// Manual Load RV
-const IS_MANUAL_LOAD_RV = false
+// Manual Load Rewarded Video
+const IS_MANUAL_LOAD_REWARDED_VIDEO = false
 
 /**
  * Send Segment related info to the server by one of two methods:
@@ -101,8 +100,8 @@ async function initIronSource() {
     // ARM ImpressionData
     setImpressionDataListener()
 
-    // Manual Load RV. Must be called before init.
-    if (IS_MANUAL_LOAD_RV) {
+    // Manual Load Rewarded Video. Must be called before init.
+    if (IS_MANUAL_LOAD_REWARDED_VIDEO) {
       IronSource.setManualLoadRewardedVideo()
     }
 
@@ -179,11 +178,7 @@ export default function App() {
       <ScrollView contentInsetAdjustmentBehavior="automatic">
         <View style={[styles.body, styles.container]}>
           <HeaderImage />
-          {IS_MANUAL_LOAD_RV ? (
-            <ManualLoadRewardedVideoSection />
-          ) : (
-            <RewardedVideoSection />
-          )}
+          <RewardedVideoSection />
           <InterstitialSection />
           <BannerSection />
           <OfferwallSection />

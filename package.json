@@ -1,6 +1,6 @@
 {
   "name": "ironsource-mediation",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A ReactNative bridge plugin for ironSource SDK",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",

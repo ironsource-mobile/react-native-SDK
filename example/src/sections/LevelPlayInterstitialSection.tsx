@@ -8,61 +8,61 @@ import { containerStyles, positioningStyles, textStyles } from '../styles'
 import { e, p, prettyJSON, showAlert } from '../util'
 import { sectionWrapper } from './section-styles'
 import {
-  LevelPlayInterstitialEvents as LP_IS,
+  LevelPlayInterstitialEvents as LevelPlayInterstitial,
   IronSource,
   IronSourceError,
   IronSourceAdInfo,
 } from 'ironsource-mediation'
 
-const IS_PLACEMENT = 'Main_Menu'
+const INTERSTITIAL_PLACEMENT = 'Main_Menu'
 
-const loadIS = async () => {
-  p('Load IS Click')
+const loadInterstitial = async () => {
+  p('Load Interstitial Click')
   await IronSource.loadInterstitial()
 }
 
 function LevelPlayInterstitialSection() {
-  const [isISAvailable, setIsISAvailable] = useState<boolean>(false)
-  const showIS = async () => {
-    p('Show IS Click')
+  const [isInterstitialAvailable, setIsInterstitialAvailable] = useState<boolean>(false)
+  const showInterstitial = async () => {
+    p('Show Interstitial Click')
     if (await IronSource.isInterstitialReady()) {
       // Show
       // IronSource.showInterstitial();
 
       // Show by placement
       const isCapped = await IronSource.isInterstitialPlacementCapped(
-        IS_PLACEMENT
+        INTERSTITIAL_PLACEMENT
       )
       if (!isCapped) {
-        IronSource.showInterstitial(IS_PLACEMENT)
+        IronSource.showInterstitial(INTERSTITIAL_PLACEMENT)
       } else {
-        showAlert('IS Placement', [`${IS_PLACEMENT} is capped`])
+        showAlert('Interstitial Placement', [`${INTERSTITIAL_PLACEMENT} is capped`])
       }
     }
-    setIsISAvailable(false)
+    setIsInterstitialAvailable(false)
   }
 
-  // IS Event listeners setup
+  // Interstitial Event listeners setup
   useEffect(() => {
-    const TAG = 'LevelPlayISListener'
+    const TAG = 'LevelPlayInterstitialListener'
     // initialize
-    LP_IS.removeAllListeners()
-    // Set LevelPlay IS Events listeners
-    LP_IS.onAdReady.setListener((adInfo: IronSourceAdInfo) => {
+    LevelPlayInterstitial.removeAllListeners()
+    // Set LevelPlay Interstitial Events listeners
+    LevelPlayInterstitial.onAdReady.setListener((adInfo: IronSourceAdInfo) => {
       p(`${TAG} - onAdReady: ${prettyJSON(adInfo)}`)
-      setIsISAvailable(true)
+      setIsInterstitialAvailable(true)
     })
-    LP_IS.onAdLoadFailed.setListener((error: IronSourceError) => {
+    LevelPlayInterstitial.onAdLoadFailed.setListener((error: IronSourceError) => {
       showAlert('Ad Load Error', [prettyJSON(error)])
       e(`${TAG} - onAdLoadFailed error: ${prettyJSON(error)}`)
     })
-    LP_IS.onAdOpened.setListener((adInfo: IronSourceAdInfo) =>
+    LevelPlayInterstitial.onAdOpened.setListener((adInfo: IronSourceAdInfo) =>
       p(`${TAG} - onAdOpened: ${prettyJSON(adInfo)}`)
     )
-    LP_IS.onAdClosed.setListener((adInfo: IronSourceAdInfo) =>
+    LevelPlayInterstitial.onAdClosed.setListener((adInfo: IronSourceAdInfo) =>
       p(`${TAG} - onAdClosed: ${prettyJSON(adInfo)}`)
     )
-    LP_IS.onAdShowFailed.setListener(
+    LevelPlayInterstitial.onAdShowFailed.setListener(
       (error: IronSourceError, adInfo: IronSourceAdInfo) => {
         showAlert('Ad Show Error', [prettyJSON(error)])
         p(
@@ -72,14 +72,14 @@ function LevelPlayInterstitialSection() {
         )
       }
     )
-    LP_IS.onAdClicked.setListener((adInfo: IronSourceAdInfo) =>
+    LevelPlayInterstitial.onAdClicked.setListener((adInfo: IronSourceAdInfo) =>
       p(`${TAG} - onAdClicked: ${prettyJSON(adInfo)}`)
     )
-    LP_IS.onAdShowSucceeded.setListener((adInfo: IronSourceAdInfo) =>
+    LevelPlayInterstitial.onAdShowSucceeded.setListener((adInfo: IronSourceAdInfo) =>
       p(`${TAG} - onAdShowSucceeded: ${prettyJSON(adInfo)}`)
     )
 
-    return () => LP_IS.removeAllListeners()
+    return () => LevelPlayInterstitial.removeAllListeners()
   }, [])
 
   return (
@@ -88,11 +88,11 @@ function LevelPlayInterstitialSection() {
         Interstitial
       </Text>
       <View style={containerStyles.horizontalSpaceBetween}>
-        <HighlightButton onPress={loadIS} buttonText="Load Interstitial" />
+        <HighlightButton onPress={loadInterstitial} buttonText="Load Interstitial" />
         <HighlightButton
-          onPress={showIS}
+          onPress={showInterstitial}
           buttonText="Show Interstitial"
-          isDisabled={!isISAvailable}
+          isDisabled={!isInterstitialAvailable}
         />
       </View>
     </View>

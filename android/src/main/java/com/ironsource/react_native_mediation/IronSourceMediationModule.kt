@@ -16,6 +16,7 @@ import com.ironsource.mediationsdk.impressionData.ImpressionDataListener
 import com.ironsource.mediationsdk.integration.IntegrationHelper
 import com.ironsource.mediationsdk.model.Placement
 import com.ironsource.mediationsdk.sdk.InitializationListener
+import com.ironsource.mediationsdk.WaterfallConfiguration
 import com.ironsource.react_native_mediation.IronConstants.E_ACTIVITY_IS_NULL
 import com.ironsource.react_native_mediation.IronConstants.E_ILLEGAL_ARGUMENT
 import com.ironsource.react_native_mediation.IronConstants.E_UNEXPECTED
@@ -222,6 +223,99 @@ class IronSourceMediationModule(reactContext: ReactApplicationContext) :
         IronSource.setMetaData(key, strValues)
         return promise.resolve(null)
     }
+
+    /**
+     * @return null
+     */
+    @ReactMethod
+    fun launchTestSuite(promise: Promise) {
+        currentActivity?.apply {
+            IronSource.launchTestSuite(this)
+            return promise.resolve(null)
+        } ?: return promise.reject(
+            E_ACTIVITY_IS_NULL,
+            "Current Activity does not exist."
+        )
+    }
+
+    /**
+     * @return null
+     */
+    @ReactMethod
+    fun setWaterfallConfiguration(
+        ceiling: Double,
+        floor: Double,
+        adUnit: String,
+        promise: Promise
+    ) {
+        currentActivity?.apply {
+            val ISAdUnit = parseAdUnit(adUnit);
+
+            // If adUnit is null, reject the promise
+            if (ISAdUnit == null) {
+                return promise.reject(
+                    E_ILLEGAL_ARGUMENT,
+                    "Invalid adUnit. adUnit: $adUnit"
+                )
+            }
+
+            // Define a WaterfallConfigurationBuilder
+            val builder = WaterfallConfiguration.builder()
+            // Build the WaterfallConfiguration and add data to constrain or control a waterfall
+            val waterfallConfiguration = builder.apply {
+                this.setFloor(floor)
+                this.setCeiling(ceiling)
+            }.build()
+
+
+            // set a configuration for an ad unit
+            IronSource.setWaterfallConfiguration(waterfallConfiguration, ISAdUnit)
+            return promise.resolve(null)
+        } ?: return promise.reject(
+            E_ACTIVITY_IS_NULL,
+            "Current Activity does not exist."
+        )
+    }
+
+    /**
+     * @return null
+     */
+    @ReactMethod
+    fun clearWaterfallConfiguration(adUnit: String, promise: Promise) {
+        currentActivity?.apply {
+            val ISAdUnit = parseAdUnit(adUnit)
+
+            // If adUnit is null, reject the promise
+            if (ISAdUnit == null) {
+                return promise.reject(
+                    E_ILLEGAL_ARGUMENT,
+                    "Invalid adUnit. adUnit: $adUnit"
+                )
+            }
+
+            // clear a configuration for an ad unit
+            IronSource.setWaterfallConfiguration(WaterfallConfiguration.empty(), ISAdUnit)
+            return promise.resolve(null)
+        } ?: return promise.reject(
+            E_ACTIVITY_IS_NULL,
+            "Current Activity does not exist."
+        )
+    }
+
+    fun parseAdUnit(adUnit: String): IronSource.AD_UNIT? {
+        val upperAdUnit = adUnit.toUpperCase()
+        // Parse ad unit and if invalid, default to Null
+        val ISAdUnit = when (upperAdUnit) {
+            "REWARDED_VIDEO" -> IronSource.AD_UNIT.REWARDED_VIDEO
+            "INTERSTITIAL" -> IronSource.AD_UNIT.INTERSTITIAL
+            "OFFERWALL" -> IronSource.AD_UNIT.OFFERWALL
+            "BANNER" -> IronSource.AD_UNIT.BANNER
+            else -> null
+        }
+
+        return ISAdUnit
+    }
+
 
     /** Init API  ============================================================================== **/
 
@@ -752,17 +846,14 @@ class IronSourceMediationModule(reactContext: ReactApplicationContext) :
 
     /** LifecycleEventListener ================================================================= **/
     override fun onHostResume() {
-        Log.d(TAG, "onHostResume")
         currentActivity?.apply { IronSource.onResume(this) }
     }
 
     override fun onHostPause() {
-        Log.d(TAG, "onHostPause")
         currentActivity?.apply { IronSource.onPause(this) }
     }
 
     override fun onHostDestroy() {
-        Log.d(TAG, "onHostDestroy")
     }
 
     /** Event Emitter Stubs ==================================================================== **/
