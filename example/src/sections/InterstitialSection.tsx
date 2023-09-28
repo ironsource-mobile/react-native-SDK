@@ -5,64 +5,64 @@ import { containerStyles, positioningStyles, textStyles } from '../styles'
 import { e, p, prettyJSON, showAlert } from '../util'
 import { sectionWrapper } from './section-styles'
 import {
-  InterstitialEvents as IS,
+  InterstitialEvents as Interstitial,
   IronSource,
   IronSourceError,
 } from 'ironsource-mediation'
 
-const IS_PLACEMENT = 'Main_Menu'
+const INTERSTITIAL_PLACEMENT = 'Main_Menu'
 
-const loadIS = async () => {
-  p('Load IS Click')
+const loadInterstitial = async () => {
+  p('Load Interstitial Click')
   await IronSource.loadInterstitial()
 }
 
 function InterstitialSection() {
-  const [isISAvailable, setIsISAvailable] = useState<boolean>(false)
-  const showIS = async () => {
-    p('Show IS Click')
+  const [isInterstitialAvailable, setIsInterstitialAvailable] = useState<boolean>(false)
+  const showInterstitial = async () => {
+    p('Show Interstitial Click')
     if (await IronSource.isInterstitialReady()) {
       // Show
       // IronSource.showInterstitial();
 
       // Show by placement
       const isCapped = await IronSource.isInterstitialPlacementCapped(
-        IS_PLACEMENT
+        INTERSTITIAL_PLACEMENT
       )
       if (!isCapped) {
-        IronSource.showInterstitial(IS_PLACEMENT)
+        IronSource.showInterstitial(INTERSTITIAL_PLACEMENT)
       } else {
-        showAlert('IS Placement', [`${IS_PLACEMENT} is capped`])
+        showAlert('Interstitial Placement', [`${INTERSTITIAL_PLACEMENT} is capped`])
       }
     }
-    setIsISAvailable(false)
+    setIsInterstitialAvailable(false)
   }
 
-  // IS Event listeners setup
+  // Interstitial Event listeners setup
   useEffect(() => {
     // initialize
-    IS.removeAllListeners()
-    // Set IS Events listeners
-    IS.onInterstitialAdReady.setListener(() => {
+    Interstitial.removeAllListeners()
+    // Set Interstitial Events listeners
+    Interstitial.onInterstitialAdReady.setListener(() => {
       p(`onInterstitialAdReady`)
-      setIsISAvailable(true)
+      setIsInterstitialAvailable(true)
     })
-    IS.onInterstitialAdLoadFailed.setListener((error: IronSourceError) => {
+    Interstitial.onInterstitialAdLoadFailed.setListener((error: IronSourceError) => {
       showAlert('Ad Load Error', [prettyJSON(error)])
       e(`onInterstitialAdLoadFailed error:${prettyJSON(error)}`)
     })
-    IS.onInterstitialAdOpened.setListener(() => p('onInterstitialAdOpened'))
-    IS.onInterstitialAdClosed.setListener(() => p('onInterstitialAdClosed'))
-    IS.onInterstitialAdShowSucceeded.setListener(() =>
+    Interstitial.onInterstitialAdOpened.setListener(() => p('onInterstitialAdOpened'))
+    Interstitial.onInterstitialAdClosed.setListener(() => p('onInterstitialAdClosed'))
+    Interstitial.onInterstitialAdShowSucceeded.setListener(() =>
       p('onInterstitialAdShowSucceeded')
     )
-    IS.onInterstitialAdShowFailed.setListener((error: IronSourceError) => {
+    Interstitial.onInterstitialAdShowFailed.setListener((error: IronSourceError) => {
       showAlert('Ad Show Error', [prettyJSON(error)])
       e(`onInterstitialAdShowFailed error:${prettyJSON(error)}`)
     })
-    IS.onInterstitialAdClicked.setListener(() => p('onInterstitialAdClicked'))
+    Interstitial.onInterstitialAdClicked.setListener(() => p('onInterstitialAdClicked'))
 
-    return () => IS.removeAllListeners()
+    return () => Interstitial.removeAllListeners()
   }, [])
 
   return (
@@ -71,11 +71,11 @@ function InterstitialSection() {
         Interstitial
       </Text>
       <View style={containerStyles.horizontalSpaceBetween}>
-        <HighlightButton onPress={loadIS} buttonText="Load Interstitial" />
+        <HighlightButton onPress={loadInterstitial} buttonText="Load Interstitial" />
         <HighlightButton
-          onPress={showIS}
+          onPress={showInterstitial}
           buttonText="Show Interstitial"
-          isDisabled={!isISAvailable}
+          isDisabled={!isInterstitialAvailable}
         />
       </View>
     </View>

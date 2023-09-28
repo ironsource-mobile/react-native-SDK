@@ -77,6 +77,28 @@ type IronSourceNativeModuleType = {
    */
   setSegment(segment: IronSourceSegment): Promise<void>
 
+  /**
+   * Android: launchTestSuite
+   *     iOS: launchTestSuite
+   */
+  launchTestSuite(): Promise<void>
+
+  /**
+   * Android: setWaterfallConfiguration
+   *     iOS: setWaterfallConfiguration
+   */
+  setWaterfallConfiguration(
+    ceiling: number,
+    floor: number,
+    adUnit: AdUnit
+  ): Promise<void>
+
+  /**
+   * Android: clearWaterfallConfiguration
+   *     iOS: clearWaterfallConfiguration
+   */
+  clearWaterfallConfiguration(adUnit: AdUnit): Promise<void>
+
   /** init API =============================================================**/
 
   /**

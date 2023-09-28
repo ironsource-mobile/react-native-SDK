@@ -19,11 +19,14 @@ const eventEmitter = new NativeEventEmitter(IronSourceMediation)
 
 /**
  * BN Listener Callback Events Handler APIs
+ * These APIs have been deprecated as of SDK 7.3.0. Please use the alternate APIs in LevelPlayBannerEvents instead.
  */
 
 /**
  * Android: onBannerAdLoaded
  *     iOS: bannerDidLoad
+ *
+ * @deprecated This API has been deprecated as of SDK 7.3.0. Please use the alternate API in LevelPlayBannerEvents instead.
  */
 const onBannerAdLoaded = {
   setListener: (listener: () => void) => {
@@ -36,6 +39,8 @@ const onBannerAdLoaded = {
 /**
  * Android: onBannerAdLoadFailed
  *     iOS: bannerDidFailToLoadWithError
+ *
+ * @deprecated This API has been deprecated as of SDK 7.3.0. Please use the alternate API in LevelPlayBannerEvents instead.
  */
 const onBannerAdLoadFailed = {
   setListener: (listener: (error: IronSourceError) => void) => {
@@ -50,6 +55,8 @@ const onBannerAdLoadFailed = {
 /**
  * Android: onBannerAdClicked
  *     iOS: didClickBanner
+ *
+ * @deprecated This API has been deprecated as of SDK 7.3.0. Please use the alternate API in LevelPlayBannerEvents instead.
  */
 const onBannerAdClicked = {
   setListener: (listener: () => void) => {
@@ -62,6 +69,8 @@ const onBannerAdClicked = {
 /**
  * Android: onBannerAdScreenPresented
  *     iOS: bannerWillPresentScreen
+ *
+ * @deprecated This API has been deprecated as of SDK 7.3.0. Please use the alternate API in LevelPlayBannerEvents instead.
  */
 const onBannerAdScreenPresented = {
   setListener: (listener: () => void) => {
@@ -75,6 +84,8 @@ const onBannerAdScreenPresented = {
 /**
  * Android: onBannerAdScreenDismissed
  *     iOS: bannerDidDismissScreen
+ *
+ * @deprecated This API has been deprecated as of SDK 7.3.0. Please use the alternate API in LevelPlayBannerEvents instead.
  */
 const onBannerAdScreenDismissed = {
   setListener: (listener: () => void) => {
@@ -89,6 +100,7 @@ const onBannerAdScreenDismissed = {
  * Android: onBannerAdLeftApplication
  *     iOS: bannerWillLeaveApplication
  *
+ * @deprecated This API has been deprecated as of SDK 7.3.0. Please use the alternate API in LevelPlayBannerEvents instead.
  * Called when a user would be taken out of the application context.
  */
 const onBannerAdLeftApplication = {
@@ -100,6 +112,9 @@ const onBannerAdLeftApplication = {
     eventEmitter.removeAllListeners(ON_BN_AD_LEFT_APPLICATION),
 }
 
+/**
+ * @deprecated This API has been deprecated as of SDK 7.3.0. Please use the alternate API in LevelPlayBannerEvents instead.
+ */
 const removeAllListeners = () => {
   onBannerAdLoaded.removeListener()
   onBannerAdLoadFailed.removeListener()
@@ -109,6 +124,9 @@ const removeAllListeners = () => {
   onBannerAdLeftApplication.removeListener()
 }
 
+/**
+ * @deprecated This class has been deprecated as of SDK 7.3.0. Please use LevelPlayBannerEvents instead.
+ */
 export const BannerEvents = {
   onBannerAdLoaded,
   onBannerAdLoadFailed,

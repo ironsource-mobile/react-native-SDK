@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { Text, View } from 'react-native'
 import {
   IronSource,
-  BannerEvents as BN,
-  LevelPlayBannerEvents as LP_BN,
+  BannerEvents as Banner,
+  LevelPlayBannerEvents as LevelPlayBanner,
   IronSourceBannerOptions,
   IronSourceError,
   IronSourceAdInfo,
@@ -45,58 +45,58 @@ function BannerSection() {
       .catch(err => e(prettyJSON(err)))
   }
 
-  const displayBN = () => {
-    p('Show BN click')
+  const displayBanner = () => {
+    p('Show Banner click')
     IronSource.displayBanner().catch(err => e(prettyJSON(err)))
   }
 
-  const hideBN = () => {
-    p('Hide BN click')
+  const hideBanner = () => {
+    p('Hide Banner click')
     IronSource.hideBanner().catch(err => e(prettyJSON(err)))
   }
 
   useEffect(() => {
-    BN.onBannerAdLoaded.setListener(() => {
+    Banner.onBannerAdLoaded.setListener(() => {
       p('onBannerAdLoaded')
       setIsBannerLoaded(true)
     })
-    BN.onBannerAdLoadFailed.setListener((error: IronSourceError) => {
-      showAlert('BN Show Error', [prettyJSON(error)])
+    Banner.onBannerAdLoadFailed.setListener((error: IronSourceError) => {
+      showAlert('Banner Show Error', [prettyJSON(error)])
       e(`onBannerAdLoadFailed error:${prettyJSON(error)}`)
     })
-    BN.onBannerAdClicked.setListener(() => p('onBannerAdClicked'))
-    BN.onBannerAdScreenPresented.setListener(() =>
+    Banner.onBannerAdClicked.setListener(() => p('onBannerAdClicked'))
+    Banner.onBannerAdScreenPresented.setListener(() =>
       p('onBannerAdScreenPresented')
     )
-    BN.onBannerAdScreenDismissed.setListener(() =>
+    Banner.onBannerAdScreenDismissed.setListener(() =>
       p('onBannerAdScreenDismissed')
     )
-    BN.onBannerAdLeftApplication.setListener(() =>
+    Banner.onBannerAdLeftApplication.setListener(() =>
       p('onBannerAdLeftApplication')
     )
 
     // LevelPlayEvent Listeners
-    const LP_TAG = 'LevelPlayBNListener'
-    LP_BN.onAdLoaded.setListener((adInfo: IronSourceAdInfo) => {
-      p(`${LP_TAG} - onAdLoaded: ${prettyJSON(adInfo)}`)
+    const LEVELPLAY_TAG = 'LevelPlayBannerListener'
+    LevelPlayBanner.onAdLoaded.setListener((adInfo: IronSourceAdInfo) => {
+      p(`${LEVELPLAY_TAG} - onAdLoaded: ${prettyJSON(adInfo)}`)
     })
-    LP_BN.onAdLoadFailed.setListener((error: IronSourceError) => {
-      p(`${LP_TAG} - onAdLoadFailed: ${prettyJSON(error)}`)
+    LevelPlayBanner.onAdLoadFailed.setListener((error: IronSourceError) => {
+      p(`${LEVELPLAY_TAG} - onAdLoadFailed: ${prettyJSON(error)}`)
     })
-    LP_BN.onAdClicked.setListener((adInfo: IronSourceAdInfo) => {
-      p(`${LP_TAG} - onAdClicked: ${prettyJSON(adInfo)}`)
+    LevelPlayBanner.onAdClicked.setListener((adInfo: IronSourceAdInfo) => {
+      p(`${LEVELPLAY_TAG} - onAdClicked: ${prettyJSON(adInfo)}`)
     })
-    LP_BN.onAdScreenPresented.setListener((adInfo: IronSourceAdInfo) => {
-      p(`${LP_TAG} - onAdScreenPresented: ${prettyJSON(adInfo)}`)
+    LevelPlayBanner.onAdScreenPresented.setListener((adInfo: IronSourceAdInfo) => {
+      p(`${LEVELPLAY_TAG} - onAdScreenPresented: ${prettyJSON(adInfo)}`)
     })
-    LP_BN.onAdScreenDismissed.setListener((adInfo: IronSourceAdInfo) => {
-      p(`${LP_TAG} - onAdScreenDismissed: ${prettyJSON(adInfo)}`)
+    LevelPlayBanner.onAdScreenDismissed.setListener((adInfo: IronSourceAdInfo) => {
+      p(`${LEVELPLAY_TAG} - onAdScreenDismissed: ${prettyJSON(adInfo)}`)
     })
-    LP_BN.onAdLeftApplication.setListener((adInfo: IronSourceAdInfo) => {
-      p(`${LP_TAG} - onAdLeftApplication: ${prettyJSON(adInfo)}`)
+    LevelPlayBanner.onAdLeftApplication.setListener((adInfo: IronSourceAdInfo) => {
+      p(`${LEVELPLAY_TAG} - onAdLeftApplication: ${prettyJSON(adInfo)}`)
     })
 
-    return () => BN.removeAllListeners()
+    return () => Banner.removeAllListeners()
   }, [])
 
   return (
@@ -113,8 +113,8 @@ function BannerSection() {
         isDisabled={!isBannerLoaded}
       />
       <View style={containerStyles.horizontalSpaceBetween}>
-        <HighlightButton onPress={displayBN} buttonText="Display Banner" />
-        <HighlightButton onPress={hideBN} buttonText="Hide Banner" />
+        <HighlightButton onPress={displayBanner} buttonText="Display Banner" />
+        <HighlightButton onPress={hideBanner} buttonText="Hide Banner" />
       </View>
     </View>
   )

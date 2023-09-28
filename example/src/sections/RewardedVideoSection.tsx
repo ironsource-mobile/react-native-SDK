@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Text, View } from 'react-native'
 import {
   IronSource,
-  RewardedVideoEvents as RV,
+  RewardedVideoEvents as RewardedVideo,
   IronSourceRVPlacement,
   IronSourceError,
 } from 'ironsource-mediation'
@@ -11,12 +11,12 @@ import { containerStyles, positioningStyles, textStyles } from '../styles'
 import { e, p, prettyJSON, showAlert } from '../util'
 import { sectionWrapper } from './section-styles'
 
-const RV_PLACEMENT = 'Home_Screen'
+const REWARDED_VIDEO_PLACEMENT = 'Home_Screen'
 
 const setServerParams = async () => {
   const params = { currentTime: Date.now().toString() }
   await IronSource.setRewardedVideoServerParams(params)
-  showAlert('Set RV Server Params', [prettyJSON(params)])
+  showAlert('Set Rewarded Video Server Params', [prettyJSON(params)])
 }
 
 const clearServerParams = () => {
@@ -24,13 +24,13 @@ const clearServerParams = () => {
 }
 
 const getPlacementInfo = async () => {
-  const placement = await IronSource.getRewardedVideoPlacementInfo(RV_PLACEMENT)
+  const placement = await IronSource.getRewardedVideoPlacementInfo(REWARDED_VIDEO_PLACEMENT)
   p(`placement info: ${prettyJSON(placement)}`)
   showAlert('Placement Info', [prettyJSON(placement)])
 }
 
-const showRV = async () => {
-  p('Show RV Click')
+const showRewardedVideo = async () => {
+  p('Show Rewarded Video Click')
   if (await IronSource.isRewardedVideoAvailable()) {
     // This must be called before show.
     // await IronSource.setDynamicUserId('some-dynamic-application-user-id');
@@ -40,15 +40,15 @@ const showRV = async () => {
 
     // Show by placement
     const isCapped = await IronSource.isRewardedVideoPlacementCapped(
-      RV_PLACEMENT
+      REWARDED_VIDEO_PLACEMENT
     )
     if (!isCapped) {
-      IronSource.showRewardedVideo(RV_PLACEMENT)
+      IronSource.showRewardedVideo(REWARDED_VIDEO_PLACEMENT)
     } else {
-      showAlert('RV Placement', [`${RV_PLACEMENT} is capped`])
+      showAlert('Rewarded Video Placement', [`${REWARDED_VIDEO_PLACEMENT} is capped`])
     }
   } else {
-    e('RV is not available')
+    e('Rewarded Video is not available')
   }
 }
 
@@ -56,29 +56,29 @@ const showRV = async () => {
  * Main
  */
 function RewardedVideoSection() {
-  const [isRVAvailable, setIsRVAvailable] = useState<boolean>(false)
-  const [isRVVisible, setIsRVVisible] = useState<boolean>(false)
+  const [isRewardedVideoAvailable, setIsRewardedVideoAvailable] = useState<boolean>(false)
+  const [isRewardedVideoVisible, setIsRewardedVideoVisible] = useState<boolean>(false)
   // [context, placement]
   const [reservedPlacement, setReservedPlacement] = useState<
     IronSourceRVPlacement | undefined
   >(undefined)
 
-  // RV Event listeners setup
+  // Rewarded Video Event listeners setup
   // depend on the placement state
   useEffect(() => {
     // initialize
-    RV.removeAllListeners()
-    // Set RV Events listeners
-    RV.onRewardedVideoAvailabilityChanged.setListener(
+    RewardedVideo.removeAllListeners()
+    // Set Rewarded Video Events listeners
+    RewardedVideo.onRewardedVideoAvailabilityChanged.setListener(
       (isAvailable: boolean) => {
         p(`onRewardedVideoAvailabilityChanged isAvailable:${isAvailable}`)
-        setIsRVAvailable(isAvailable)
+        setIsRewardedVideoAvailable(isAvailable)
       }
     )
-    RV.onRewardedVideoAdRewarded.setListener(
+    RewardedVideo.onRewardedVideoAdRewarded.setListener(
       (placement: IronSourceRVPlacement) => {
         p(`onRewardedVideoAdRewarded placement:${prettyJSON(placement)}`)
-        if (!isRVVisible) {
+        if (!isRewardedVideoVisible) {
           showAlert('Ad Rewarded', [`placement: ${prettyJSON(placement)}`])
           setReservedPlacement(undefined)
         } else {
@@ -86,11 +86,11 @@ function RewardedVideoSection() {
         }
       }
     )
-    RV.onRewardedVideoAdOpened.setListener(() => {
+    RewardedVideo.onRewardedVideoAdOpened.setListener(() => {
       p('onRewardedVideoAdOpened')
-      setIsRVVisible(true)
+      setIsRewardedVideoVisible(true)
     })
-    RV.onRewardedVideoAdClosed.setListener(() => {
+    RewardedVideo.onRewardedVideoAdClosed.setListener(() => {
       p('onRewardedVideoAdClosed')
       if (reservedPlacement !== undefined) {
         showAlert('Ad Rewarded', [
@@ -98,21 +98,21 @@ function RewardedVideoSection() {
         ])
         setReservedPlacement(undefined)
       }
-      setIsRVVisible(false)
+      setIsRewardedVideoVisible(false)
     })
-    RV.onRewardedVideoAdStarted.setListener(() => p('onRewardedVideoAdStarted'))
-    RV.onRewardedVideoAdEnded.setListener(() => p('onRewardedVideoAdEnded'))
-    RV.onRewardedVideoAdShowFailed.setListener((error: IronSourceError) => {
+    RewardedVideo.onRewardedVideoAdStarted.setListener(() => p('onRewardedVideoAdStarted'))
+    RewardedVideo.onRewardedVideoAdEnded.setListener(() => p('onRewardedVideoAdEnded'))
+    RewardedVideo.onRewardedVideoAdShowFailed.setListener((error: IronSourceError) => {
       showAlert('Ad Show Error', [prettyJSON(error)])
       e(`onRewardedVideoAdShowFailed error:${prettyJSON(error)}`)
     })
-    RV.onRewardedVideoAdClicked.setListener(
+    RewardedVideo.onRewardedVideoAdClicked.setListener(
       (placement: IronSourceRVPlacement) =>
         p(`onRewardedVideoAdClicked placement:${prettyJSON(placement)}`)
     )
 
-    return () => RV.removeAllListeners()
-  }, [isRVVisible, reservedPlacement])
+    return () => RewardedVideo.removeAllListeners()
+  }, [isRewardedVideoVisible, reservedPlacement])
 
   return (
     <View style={sectionWrapper}>
@@ -120,22 +120,22 @@ function RewardedVideoSection() {
         Rewarded Video
       </Text>
       <HighlightButton
-        onPress={showRV}
+        onPress={showRewardedVideo}
         buttonText="Show Rewarded Video"
-        isDisabled={!isRVAvailable}
+        isDisabled={!isRewardedVideoAvailable}
       />
       <HighlightButton
         onPress={getPlacementInfo}
-        buttonText="Get RV Placement Info"
+        buttonText="Get Rewarded Video Placement Info"
       />
       <View style={containerStyles.horizontalSpaceBetween}>
         <HighlightButton
           onPress={setServerParams}
-          buttonText="setRVServerParams"
+          buttonText="Set Rewarded Video ServerParams"
         />
         <HighlightButton
           onPress={clearServerParams}
-          buttonText="clearRVServerParams"
+          buttonText="Clear Rewarded Video ServerParams"
         />
       </View>
     </View>
