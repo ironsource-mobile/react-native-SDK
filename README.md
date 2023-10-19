@@ -7,7 +7,7 @@ Use this documentation to integrate the ironSource SDK:
 https://developers.is.com/developer-docs/react-native/
 
 ## Version history 
-You can find a summary of the ironSouce SDK version history [here](https://developers.is.com/developer-docs/react-native/sdk-change-log/).
+You can find a summary of the ironSouce SDK version history [here](https://developers.is.com/ironsource-mobile/react-native/sdk-change-log/).
 
 ## Contact US 
 For any question please contact us [here](https://ironsrc.formtitan.com/knowledge-center#/). 
