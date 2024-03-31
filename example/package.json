@@ -13,7 +13,6 @@
     "test": "jest"
   },
   "dependencies": {
-    "ironsource-mediation": "file:ironsource-mediation-1.1.1.tgz",
     "react": "18.2.0",
     "react-native": "0.73.6"
   },
