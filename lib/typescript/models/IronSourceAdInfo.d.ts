@@ -17,4 +17,5 @@ export declare const ironSourceAdInfoCodec: t.TypeC<{
     segmentName: t.UnionC<[t.Type<string, any, any>, t.UndefinedC]>;
     encryptedCPM: t.UnionC<[t.Type<string, any, any>, t.UndefinedC]>;
 }>;
-export declare type IronSourceAdInfo = t.TypeOf<typeof ironSourceAdInfoCodec>;
+export type IronSourceAdInfo = t.TypeOf<typeof ironSourceAdInfoCodec>;
+//# sourceMappingURL=IronSourceAdInfo.d.ts.map

@@ -43,3 +43,4 @@ export declare const errorAdInfoCodec: t.TypeC<{
         encryptedCPM: t.UnionC<[t.Type<string, any, any>, t.UndefinedC]>;
     }>;
 }>;
+//# sourceMappingURL=nestedCodecs.d.ts.map

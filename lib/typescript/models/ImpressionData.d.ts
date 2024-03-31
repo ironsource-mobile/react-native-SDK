@@ -22,4 +22,5 @@ export declare const impressionDataCodec: t.TypeC<{
     lifetimeRevenue: t.UnionC<[t.Type<number, any, any>, t.UndefinedC]>;
     encryptedCPM: t.UnionC<[t.Type<string, any, any>, t.UndefinedC]>;
 }>;
-export declare type ImpressionData = t.TypeOf<typeof impressionDataCodec>;
+export type ImpressionData = t.TypeOf<typeof impressionDataCodec>;
+//# sourceMappingURL=ImpressionData.d.ts.map

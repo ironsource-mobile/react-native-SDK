@@ -7,4 +7,5 @@ export declare const ironSourceRVPlacementCodec: t.TypeC<{
     rewardName: t.StringC;
     rewardAmount: t.NumberC;
 }>;
-export declare type IronSourceRVPlacement = t.TypeOf<typeof ironSourceRVPlacementCodec>;
+export type IronSourceRVPlacement = t.TypeOf<typeof ironSourceRVPlacementCodec>;
+//# sourceMappingURL=IronSourceRVPlacement.d.ts.map

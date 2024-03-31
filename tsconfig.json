@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-     "ignoreDeprecations": "5.0",
     "baseUrl": "./",
     "paths": {
       "ironsource-mediation": ["./src/index"]
@@ -8,7 +7,6 @@
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
     "esModuleInterop": true,
-    "importsNotUsedAsValues": "error",
     "forceConsistentCasingInFileNames": true,
     "jsx": "react",
     "lib": ["esnext"],
