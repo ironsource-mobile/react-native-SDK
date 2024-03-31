@@ -8,6 +8,7 @@ import android.widget.FrameLayout
 import com.facebook.react.bridge.*
 import com.ironsource.adapters.supersonicads.SupersonicConfig
 import com.ironsource.mediationsdk.ISBannerSize
+import com.ironsource.mediationsdk.ISContainerParams
 import com.ironsource.mediationsdk.IronSource
 import com.ironsource.mediationsdk.IronSourceBannerLayout
 import com.ironsource.mediationsdk.IronSourceSegment
@@ -34,7 +35,6 @@ class IronSourceMediationModule(reactContext: ReactApplicationContext) :
     private var mBannerContainer: FrameLayout? = null
     private var mBanner: IronSourceBannerLayout? = null
     private var mBannerVisibility: Int = View.VISIBLE
-
     // Listeners
     private val mRVListener: RCTRewardedVideoListener = RCTRewardedVideoListener(reactContext)
     private val mISListener: RCTInterstitialListener = RCTInterstitialListener(reactContext)
@@ -45,6 +45,7 @@ class IronSourceMediationModule(reactContext: ReactApplicationContext) :
         RCTLevelPlayBNListener(reactContext, ::onBannerAdLoadFailed)
     private val mLevelPlayRVListener: RCTLevelPlayRVListener = RCTLevelPlayRVListener(reactContext)
     private val mLevelPlayISListener: RCTLevelPlayISListener = RCTLevelPlayISListener(reactContext)
+
 
     init {
         reactContext.addLifecycleEventListener(this)
@@ -556,132 +557,137 @@ class IronSourceMediationModule(reactContext: ReactApplicationContext) :
      */
     @ReactMethod
     fun loadBanner(options: ReadableMap, promise: Promise) {
-        // Keys
-        val KEY_POSITION = "position"
-        val KEY_SIZE_DESCRIPTION = "sizeDescription"
-        val KEY_WIDTH = "width"
-        val KEY_HEIGHT = "height"
-        val KEY_IS_ADAPTIVE = "isAdaptive"
-        val KEY_VERTICAL_OFFSET = "verticalOffset"
-        val KEY_PLACEMENT_NAME = "placementName"
-        // Banner positions
-        val BANNER_POSITION_TOP = "TOP"
-        val BANNER_POSITION_CENTER = "CENTER"
-        val BANNER_POSITION_BOTTOM = "BOTTOM"
+      // Keys
+      val KEY_POSITION = "position"
+      val KEY_SIZE_DESCRIPTION = "sizeDescription"
+      val KEY_WIDTH = "width"
+      val KEY_HEIGHT = "height"
+      val KEY_IS_ADAPTIVE = "isAdaptive"
+      val KEY_VERTICAL_OFFSET = "verticalOffset"
+      val KEY_PLACEMENT_NAME = "placementName"
+      val KEY_CONTAINER_PARAMS = "isContainerParams"
+      // Banner positions
+      val BANNER_POSITION_TOP = "TOP"
+      val BANNER_POSITION_CENTER = "CENTER"
+      val BANNER_POSITION_BOTTOM = "BOTTOM"
 
-        // fallback to BANNER in the case of invalid descriptions
-        fun getBannerSize(sizeDescription: String): ISBannerSize {
-            return when (sizeDescription) {
-                "BANNER" -> ISBannerSize.BANNER
-                "SMART" -> ISBannerSize.SMART
-                "RECTANGLE" -> ISBannerSize.RECTANGLE
-                "LARGE" -> ISBannerSize.LARGE
-                else -> ISBannerSize.BANNER
-            }
+      // fallback to BANNER in the case of invalid descriptions
+      fun getBannerSize(sizeDescription: String): ISBannerSize {
+        return when (sizeDescription) {
+          "BANNER" -> ISBannerSize.BANNER
+          "SMART" -> ISBannerSize.SMART
+          "RECTANGLE" -> ISBannerSize.RECTANGLE
+          "LARGE" -> ISBannerSize.LARGE
+          else -> ISBannerSize.BANNER
+        }
+      }
+      // fallback to BOTTOM in the case of unsupported strings
+      fun getBannerGravity(position: String): Int {
+        return when (position) {
+          BANNER_POSITION_TOP -> Gravity.TOP
+          BANNER_POSITION_CENTER -> Gravity.CENTER
+          BANNER_POSITION_BOTTOM -> Gravity.BOTTOM
+          else -> Gravity.BOTTOM
+        }
+      }
+      currentActivity?.apply {
+        // Default vertical position
+        val position = options.getString(KEY_POSITION)
+          ?: return promise.reject(E_ILLEGAL_ARGUMENT, "Banner Position must be passed.")
+        val bannerGravity = getBannerGravity(position)
+
+        // Banner size
+        val sizeDescription: String? = options.getString(KEY_SIZE_DESCRIPTION)
+        val hasWidth = options.hasKey(KEY_WIDTH) && !options.isNull(KEY_WIDTH)
+        val hasHeight = options.hasKey(KEY_HEIGHT) && !options.isNull(KEY_HEIGHT)
+        if (sizeDescription == null && !(hasWidth && hasHeight)) {
+          return promise.reject(
+            E_ILLEGAL_ARGUMENT,
+            "Banner sizeDescription or width and height must be passed."
+          )
+        }
+        val bannerSize: ISBannerSize =
+          if (sizeDescription != null) getBannerSize(sizeDescription)
+          else ISBannerSize(options.getInt(KEY_WIDTH), options.getInt(KEY_HEIGHT))
+        // optional params
+        val hasVerticalOffset =
+          options.hasKey(KEY_VERTICAL_OFFSET) && !options.isNull(KEY_VERTICAL_OFFSET)
+        val verticalOffset = if (hasVerticalOffset) options.getInt(KEY_VERTICAL_OFFSET) else 0
+        val placementName: String? = options.getString(KEY_PLACEMENT_NAME)
+        val hasIsAdaptive = options.hasKey(KEY_IS_ADAPTIVE) && !options.isNull(KEY_IS_ADAPTIVE)
+        val isAdaptive: Boolean = if (hasIsAdaptive) options.getBoolean(KEY_IS_ADAPTIVE) else false
+
+        // Extract containerParams from options
+        val containerParamsMap = options.getMap(KEY_CONTAINER_PARAMS)
+        val containerWidth = containerParamsMap?.getInt(KEY_WIDTH) ?: -1
+        val containerHeight = containerParamsMap?.getInt(KEY_HEIGHT) ?: -1
+
+        // Set isAdaptive
+        bannerSize.isAdaptive = isAdaptive
+        // Handle banner properties according to isAdaptive value
+        if (isAdaptive) {
+          // isAdaptive is true
+          // Create container params
+          val isContainerParams = ISContainerParams(containerWidth, containerHeight)
+          // Set container params with width and adaptiveHeight
+          bannerSize.setContainerParams(isContainerParams)
         }
 
-        // fallback to BOTTOM in the case of unsupported strings
-        fun getBannerGravity(position: String): Int {
-            return when (position) {
-                BANNER_POSITION_TOP -> Gravity.TOP
-                BANNER_POSITION_CENTER -> Gravity.CENTER
-                BANNER_POSITION_BOTTOM -> Gravity.BOTTOM
-                else -> Gravity.BOTTOM
-            }
-        }
-
-        currentActivity?.apply {
-            // Default vertical position
-            val position = options.getString(KEY_POSITION)
-                ?: return promise.reject(E_ILLEGAL_ARGUMENT, "Banner Position must be passed.")
-            val bannerGravity = getBannerGravity(position)
-
-            // Banner size
-            val sizeDescription: String? = options.getString(KEY_SIZE_DESCRIPTION)
-            val hasWidth = options.hasKey(KEY_WIDTH) && !options.isNull(KEY_WIDTH)
-            val hasHeight = options.hasKey(KEY_HEIGHT) && !options.isNull(KEY_HEIGHT)
-            if (sizeDescription == null && !(hasWidth && hasHeight)) {
-                return promise.reject(
-                    E_ILLEGAL_ARGUMENT,
-                    "Banner sizeDescription or width and height must be passed."
-                )
-            }
-            val bannerSize: ISBannerSize =
-                if (sizeDescription != null) getBannerSize(sizeDescription)
-                else ISBannerSize(options.getInt(KEY_WIDTH), options.getInt(KEY_HEIGHT))
-
-            // optional params
-            val hasVerticalOffset =
-                options.hasKey(KEY_VERTICAL_OFFSET) && !options.isNull(KEY_VERTICAL_OFFSET)
-            val verticalOffset = if (hasVerticalOffset) options.getInt(KEY_VERTICAL_OFFSET) else 0
-            val placementName: String? = options.getString(KEY_PLACEMENT_NAME)
-            val hasIsAdaptive = options.hasKey(KEY_IS_ADAPTIVE) && !options.isNull(KEY_IS_ADAPTIVE)
-            val isAdaptive: Boolean =
-                if (hasIsAdaptive) options.getBoolean(KEY_IS_ADAPTIVE) else false
-            bannerSize.isAdaptive = isAdaptive
-
-            runOnUiThread {
-                synchronized(this@IronSourceMediationModule) {
-                    try {
-                        // Create a container
-                        if (mBannerContainer == null) {
-                            mBannerContainer = FrameLayout(this).apply {
-                                fitsSystemWindows = true
-                                setBackgroundColor(Color.TRANSPARENT)
-                            }
-                            mBannerContainer?.visibility = mBannerVisibility
-                            this.addContentView(
-                                mBannerContainer, FrameLayout.LayoutParams(
-                                    FrameLayout.LayoutParams.MATCH_PARENT,
-                                    FrameLayout.LayoutParams.MATCH_PARENT
-                                )
-                            )
-                        }
-
-                        // Create banner if not exists yet
-                        if (mBanner == null) {
-                            mBanner = IronSource.createBanner(this, bannerSize)
-
-                            // Banner layout params
-                            val layoutParams = FrameLayout.LayoutParams(
-                                FrameLayout.LayoutParams.MATCH_PARENT,
-                                FrameLayout.LayoutParams.WRAP_CONTENT,
-                                bannerGravity
-                            ).apply {
-                                // vertical offset
-                                if (verticalOffset > 0) {
-                                    topMargin = abs(verticalOffset)
-                                } else if (verticalOffset < 0) {
-                                    bottomMargin = abs(verticalOffset)
-                                }
-                            }
-
-                            // Add Banner to the container
-                            mBannerContainer?.addView(mBanner, 0, layoutParams)
-
-                            // Set listeners
-                            mBanner?.bannerListener = mBNListener
-                            mBanner?.levelPlayBannerListener = mLevelPlayBNListener
-                        }
-
-                        mBanner?.visibility = mBannerVisibility
-
-                        // Load banner
-                        // if already loaded, console error would be shown by the iS SDK
-                        if (placementName != null) {
-                            IronSource.loadBanner(mBanner, placementName)
-                        } else {
-                            IronSource.loadBanner(mBanner)
-                        }
-
-                        promise.resolve(null)
-                    } catch (e: Throwable) {
-                        Log.e(TAG, e.toString())
-                        promise.reject(E_UNEXPECTED, "Failed to load banner", e)
-                    }
+        runOnUiThread {
+          synchronized(this@IronSourceMediationModule) {
+            try {
+              // Create a container
+              if (mBannerContainer == null) {
+                mBannerContainer = FrameLayout(this).apply {
+                  fitsSystemWindows = true
+                  setBackgroundColor(Color.TRANSPARENT)
                 }
+                mBannerContainer?.visibility = mBannerVisibility
+              val params = FrameLayout.LayoutParams(
+                  FrameLayout.LayoutParams.MATCH_PARENT,
+                  FrameLayout.LayoutParams.WRAP_CONTENT,
+                  bannerGravity
+              )
+              this.addContentView(mBannerContainer, params)
+              }
+              // Create banner if not exists yet
+              if (mBanner == null) {
+                mBanner = IronSource.createBanner(this, bannerSize)
+                // Banner layout params
+                val layoutParams = FrameLayout.LayoutParams(
+                  FrameLayout.LayoutParams.MATCH_PARENT,
+                  FrameLayout.LayoutParams.WRAP_CONTENT,
+                  bannerGravity
+                ).apply {
+                  // vertical offset
+                  if (verticalOffset > 0) {
+                    topMargin = abs(verticalOffset)
+                  } else if (verticalOffset < 0) {
+                    bottomMargin = abs(verticalOffset)
+                  }
+                }
+                // Add Banner to the container
+                mBannerContainer?.addView(mBanner, 0, layoutParams)
+                // Set listeners
+                mBanner?.bannerListener = mBNListener
+                mBanner?.levelPlayBannerListener = mLevelPlayBNListener
+              }
+              mBanner?.visibility = mBannerVisibility
+              // Load banner
+              // if already loaded, console error would be shown by the iS SDK
+              if (placementName != null) {
+                IronSource.loadBanner(mBanner, placementName)
+              } else {
+                IronSource.loadBanner(mBanner)
+              }
+              promise.resolve(null)
+            } catch (e: Throwable) {
+              Log.e(TAG, e.toString())
+              promise.reject(E_UNEXPECTED, "Failed to load banner", e)
             }
-        } ?: return promise.reject(E_ACTIVITY_IS_NULL, "Current Activity does not exist.")
+          }
+        }
+      } ?: return promise.reject(E_ACTIVITY_IS_NULL, "Current Activity does not exist.")
     }
 
     /**
@@ -690,14 +696,14 @@ class IronSourceMediationModule(reactContext: ReactApplicationContext) :
      * The JS event is sent by RCTBannerListener.
      */
     private fun onBannerAdLoadFailed() {
-        currentActivity?.runOnUiThread {
-            synchronized(this@IronSourceMediationModule) {
-                mBannerContainer?.removeAllViews()
-                if (mBanner != null) {
-                    mBanner = null
-                }
-            }
+      currentActivity?.runOnUiThread {
+        synchronized(this@IronSourceMediationModule) {
+          mBannerContainer?.removeAllViews()
+          if (mBanner != null) {
+            mBanner = null
+          }
         }
+      }
     }
 
     /**
@@ -709,6 +715,7 @@ class IronSourceMediationModule(reactContext: ReactApplicationContext) :
             runOnUiThread {
                 synchronized(this@IronSourceMediationModule) {
                     mBannerContainer?.removeAllViews()
+                    mBannerContainer=null
                     if (mBanner != null) {
                         IronSource.destroyBanner(mBanner)
                         mBanner = null
@@ -763,6 +770,15 @@ class IronSourceMediationModule(reactContext: ReactApplicationContext) :
         val isCapped = IronSource.isBannerPlacementCapped(placementName)
         return promise.resolve(isCapped)
     }
+
+  /**
+   * Return maximal adaptive height according to given width.
+   */
+  @ReactMethod
+  fun getMaximalAdaptiveHeight(width: Int, promise: Promise) {
+    val adaptiveHeight = ISBannerSize.getMaximalAdaptiveHeight(width)
+    return promise.resolve(adaptiveHeight)
+  }
 
     /** OW API ==================================================================================**/
 
@@ -838,7 +854,6 @@ class IronSourceMediationModule(reactContext: ReactApplicationContext) :
         SupersonicConfig.getConfigObj().offerwallCustomParams = customParams
         return promise.resolve(null)
     }
-
     /** Event Emitter Constants ================================================================ **/
     override fun getConstants(): MutableMap<String, Any> {
         return IronConstants.getEventConstants()

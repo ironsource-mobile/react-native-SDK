@@ -30,3 +30,4 @@ export declare const LevelPlayInterstitialEvents: {
     };
     removeAllListeners: () => void;
 };
+//# sourceMappingURL=LevelPlayInterstitialEvents.d.ts.map

@@ -7,4 +7,5 @@ import * as t from 'io-ts';
 export declare const availabilityCodec: t.TypeC<{
     isAvailable: t.BooleanC;
 }>;
-export declare type Availability = t.TypeOf<typeof availabilityCodec>;
+export type Availability = t.TypeOf<typeof availabilityCodec>;
+//# sourceMappingURL=Availability.d.ts.map

@@ -1,4 +1,5 @@
 /**
  * Used for init()
  */
-export declare type AdUnit = 'REWARDED_VIDEO' | 'INTERSTITIAL' | 'OFFERWALL' | 'BANNER';
+export type AdUnit = 'REWARDED_VIDEO' | 'INTERSTITIAL' | 'OFFERWALL' | 'BANNER';
+//# sourceMappingURL=AdUnit.d.ts.map

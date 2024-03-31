@@ -26,3 +26,4 @@ export declare const OfferwallEvents: {
     };
     removeAllListeners: () => void;
 };
+//# sourceMappingURL=OfferwallEvents.d.ts.map

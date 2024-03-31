@@ -7,7 +7,7 @@ import type { AdUnit, IronSourceBannerOptions, IronSourceRVPlacement, IronSource
  * Native Module Type
  * Descriptions show the function names of native SDKs.
  */
-declare type IronSourceNativeModuleType = {
+type IronSourceNativeModuleType = {
     /** Base API =============================================================**/
     /**
      * Android: getAdvertiserId
@@ -52,6 +52,21 @@ declare type IronSourceNativeModuleType = {
      *     iOS: setSegment
      */
     setSegment(segment: IronSourceSegment): Promise<void>;
+    /**
+     * Android: launchTestSuite
+     *     iOS: launchTestSuite
+     */
+    launchTestSuite(): Promise<void>;
+    /**
+     * Android: setWaterfallConfiguration
+     *     iOS: setWaterfallConfiguration
+     */
+    setWaterfallConfiguration(ceiling: number, floor: number, adUnit: AdUnit): Promise<void>;
+    /**
+     * Android: clearWaterfallConfiguration
+     *     iOS: clearWaterfallConfiguration
+     */
+    clearWaterfallConfiguration(adUnit: AdUnit): Promise<void>;
     /** init API =============================================================**/
     /**
      * Android: setUserId
@@ -69,7 +84,7 @@ declare type IronSourceNativeModuleType = {
      */
     init(appKey: string): Promise<void>;
     initWithAdUnits(appKey: string, adUnits: Array<AdUnit>): Promise<void>;
-    /** RV API ===============================================================**/
+    /** Rewarded Video API ===============================================================**/
     /**
      * Android: showRewardedVideo
      *     iOS: showRewardedVideoWithViewController
@@ -122,7 +137,7 @@ declare type IronSourceNativeModuleType = {
      *     iOS: loadRewardedVideo
      */
     loadRewardedVideo(): Promise<void>;
-    /** IS API ===============================================================**/
+    /** Interstitial API ===============================================================**/
     /**
      * Android: loadInterstitial
      *     iOS: loadInterstitial
@@ -144,7 +159,7 @@ declare type IronSourceNativeModuleType = {
      *     iOS: isInterstitialCappedForPlacement
      */
     isInterstitialPlacementCapped(placementName: string): Promise<boolean>;
-    /** BN API ===============================================================**/
+    /** Banner API ===============================================================**/
     /**
      * Android: loadBanner
      *     iOS: loadBannerWithViewController
@@ -176,6 +191,11 @@ declare type IronSourceNativeModuleType = {
      *     iOS: isBannerCappedForPlacement
      */
     isBannerPlacementCapped(placementName: string): Promise<boolean>;
+    /**
+     * Android: getMaximalAdaptiveHeight
+     *     iOS: getMaximalAdaptiveHeight
+     */
+    getMaximalAdaptiveHeight(width: number): Promise<number>;
     /** OW API ===============================================================**/
     /**
      * Android: showOfferwall
@@ -242,9 +262,9 @@ declare type IronSourceNativeModuleType = {
 /**
  * These are needed since ReactNative NativeModules does not support function overload or optional arguments.
  */
-declare type InitFunction = (appKey: string, adUnits?: Array<AdUnit>) => Promise<void>;
-declare type ShowFunction = (placementName?: string) => Promise<void>;
-declare type IronSourceProxyType = {
+type InitFunction = (appKey: string, adUnits?: Array<AdUnit>) => Promise<void>;
+type ShowFunction = (placementName?: string) => Promise<void>;
+type IronSourceProxyType = {
     /**
      * Android: init
      *     iOS: initWithAppKey
@@ -266,13 +286,14 @@ declare type IronSourceProxyType = {
      */
     showOfferwall: ShowFunction;
 };
-declare type UtilFunctions = {
+type UtilFunctions = {
     getPluginVersion: () => string;
     getNativeSDKVersion: () => string;
 };
 /**
  * Exposed Module Type
  */
-declare type IronSourceType = UtilFunctions & IronSourceProxyType & Omit<IronSourceNativeModuleType, 'init' | 'initWithAdUnits' | 'showRewardedVideo' | 'showRewardedVideoForPlacement' | 'showInterstitial' | 'showInterstitialForPlacement' | 'showOfferwall' | 'showOfferwallForPlacement'>;
+type IronSourceType = UtilFunctions & IronSourceProxyType & Omit<IronSourceNativeModuleType, 'init' | 'initWithAdUnits' | 'showRewardedVideo' | 'showRewardedVideoForPlacement' | 'showInterstitial' | 'showInterstitialForPlacement' | 'showOfferwall' | 'showOfferwallForPlacement'>;
 export declare const IronSource: Readonly<IronSourceType>;
 export {};
+//# sourceMappingURL=IronSource.d.ts.map

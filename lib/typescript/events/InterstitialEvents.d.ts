@@ -1,4 +1,7 @@
 import { IronSourceError } from '../models';
+/**
+ * @deprecated This class has been deprecated as of SDK 7.3.0. Please use LevelPlayInterstitialEvents instead.
+ */
 export declare const InterstitialEvents: {
     onInterstitialAdReady: {
         setListener: (listener: () => void) => void;
@@ -30,3 +33,4 @@ export declare const InterstitialEvents: {
     };
     removeAllListeners: () => void;
 };
+//# sourceMappingURL=InterstitialEvents.d.ts.map

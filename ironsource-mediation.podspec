@@ -13,8 +13,8 @@ Pod::Spec.new do |s|
   s.platforms    = { :ios => "11.0" }
   s.source       = { :git => "https://www.dummy.com.git", :tag => "#{s.version}" }
 
-  s.source_files = "ios/**/*.{h,m,mm}"
+  s.source_files = "ios/IronSourceMediation/**/*.{h,m,mm}"
 
   s.dependency "React-Core"
-  s.dependency "IronSourceSDK","7.5.0.0"
+  s.dependency "IronSourceSDK","7.9.1.0"
 end

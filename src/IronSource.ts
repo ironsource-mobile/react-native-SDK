@@ -119,7 +119,7 @@ type IronSourceNativeModuleType = {
   init(appKey: string): Promise<void>
   initWithAdUnits(appKey: string, adUnits: Array<AdUnit>): Promise<void>
 
-  /** RV API ===============================================================**/
+  /** Rewarded Video API ===============================================================**/
 
   /**
    * Android: showRewardedVideo
@@ -181,7 +181,7 @@ type IronSourceNativeModuleType = {
    */
   loadRewardedVideo(): Promise<void>
 
-  /** IS API ===============================================================**/
+  /** Interstitial API ===============================================================**/
 
   /**
    * Android: loadInterstitial
@@ -208,7 +208,7 @@ type IronSourceNativeModuleType = {
    */
   isInterstitialPlacementCapped(placementName: string): Promise<boolean>
 
-  /** BN API ===============================================================**/
+  /** Banner API ===============================================================**/
 
   /**
    * Android: loadBanner
@@ -245,6 +245,12 @@ type IronSourceNativeModuleType = {
    *     iOS: isBannerCappedForPlacement
    */
   isBannerPlacementCapped(placementName: string): Promise<boolean>
+
+  /**
+   * Android: getMaximalAdaptiveHeight
+   *     iOS: getMaximalAdaptiveHeight
+   */
+  getMaximalAdaptiveHeight(width: number): Promise<number>
 
   /** OW API ===============================================================**/
 

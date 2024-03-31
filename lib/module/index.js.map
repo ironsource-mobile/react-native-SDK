@@ -1,1 +1,1 @@
-{"version":3,"sources":["index.ts"],"names":[],"mappings":"AAAA,cAAc,cAAd;AACA,cAAc,UAAd;AACA,cAAc,UAAd,C,CAEA;;AACA,cAAc,2BAAd","sourcesContent":["export * from './IronSource'\nexport * from './events'\nexport * from './models'\n\n// Non ironSource SDK\nexport * from './ios14/ATTrackingManager'\n"]}
+{"version":3,"names":[],"sourceRoot":"../../src","sources":["index.ts"],"mappings":"AAAA,cAAc,cAAc;AAC5B,cAAc,UAAU;AACxB,cAAc,UAAU;AACxB;AACA,cAAc,2BAA2B","ignoreList":[]}

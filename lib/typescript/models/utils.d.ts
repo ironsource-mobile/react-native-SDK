@@ -9,7 +9,8 @@ export declare const decode: <T>(codec: t.Decoder<unknown, T>, value: unknown) =
  */
 export declare const optional: <T>(codec: t.Type<T, any, any>) => t.UnionC<[t.Type<T, any, any>, t.UndefinedC]>;
 /** Util Types ==================================================================**/
-export declare type Without<T> = {
+export type Without<T> = {
     [P in keyof T]?: undefined;
 };
-export declare type XOR<T, U> = (Without<T> & U) | (Without<U> & T);
+export type XOR<T, U> = (Without<T> & U) | (Without<U> & T);
+//# sourceMappingURL=utils.d.ts.map

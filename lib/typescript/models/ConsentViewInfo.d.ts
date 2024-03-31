@@ -7,4 +7,5 @@ import * as t from 'io-ts';
 export declare const consentViewInfoCodec: t.TypeC<{
     consentViewType: t.StringC;
 }>;
-export declare type ConsentViewInfo = t.TypeOf<typeof consentViewInfoCodec>;
+export type ConsentViewInfo = t.TypeOf<typeof consentViewInfoCodec>;
+//# sourceMappingURL=ConsentViewInfo.d.ts.map

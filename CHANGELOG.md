@@ -1,4 +1,8 @@
 # Change Log
+## 1.1.1
+
+- Android SDK: 7.9.0
+- iOS SDK: 7.9.1
 
 ## 1.1.0
 

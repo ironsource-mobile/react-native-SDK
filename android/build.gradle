@@ -7,7 +7,8 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.2'
+        classpath 'com.android.tools.build:gradle:7.1.0'
+
         // noinspection DifferentKotlinGradleVersion
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
@@ -25,6 +26,7 @@ def getExtOrIntegerDefault(name) {
 }
 
 android {
+    namespace "com.ironsource.react_native_mediation"
     compileSdkVersion getExtOrIntegerDefault('compileSdkVersion')
     buildToolsVersion getExtOrDefault('buildToolsVersion')
     defaultConfig {
@@ -62,8 +64,8 @@ rootProject.allprojects {
 
 dependencies {
     // noinspection GradleDynamicVersion
-    implementation 'com.facebook.react:react-native:+'
+    implementation 'com.facebook.react:react-android:+'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     // ironSource
-    implementation 'com.ironsource.sdk:mediationsdk:7.5.1'
+    implementation 'com.ironsource.sdk:mediationsdk:7.9.0'
 }

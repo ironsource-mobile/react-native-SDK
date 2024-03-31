@@ -1,4 +1,7 @@
 import { IronSourceError } from '../models';
+/**
+ * @deprecated This class has been deprecated as of SDK 7.3.0. Please use LevelPlayBannerEvents instead.
+ */
 export declare const BannerEvents: {
     onBannerAdLoaded: {
         setListener: (listener: () => void) => void;
@@ -26,3 +29,4 @@ export declare const BannerEvents: {
     };
     removeAllListeners: () => void;
 };
+//# sourceMappingURL=BannerEvents.d.ts.map

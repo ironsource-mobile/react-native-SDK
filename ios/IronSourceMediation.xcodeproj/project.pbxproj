@@ -3,13 +3,19 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
-
-		5E555C0D2413F4C50049A1A2 /* IronSourceMediation.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* IronSourceMediation.m */; };
-
+		087CDA862B8C8C8A00B969E2 /* RCTLevelPlayBNDelegateWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 087CDA732B8C8C8A00B969E2 /* RCTLevelPlayBNDelegateWrapper.m */; };
+		087CDA882B8C8C8A00B969E2 /* RCTLevelPlayRVDelegateWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 087CDA762B8C8C8A00B969E2 /* RCTLevelPlayRVDelegateWrapper.m */; };
+		087CDA892B8C8C8A00B969E2 /* ATTrackingManagerBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 087CDA7C2B8C8C8A00B969E2 /* ATTrackingManagerBridge.m */; };
+		087CDA8A2B8C8C8A00B969E2 /* IronSourceConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 087CDA7E2B8C8C8A00B969E2 /* IronSourceConfig.m */; };
+		087CDA8B2B8C8C8A00B969E2 /* RCTLevelPlayISDelegateWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 087CDA812B8C8C8A00B969E2 /* RCTLevelPlayISDelegateWrapper.m */; };
+		087CDA8C2B8C8C8A00B969E2 /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 087CDA822B8C8C8A00B969E2 /* Constants.m */; };
+		087CDA8D2B8C8C8A00B969E2 /* IronSourceMediation.m in Sources */ = {isa = PBXBuildFile; fileRef = 087CDA832B8C8C8A00B969E2 /* IronSourceMediation.m */; };
+		087CDA8E2B8C8C8A00B969E2 /* Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 087CDA842B8C8C8A00B969E2 /* Utilities.m */; };
+		897D562C45A4CD347B38F4A6 /* libPods-IronSourceMediation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5926E196D71E5593E32D521B /* libPods-IronSourceMediation.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,11 +31,26 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		087CDA722B8C8C8A00B969E2 /* Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Utilities.h; path = IronSourceMediation/Utilities.h; sourceTree = "<group>"; };
+		087CDA732B8C8C8A00B969E2 /* RCTLevelPlayBNDelegateWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RCTLevelPlayBNDelegateWrapper.m; path = IronSourceMediation/RCTLevelPlayBNDelegateWrapper.m; sourceTree = "<group>"; };
+		087CDA742B8C8C8A00B969E2 /* RCTLevelPlayBNDelegateWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RCTLevelPlayBNDelegateWrapper.h; path = IronSourceMediation/RCTLevelPlayBNDelegateWrapper.h; sourceTree = "<group>"; };
+		087CDA762B8C8C8A00B969E2 /* RCTLevelPlayRVDelegateWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RCTLevelPlayRVDelegateWrapper.m; path = IronSourceMediation/RCTLevelPlayRVDelegateWrapper.m; sourceTree = "<group>"; };
+		087CDA782B8C8C8A00B969E2 /* RCTLevelPlayRVDelegateWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RCTLevelPlayRVDelegateWrapper.h; path = IronSourceMediation/RCTLevelPlayRVDelegateWrapper.h; sourceTree = "<group>"; };
+		087CDA792B8C8C8A00B969E2 /* ATTrackingManagerBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ATTrackingManagerBridge.h; path = IronSourceMediation/ATTrackingManagerBridge.h; sourceTree = "<group>"; };
+		087CDA7B2B8C8C8A00B969E2 /* IronSourceConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IronSourceConfig.h; path = IronSourceMediation/IronSourceConfig.h; sourceTree = "<group>"; };
+		087CDA7C2B8C8C8A00B969E2 /* ATTrackingManagerBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ATTrackingManagerBridge.m; path = IronSourceMediation/ATTrackingManagerBridge.m; sourceTree = "<group>"; };
+		087CDA7D2B8C8C8A00B969E2 /* RCTLevelPlayISDelegateWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RCTLevelPlayISDelegateWrapper.h; path = IronSourceMediation/RCTLevelPlayISDelegateWrapper.h; sourceTree = "<group>"; };
+		087CDA7E2B8C8C8A00B969E2 /* IronSourceConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IronSourceConfig.m; path = IronSourceMediation/IronSourceConfig.m; sourceTree = "<group>"; };
+		087CDA7F2B8C8C8A00B969E2 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Constants.h; path = IronSourceMediation/Constants.h; sourceTree = "<group>"; };
+		087CDA802B8C8C8A00B969E2 /* IronSourceMediation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IronSourceMediation.h; path = IronSourceMediation/IronSourceMediation.h; sourceTree = "<group>"; };
+		087CDA812B8C8C8A00B969E2 /* RCTLevelPlayISDelegateWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RCTLevelPlayISDelegateWrapper.m; path = IronSourceMediation/RCTLevelPlayISDelegateWrapper.m; sourceTree = "<group>"; };
+		087CDA822B8C8C8A00B969E2 /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Constants.m; path = IronSourceMediation/Constants.m; sourceTree = "<group>"; };
+		087CDA832B8C8C8A00B969E2 /* IronSourceMediation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IronSourceMediation.m; path = IronSourceMediation/IronSourceMediation.m; sourceTree = "<group>"; };
+		087CDA842B8C8C8A00B969E2 /* Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Utilities.m; path = IronSourceMediation/Utilities.m; sourceTree = "<group>"; };
 		134814201AA4EA6300B7C361 /* libIronSourceMediation.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libIronSourceMediation.a; sourceTree = BUILT_PRODUCTS_DIR; };
-
-		B3E7B5881CC2AC0600A0062D /* IronSourceMediation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IronSourceMediation.h; sourceTree = "<group>"; };
-		B3E7B5891CC2AC0600A0062D /* IronSourceMediation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IronSourceMediation.m; sourceTree = "<group>"; };
-
+		5926E196D71E5593E32D521B /* libPods-IronSourceMediation.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-IronSourceMediation.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		9D55ABD61FF8AABFDA1A6958 /* Pods-IronSourceMediation.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IronSourceMediation.release.xcconfig"; path = "Target Support Files/Pods-IronSourceMediation/Pods-IronSourceMediation.release.xcconfig"; sourceTree = "<group>"; };
+		DB085A88A7796178250BC20A /* Pods-IronSourceMediation.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IronSourceMediation.debug.xcconfig"; path = "Target Support Files/Pods-IronSourceMediation/Pods-IronSourceMediation.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -37,6 +58,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				897D562C45A4CD347B38F4A6 /* libPods-IronSourceMediation.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -51,15 +73,46 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		46ABCFB4E09F7ADC392DD5F5 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				DB085A88A7796178250BC20A /* Pods-IronSourceMediation.debug.xcconfig */,
+				9D55ABD61FF8AABFDA1A6958 /* Pods-IronSourceMediation.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
-
-				B3E7B5881CC2AC0600A0062D /* IronSourceMediation.h */,
-				B3E7B5891CC2AC0600A0062D /* IronSourceMediation.m */,
-
+				087CDA792B8C8C8A00B969E2 /* ATTrackingManagerBridge.h */,
+				087CDA7C2B8C8C8A00B969E2 /* ATTrackingManagerBridge.m */,
+				087CDA7F2B8C8C8A00B969E2 /* Constants.h */,
+				087CDA822B8C8C8A00B969E2 /* Constants.m */,
+				087CDA7B2B8C8C8A00B969E2 /* IronSourceConfig.h */,
+				087CDA7E2B8C8C8A00B969E2 /* IronSourceConfig.m */,
+				087CDA802B8C8C8A00B969E2 /* IronSourceMediation.h */,
+				087CDA832B8C8C8A00B969E2 /* IronSourceMediation.m */,
+				087CDA742B8C8C8A00B969E2 /* RCTLevelPlayBNDelegateWrapper.h */,
+				087CDA732B8C8C8A00B969E2 /* RCTLevelPlayBNDelegateWrapper.m */,
+				087CDA7D2B8C8C8A00B969E2 /* RCTLevelPlayISDelegateWrapper.h */,
+				087CDA812B8C8C8A00B969E2 /* RCTLevelPlayISDelegateWrapper.m */,
+				087CDA782B8C8C8A00B969E2 /* RCTLevelPlayRVDelegateWrapper.h */,
+				087CDA762B8C8C8A00B969E2 /* RCTLevelPlayRVDelegateWrapper.m */,
+				087CDA722B8C8C8A00B969E2 /* Utilities.h */,
+				087CDA842B8C8C8A00B969E2 /* Utilities.m */,
 				134814211AA4EA7D00B7C361 /* Products */,
+				46ABCFB4E09F7ADC392DD5F5 /* Pods */,
+				83B6D5244BA9F54D657FD7DA /* Frameworks */,
 			);
+			sourceTree = "<group>";
+		};
+		83B6D5244BA9F54D657FD7DA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				5926E196D71E5593E32D521B /* libPods-IronSourceMediation.a */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -69,6 +122,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 58B511EF1A9E6C8500147676 /* Build configuration list for PBXNativeTarget "IronSourceMediation" */;
 			buildPhases = (
+				C2A6E657A61412989B2033B5 /* [CP] Check Pods Manifest.lock */,
 				58B511D71A9E6C8500147676 /* Sources */,
 				58B511D81A9E6C8500147676 /* Frameworks */,
 				58B511D91A9E6C8500147676 /* CopyFiles */,
@@ -88,7 +142,8 @@
 		58B511D31A9E6C8500147676 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0920;
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1500;
 				ORGANIZATIONNAME = Facebook;
 				TargetAttributes = {
 					58B511DA1A9E6C8500147676 = {
@@ -98,11 +153,11 @@
 			};
 			buildConfigurationList = 58B511D61A9E6C8500147676 /* Build configuration list for PBXProject "IronSourceMediation" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				English,
 				en,
+				Base,
 			);
 			mainGroup = 58B511D21A9E6C8500147676;
 			productRefGroup = 58B511D21A9E6C8500147676;
@@ -114,14 +169,44 @@
 		};
 /* End PBXProject section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		C2A6E657A61412989B2033B5 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-IronSourceMediation-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		58B511D71A9E6C8500147676 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-
-				B3E7B58A1CC2AC0600A0062D /* IronSourceMediation.m in Sources */,
-
+				087CDA892B8C8C8A00B969E2 /* ATTrackingManagerBridge.m in Sources */,
+				087CDA862B8C8C8A00B969E2 /* RCTLevelPlayBNDelegateWrapper.m in Sources */,
+				087CDA8E2B8C8C8A00B969E2 /* Utilities.m in Sources */,
+				087CDA8D2B8C8C8A00B969E2 /* IronSourceMediation.m in Sources */,
+				087CDA882B8C8C8A00B969E2 /* RCTLevelPlayRVDelegateWrapper.m in Sources */,
+				087CDA8A2B8C8C8A00B969E2 /* IronSourceConfig.m in Sources */,
+				087CDA8C2B8C8C8A00B969E2 /* Constants.m in Sources */,
+				087CDA8B2B8C8C8A00B969E2 /* RCTLevelPlayISDelegateWrapper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -132,7 +217,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -140,14 +226,17 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -156,6 +245,8 @@
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = i386;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -171,10 +262,19 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = "$(inherited)";
+				OTHER_CPLUSPLUSFLAGS = "$(inherited)";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-Wl",
+					"-ld_classic",
+				);
+				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
+				USE_HERMES = true;
 			};
 			name = Debug;
 		};
@@ -182,7 +282,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -190,14 +291,17 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -206,6 +310,8 @@
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = i386;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -214,15 +320,25 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_CFLAGS = "$(inherited)";
+				OTHER_CPLUSPLUSFLAGS = "$(inherited)";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-Wl",
+					"-ld_classic",
+				);
+				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
+				USE_HERMES = true;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
 		};
 		58B511F01A9E6C8500147676 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DB085A88A7796178250BC20A /* Pods-IronSourceMediation.debug.xcconfig */;
 			buildSettings = {
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -230,16 +346,16 @@
 					"$(SRCROOT)/../../../React/**",
 					"$(SRCROOT)/../../react-native/React/**",
 				);
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				OTHER_LDFLAGS = "-ObjC";
+				LIBRARY_SEARCH_PATHS = "$(SDKROOT)/usr/lib/swift$(inherited)";
+				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_NAME = IronSourceMediation;
 				SKIP_INSTALL = YES;
-
 			};
 			name = Debug;
 		};
 		58B511F11A9E6C8500147676 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9D55ABD61FF8AABFDA1A6958 /* Pods-IronSourceMediation.release.xcconfig */;
 			buildSettings = {
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -247,11 +363,10 @@
 					"$(SRCROOT)/../../../React/**",
 					"$(SRCROOT)/../../react-native/React/**",
 				);
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				OTHER_LDFLAGS = "-ObjC";
+				LIBRARY_SEARCH_PATHS = "$(SDKROOT)/usr/lib/swift$(inherited)";
+				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_NAME = IronSourceMediation;
 				SKIP_INSTALL = YES;
-
 			};
 			name = Release;
 		};

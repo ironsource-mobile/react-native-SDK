@@ -1,6 +1,7 @@
 /**
  * Internal Config module.
  */
-declare type SetPluginDataFunction = (pluginType: string, pluginVersion: string, reactNativeVersion: string) => Promise<void>;
+type SetPluginDataFunction = (pluginType: string, pluginVersion: string, reactNativeVersion: string) => Promise<void>;
 export declare const setPluginData: SetPluginDataFunction;
 export {};
+//# sourceMappingURL=IronSourceConfig.d.ts.map

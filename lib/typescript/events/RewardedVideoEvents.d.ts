@@ -1,4 +1,7 @@
 import { IronSourceError, IronSourceRVPlacement } from '../models';
+/**
+ * @deprecated This class has been deprecated as of SDK 7.3.0. Please use LevelPlayRewardedVideoEvents instead.
+ */
 export declare const RewardedVideoEvents: {
     onRewardedVideoAdOpened: {
         setListener: (listener: () => void) => void;
@@ -42,3 +45,4 @@ export declare const RewardedVideoEvents: {
     };
     removeAllListeners: () => void;
 };
+//# sourceMappingURL=RewardedVideoEvents.d.ts.map

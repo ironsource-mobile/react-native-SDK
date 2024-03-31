@@ -1,4 +1,4 @@
-declare type ATTrackingManagerType = {
+type ATTrackingManagerType = {
     getTrackingAuthorizationStatus(): Promise<number>;
     requestTrackingAuthorization(): Promise<number>;
 };
@@ -11,3 +11,4 @@ export declare const ATTStatus: {
 };
 export declare const ATTrackingManager: ATTrackingManagerType;
 export {};
+//# sourceMappingURL=ATTrackingManager.d.ts.map

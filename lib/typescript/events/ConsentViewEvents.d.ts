@@ -22,3 +22,4 @@ export declare const ConsentViewEvents: {
     };
     removeAllListeners: () => void;
 };
+//# sourceMappingURL=ConsentViewEvents.d.ts.map

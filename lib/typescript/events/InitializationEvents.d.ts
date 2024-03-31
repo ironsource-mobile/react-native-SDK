@@ -5,3 +5,4 @@ export declare const InitializationEvents: {
     };
     removeAllListeners: () => void;
 };
+//# sourceMappingURL=InitializationEvents.d.ts.map
