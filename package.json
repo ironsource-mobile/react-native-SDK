@@ -1,11 +1,11 @@
 {
   "name": "ironsource-mediation",
-  "version": "1.1.1",
+  "version": "2.0.0",
   "description": "A ReactNative bridge plugin for ironSource SDK",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
-  "types": "lib/typescript/index.d.ts",
-  "react-native": "lib/commonjs/index",
+  "types": "lib/typescript/src/index.d.ts",
+  "react-native": "src/index",
   "source": "src/index",
   "files": [
     "src",
@@ -16,13 +16,26 @@
     "ironsource-mediation.podspec",
     "!lib/typescript/example",
     "!android/build",
-    "!ios/build"
+    "!ios/build",
+    "*.podspec",
+    "!android/gradle",
+    "!android/gradlew",
+    "!android/gradlew.bat",
+    "!android/local.properties",
+    "!**/__tests__",
+    "!**/__fixtures__",
+    "!**/__mocks__",
+    "!**/.*"
   ],
   "scripts": {
-    "typescript": "tsc --noEmit",
+    "test": "jest",
+    "typecheck": "tsc --noEmit",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
+    "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build lib",
+    "prepare": "bob build",
+    "release": "release-it",
+    "typescript": "tsc --noEmit",
     "build": "bob build",
-    "example": "yarn --cwd example",
     "pods": "cd example && pod-install --quiet",
     "bootstrap": "yarn example && yarn && yarn pods"
   },
@@ -35,7 +48,7 @@
   ],
   "repository": "https://github.com/ironsource-mobile/react-native-SDK",
   "author": "ironSource",
-  "license": "https://developers.is.com/ironsource-mobile/general/ironsource-platform-online-terms-conditions/",
+  "license": "MIT",
   "homepage": "https://www.is.com/",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
@@ -59,11 +72,16 @@
     "react-native": "*"
   },
   "dependencies": {
-    "@types/react-dom": "^18.2.21",
     "fp-ts": "^2.16.3",
     "io-ts": "^2.2.21",
-    "io-ts-reporters": "^2.0.1",
-    "react-dom": "^18.2.0"
+    "io-ts-reporters": "^2.0.1"
+  },
+  "jest": {
+    "preset": "react-native",
+    "modulePathIgnorePatterns": [
+      "<rootDir>/example/node_modules",
+      "<rootDir>/lib/"
+    ]
   },
   "react-native-builder-bob": {
     "source": "src",

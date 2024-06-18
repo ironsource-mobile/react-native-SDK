@@ -5,15 +5,15 @@ import React, { useEffect, useState } from 'react'
 import { Text, View } from 'react-native'
 import {
   IronSource,
-  LevelPlayRewardedVideoEvents as LevelPlayRewardedVideo,
-  IronSourceRVPlacement,
-  IronSourceAdInfo,
-  IronSourceError,
+  type IronSourceRVPlacement,
+  type IronSourceAdInfo,
+  type IronSourceError,
 } from 'ironsource-mediation'
 import HighlightButton from '../components/HighlightButton'
 import { containerStyles, positioningStyles, textStyles } from '../styles'
 import { e, p, prettyJSON, showAlert } from '../util'
 import { sectionWrapper } from './section-styles'
+import { type LevelPlayRewardedVideoListener } from 'ironsource-mediation'
 
 const REWARDED_VIDEO_PLACEMENT = 'Home_Screen'
 
@@ -68,67 +68,61 @@ function LevelPlayRewardedVideoSection() {
   // depend on the placement state
   useEffect(() => {
     const TAG = 'LevelPlayRewardedVideoListener'
-    // initialize
-    LevelPlayRewardedVideo.removeAllListeners()
-    // Set Rewarded Video Event listeners
-    LevelPlayRewardedVideo.onAdAvailable.setListener((adInfo: IronSourceAdInfo) => {
-      p(`${TAG} - onAdAvailable: ${prettyJSON(adInfo)}`)
-      setIsRewardedVideoAvailable(true)
-    })
-    LevelPlayRewardedVideo.onAdUnavailable.setListener(() => {
-      p(`${TAG} - onAdUnavailable`)
-      setIsRewardedVideoAvailable(false)
-    })
-    LevelPlayRewardedVideo.onAdOpened.setListener((adInfo: IronSourceAdInfo) => {
-      p(`${TAG} - onAdOpened: ${prettyJSON(adInfo)}`)
-      setIsRewardedVideoVisible(true)
-    })
-    LevelPlayRewardedVideo.onAdClosed.setListener((adInfo: IronSourceAdInfo) => {
-      p(`${TAG} - onAdClosed: ${prettyJSON(adInfo)}`)
-      if (reservedPlacement !== undefined) {
-        showAlert('Ad Rewarded', [
-          `placement: ${prettyJSON(reservedPlacement)}`,
-        ])
-        setReservedPlacement(undefined)
-      }
-      setIsRewardedVideoVisible(false)
-    })
-    LevelPlayRewardedVideo.onAdRewarded.setListener(
-      (placement: IronSourceRVPlacement, adInfo: IronSourceAdInfo) => {
-        p(
-          `${TAG} - onAdRewarded\n` +
-            ` placement: ${prettyJSON(placement)}\n` +
-            ` adInfo: ${prettyJSON(adInfo)}`
-        )
-        if (!isRewardedVideoVisible) {
-          showAlert('Ad Rewarded', [`placement: ${prettyJSON(placement)}`])
-          setReservedPlacement(undefined)
-        } else {
-          setReservedPlacement(placement)
+    
+    const listener: LevelPlayRewardedVideoListener = {
+        onAdAvailable: (adInfo: IronSourceAdInfo) => {
+          p(`${TAG} - onAdAvailable: ${prettyJSON(adInfo)}`)
+          setIsRewardedVideoAvailable(true)
+        },
+        onAdUnavailable: () => {
+          p(`${TAG} - onAdUnavailable`)
+          setIsRewardedVideoAvailable(false)
+        },
+        onAdOpened: (adInfo: IronSourceAdInfo) => {
+          p(`${TAG} - onAdOpened: ${prettyJSON(adInfo)}`)
+          setIsRewardedVideoVisible(true)
+          setIsRewardedVideoAvailable(false);
+        },
+        onAdClosed: (adInfo: IronSourceAdInfo) => {
+          p(`${TAG} - onAdClosed: ${prettyJSON(adInfo)}`)
+          if (reservedPlacement !== undefined) {
+            showAlert('Ad Rewarded', [
+              `placement: ${prettyJSON(reservedPlacement)}`,
+            ])
+            setReservedPlacement(undefined)
+          }
+          setIsRewardedVideoVisible(false)
+        },
+        onAdRewarded: (placement: IronSourceRVPlacement, adInfo: IronSourceAdInfo) => {
+          p(
+            `${TAG} - onAdRewarded\n` +
+              ` placement: ${prettyJSON(placement)}\n` +
+              ` adInfo: ${prettyJSON(adInfo)}`
+          )
+          if (!isRewardedVideoVisible) {
+            showAlert('Ad Rewarded', [`placement: ${prettyJSON(placement)}`])
+            setReservedPlacement(undefined)
+          } else {
+            setReservedPlacement(placement)
+          }
+        },
+        onAdShowFailed: (error: IronSourceError, adInfo: IronSourceAdInfo) => {
+          p(
+            `${TAG} - onAdShowFailed\n` +
+              ` error: ${prettyJSON(error)}\n` +
+              ` adInfo: ${prettyJSON(adInfo)}`
+          )
+          setIsRewardedVideoVisible(false)
+        },
+        onAdClicked: (placement: IronSourceRVPlacement, adInfo: IronSourceAdInfo) => {
+          p(
+            `${TAG} - onAdClicked\n` +
+              ` placement: ${prettyJSON(placement)}\n` +
+              ` adInfo: ${prettyJSON(adInfo)}`
+          )        
         }
-      }
-    )
-    LevelPlayRewardedVideo.onAdShowFailed.setListener(
-      (error: IronSourceError, adInfo: IronSourceAdInfo) => {
-        p(
-          `${TAG} - onAdShowFailed\n` +
-            ` error: ${prettyJSON(error)}\n` +
-            ` adInfo: ${prettyJSON(adInfo)}`
-        )
-        setIsRewardedVideoVisible(false)
-      }
-    )
-    LevelPlayRewardedVideo.onAdClicked.setListener(
-      (placement: IronSourceRVPlacement, adInfo: IronSourceAdInfo) => {
-        p(
-          `${TAG} - onAdClicked\n` +
-            ` placement: ${prettyJSON(placement)}\n` +
-            ` adInfo: ${prettyJSON(adInfo)}`
-        )
-      }
-    )
-
-    return () => LevelPlayRewardedVideo.removeAllListeners()
+    };
+    IronSource.setLevelPlayRewardedVideoListener(listener);
   }, [isRewardedVideoVisible, reservedPlacement])
 
   return (

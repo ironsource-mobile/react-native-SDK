@@ -1,7 +1,9 @@
 import * as t from 'io-ts'
 import { ironSourceErrorCodec } from './errors'
 import { ironSourceAdInfoCodec } from './IronSourceAdInfo'
-import { ironSourceRVPlacementCodec } from './IronSourceRVPlacement'
+import {
+  ironSourceRVPlacementCodec,
+} from 'ironsource-mediation'
 
 /**
  * Used for Event Listeners

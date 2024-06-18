@@ -2,11 +2,13 @@ import { NativeEventEmitter, NativeModules } from 'react-native'
 import { errorAdInfoCodec, placementAdInfoCodec } from '../models/nestedCodecs'
 import {
   ironSourceErrorCodec,
+  ironSourceAdInfoCodec,
+} from '../models'
+import type {
   IronSourceError,
   IronSourceRVPlacement,
   IronSourceAdInfo,
-  ironSourceAdInfoCodec,
-} from '../models'
+} from '../models';
 import { decode } from '../models/utils'
 
 // The Main Module
@@ -191,6 +193,51 @@ const removeAllListeners = () => {
   onAdLoadFailed.removeListener()
 }
 
+/**
+ * @deprecated This module [LevelPlayRewardedVideoEvents] is deprecated and will be removed in future releases.
+ * Use IronSource.setLevelPlayRewardedVideoListener or IronSource.setLevelPlayRewardedVideoManualListener instead.
+ * 
+ * Migration example:
+ * 
+ * Before:
+ * 
+ * import { LevelPlayInterstitialEvents } from 'ironsource-mediation';
+ * 
+ * LevelPlayRewardedVideoEvents.onAdRewarded.setListener(yourListener);
+ * // Rest of listeners...
+ * 
+ * // If Manual load
+ * IronSource.setLevelPlayRewardedVideoManualListener();
+ * 
+ * 
+ * After:
+ * 
+ * import { IronSource } from 'ironsource-mediation';
+ * 
+ * // For Rewarded Video
+ * const listener: LevelPlayRewardedVideoListener = {
+ *  onAdAvailable: (adInfo: IronSourceAdInfo) => {},
+ *  onAdUnAvailable: () => {},
+ *  onAdOpened: (adInfo: IronSourceAdInfo) => {},
+ *  onAdClosed: (adInfo: IronSourceAdInfo) => {},
+ *  onAdRewarded: (placement: IronSourceRVPlacement, adInfo: IronSourceAdInfo) => {},
+ *  onAdShowFailed: (error: IronSourceError, adInfo: IronSourceAdInfo) => {},
+ *  onAdClicked: (placement: IronSourceRVPlacement, adInfo: IronSourceAdInfo) => {},
+ * };
+ * IronSource.setLevelPlayRewardedVideoManualListener(listener);
+ * 
+ * // For Manual Rewarded Video 
+ * const listener: LevelPlayRewardedVideoManualListener = {
+ *  onAdOpened: (adInfo: IronSourceAdInfo) => {},
+ *  onAdClosed: (adInfo: IronSourceAdInfo) => {},
+ *  onAdRewarded: (placement: IronSourceRVPlacement, adInfo: IronSourceAdInfo) => {},
+ *  onAdShowFailed: (error: IronSourceError, adInfo: IronSourceAdInfo) => {},
+ *  onAdClicked: (placement: IronSourceRVPlacement, adInfo: IronSourceAdInfo) => {},
+ *  onAdReady: (adInfo: IronSourceAdInfo) => {},
+ *  onAdLoadFailed: () => {},
+ * };
+ * IronSource.setLevelPlayRewardedVideoManualListener(listener);
+ */
 export const LevelPlayRewardedVideoEvents = {
   onAdAvailable,
   onAdUnavailable,

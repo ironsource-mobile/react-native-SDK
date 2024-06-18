@@ -74,9 +74,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.levelplaymediationexample"
+    namespace "com.ironsourcemediationexample"
     defaultConfig {
-        applicationId "com.levelplaymediationexample"
+        applicationId "com.ironsourcemediationexample"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -104,6 +104,12 @@ android {
     }
 }
 
+repositories {
+    google()
+    mavenCentral()
+    maven { url 'https://android-sdk.is.com/' }
+}
+
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
@@ -114,6 +120,9 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+
+    // Required when using custom native ad implementation
+    implementation 'com.ironsource.sdk:mediationsdk:8.1.0'
 }
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)

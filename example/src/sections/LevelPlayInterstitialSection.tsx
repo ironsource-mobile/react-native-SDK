@@ -8,10 +8,10 @@ import { containerStyles, positioningStyles, textStyles } from '../styles'
 import { e, p, prettyJSON, showAlert } from '../util'
 import { sectionWrapper } from './section-styles'
 import {
-  LevelPlayInterstitialEvents as LevelPlayInterstitial,
   IronSource,
-  IronSourceError,
-  IronSourceAdInfo,
+  type IronSourceError,
+  type IronSourceAdInfo,
+  type LevelPlayInterstitialListener
 } from 'ironsource-mediation'
 
 const INTERSTITIAL_PLACEMENT = 'Main_Menu'
@@ -45,41 +45,38 @@ function LevelPlayInterstitialSection() {
   // Interstitial Event listeners setup
   useEffect(() => {
     const TAG = 'LevelPlayInterstitialListener'
-    // initialize
-    LevelPlayInterstitial.removeAllListeners()
-    // Set LevelPlay Interstitial Events listeners
-    LevelPlayInterstitial.onAdReady.setListener((adInfo: IronSourceAdInfo) => {
-      p(`${TAG} - onAdReady: ${prettyJSON(adInfo)}`)
-      setIsInterstitialAvailable(true)
-    })
-    LevelPlayInterstitial.onAdLoadFailed.setListener((error: IronSourceError) => {
-      showAlert('Ad Load Error', [prettyJSON(error)])
-      e(`${TAG} - onAdLoadFailed error: ${prettyJSON(error)}`)
-    })
-    LevelPlayInterstitial.onAdOpened.setListener((adInfo: IronSourceAdInfo) =>
-      p(`${TAG} - onAdOpened: ${prettyJSON(adInfo)}`)
-    )
-    LevelPlayInterstitial.onAdClosed.setListener((adInfo: IronSourceAdInfo) =>
-      p(`${TAG} - onAdClosed: ${prettyJSON(adInfo)}`)
-    )
-    LevelPlayInterstitial.onAdShowFailed.setListener(
-      (error: IronSourceError, adInfo: IronSourceAdInfo) => {
+
+    const listener: LevelPlayInterstitialListener = {
+      onAdReady: (adInfo: IronSourceAdInfo) => {
+        p(`${TAG} - onAdReady: ${prettyJSON(adInfo)}`)
+        setIsInterstitialAvailable(true)
+      },
+      onAdLoadFailed: (error: IronSourceError) => {
+        showAlert('Ad Load Error', [prettyJSON(error)])
+        e(`${TAG} - onAdLoadFailed error: ${prettyJSON(error)}`)
+      },
+      onAdOpened: (adInfo: IronSourceAdInfo) => {
+        p(`${TAG} - onAdOpened: ${prettyJSON(adInfo)}`)
+      },
+      onAdClosed: (adInfo: IronSourceAdInfo) => {
+        p(`${TAG} - onAdClosed: ${prettyJSON(adInfo)}`)
+      },
+      onAdShowFailed: (error: IronSourceError, adInfo: IronSourceAdInfo) => {
         showAlert('Ad Show Error', [prettyJSON(error)])
         p(
           `${TAG} - onAdShowFailed\n` +
             ` error: ${prettyJSON(error)}\n` +
             ` adInfo: ${prettyJSON(adInfo)}`
         )
+      },
+      onAdClicked: (adInfo: IronSourceAdInfo) => {
+        p(`${TAG} - onAdClicked: ${prettyJSON(adInfo)}`)
+      },
+      onAdShowSucceeded: (adInfo: IronSourceAdInfo) => {
+        p(`${TAG} - onAdShowSucceeded: ${prettyJSON(adInfo)}`)      
       }
-    )
-    LevelPlayInterstitial.onAdClicked.setListener((adInfo: IronSourceAdInfo) =>
-      p(`${TAG} - onAdClicked: ${prettyJSON(adInfo)}`)
-    )
-    LevelPlayInterstitial.onAdShowSucceeded.setListener((adInfo: IronSourceAdInfo) =>
-      p(`${TAG} - onAdShowSucceeded: ${prettyJSON(adInfo)}`)
-    )
-
-    return () => LevelPlayInterstitial.removeAllListeners()
+    };
+    IronSource.setLevelPlayInterstitialListener(listener);
   }, [])
 
   return (

@@ -12,7 +12,7 @@ import com.ironsource.react_native_mediation.IronConstants.LP_IS_ON_AD_OPENED
 import com.ironsource.react_native_mediation.IronConstants.LP_IS_ON_AD_READY
 import com.ironsource.react_native_mediation.IronConstants.LP_IS_ON_AD_SHOW_FAILED
 import com.ironsource.react_native_mediation.IronConstants.LP_IS_ON_AD_SHOW_SUCCEEDED
-import com.ironsource.react_native_mediation.Utils.Companion.sendEvent
+import com.ironsource.react_native_mediation.LevelPlayUtils.Companion.sendEvent
 
 /**
  * New IS Listener from 7.2.3

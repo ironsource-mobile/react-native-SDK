@@ -1,12 +1,20 @@
 package com.ironsource.react_native_mediation
 
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
+import android.util.Base64
 import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReadableMap
+import com.ironsource.mediationsdk.ads.nativead.LevelPlayNativeAd
 import com.ironsource.mediationsdk.adunit.adapter.utility.AdInfo
 import com.ironsource.mediationsdk.impressionData.ImpressionData
 import com.ironsource.mediationsdk.logger.IronSourceError
 import com.ironsource.mediationsdk.model.Placement
+import java.io.ByteArrayOutputStream
 
+/** Bundle placement data into a readable map to send to the React Native layer. */
 fun Placement.toReadableMap(): ReadableMap {
     val map = Arguments.createMap()
     map.putString("placementName", this.placementName)
@@ -15,6 +23,7 @@ fun Placement.toReadableMap(): ReadableMap {
     return map
 }
 
+/** Bundle error data into a readable map to send to the React Native layer. */
 fun IronSourceError.toReadableMap(): ReadableMap {
     val map = Arguments.createMap()
     map.putInt("errorCode", this.errorCode)
@@ -43,6 +52,7 @@ fun AdInfo.toReadableMap(): ReadableMap {
     return map
 }
 
+/** Bundle impression data into a readable map to send to the React Native layer. */
 fun ImpressionData.toReadableMap(): ReadableMap {
     val map = Arguments.createMap()
     this.auctionId?.let { map.putString("auctionId", it) }
@@ -60,3 +70,54 @@ fun ImpressionData.toReadableMap(): ReadableMap {
     this.encryptedCPM?.let { map.putString("encryptedCPM", it) }
     return map
 }
+
+/**
+ * Bundle the native ad into a readable map to send to the React Native layer.
+ * If the native ad object is null ,all fields in the map will also be null
+ * (except hasIconDrawable which is 'true'/'false').
+ * */
+fun LevelPlayNativeAd?.toReadableMap(): ReadableMap {
+    val nativeAdMap = Arguments.createMap()
+    nativeAdMap.putString("title", this?.title)
+    nativeAdMap.putString("advertiser", this?.advertiser)
+    nativeAdMap.putString("body", this?.body)
+    nativeAdMap.putString("callToAction", this?.callToAction)
+
+    val iconMap = Arguments.createMap()
+    iconMap.putString("uri", if (this?.icon?.uri != null) this.icon?.uri.toString() else null)
+    iconMap.putString("imageData", if (this?.icon?.drawable != null) this.icon!!.drawable?.toBase64() else null)
+    nativeAdMap.putMap("icon", iconMap)
+
+    return nativeAdMap
+}
+
+/** Turn  a drawable into a base64 string so that it can be passed to the React Native Layer*/
+fun Drawable.toBase64(): String {
+    val bitmap = this.toBitmap()
+    val outputStream = ByteArrayOutputStream()
+    bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+    val byteArray = outputStream.toByteArray()
+    return Base64.encodeToString(byteArray, Base64.DEFAULT)
+}
+
+/** Convert a drawable to a bitmap to help with the base64 conversion*/
+fun Drawable.toBitmap(): Bitmap {
+    if (this is BitmapDrawable) {
+        if (this.bitmap != null) {
+            return this.bitmap
+        }
+    }
+
+    val bitmap: Bitmap = if (this.intrinsicWidth <= 0 || this.intrinsicHeight <= 0) {
+        Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888) // Single color bitmap will be created of 1x1 pixel
+    } else {
+        Bitmap.createBitmap(this.intrinsicWidth, this.intrinsicHeight, Bitmap.Config.ARGB_8888)
+    }
+
+    val canvas = Canvas(bitmap)
+    this.setBounds(0, 0, canvas.width, canvas.height)
+    this.draw(canvas)
+    return bitmap
+}
+
+

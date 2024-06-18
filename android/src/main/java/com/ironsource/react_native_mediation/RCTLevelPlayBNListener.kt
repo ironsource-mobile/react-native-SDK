@@ -4,7 +4,7 @@ import com.facebook.react.bridge.ReactApplicationContext
 import com.ironsource.mediationsdk.adunit.adapter.utility.AdInfo
 import com.ironsource.mediationsdk.logger.IronSourceError
 import com.ironsource.mediationsdk.sdk.LevelPlayBannerListener
-import com.ironsource.react_native_mediation.Utils.Companion.sendEvent
+import com.ironsource.react_native_mediation.LevelPlayUtils.Companion.sendEvent
 
 /**
  * New IS Listener from 7.2.3

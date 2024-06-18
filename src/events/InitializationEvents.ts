@@ -30,6 +30,27 @@ const removeAllListeners = () => {
   onInitializationComplete.removeListener()
 }
 
+/**
+ * @deprecated This module [InitializationEvents] is deprecated and will be removed in future releases.
+ * Use IronSource.setInitializationListener instead.
+ * 
+ * Migration example:
+ * 
+ * Before:
+ * 
+ * import { InitializationEvents } from 'ironsource-mediation';
+ * 
+ * InitializationEvents.onInitializationComplete.setListener(yourListener);
+ * 
+ * After:
+ * 
+ * import { IronSource } from 'ironsource-mediation';
+ * 
+ * const listener: InitializationListener = {
+ *  onInitializationComplete: () => {},
+ * };
+ * IronSource.setInitializationListener(listener);
+ */
 export const InitializationEvents = {
   onInitializationComplete,
   removeAllListeners,

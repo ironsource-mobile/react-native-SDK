@@ -8,14 +8,19 @@
 
 /* Begin PBXBuildFile section */
 		087CDA862B8C8C8A00B969E2 /* RCTLevelPlayBNDelegateWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 087CDA732B8C8C8A00B969E2 /* RCTLevelPlayBNDelegateWrapper.m */; };
+		087CDA872B8C8C8A00B969E2 /* RCTLevelPlayNativeAdView.m in Sources */ = {isa = PBXBuildFile; fileRef = 087CDA752B8C8C8A00B969E2 /* RCTLevelPlayNativeAdView.m */; };
 		087CDA882B8C8C8A00B969E2 /* RCTLevelPlayRVDelegateWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 087CDA762B8C8C8A00B969E2 /* RCTLevelPlayRVDelegateWrapper.m */; };
 		087CDA892B8C8C8A00B969E2 /* ATTrackingManagerBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 087CDA7C2B8C8C8A00B969E2 /* ATTrackingManagerBridge.m */; };
 		087CDA8A2B8C8C8A00B969E2 /* IronSourceConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 087CDA7E2B8C8C8A00B969E2 /* IronSourceConfig.m */; };
 		087CDA8B2B8C8C8A00B969E2 /* RCTLevelPlayISDelegateWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 087CDA812B8C8C8A00B969E2 /* RCTLevelPlayISDelegateWrapper.m */; };
 		087CDA8C2B8C8C8A00B969E2 /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 087CDA822B8C8C8A00B969E2 /* Constants.m */; };
 		087CDA8D2B8C8C8A00B969E2 /* IronSourceMediation.m in Sources */ = {isa = PBXBuildFile; fileRef = 087CDA832B8C8C8A00B969E2 /* IronSourceMediation.m */; };
-		087CDA8E2B8C8C8A00B969E2 /* Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 087CDA842B8C8C8A00B969E2 /* Utilities.m */; };
+		087CDA8F2B8C8C8A00B969E2 /* RCTLevelPlayNativeAdViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 087CDA852B8C8C8A00B969E2 /* RCTLevelPlayNativeAdViewManager.m */; };
 		897D562C45A4CD347B38F4A6 /* libPods-IronSourceMediation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5926E196D71E5593E32D521B /* libPods-IronSourceMediation.a */; };
+		F92599112C04BEAF006370DE /* LevelPlayNativeAdTemplateStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = F925990B2C04BEAF006370DE /* LevelPlayNativeAdTemplateStyle.m */; };
+		F92599122C04BEAF006370DE /* LevelPlayNativeAdElementStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = F925990F2C04BEAF006370DE /* LevelPlayNativeAdElementStyle.m */; };
+		F92599152C04BEC5006370DE /* LevelPlayUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = F92599142C04BEC5006370DE /* LevelPlayUtils.m */; };
+		F9E3CF252C04D2CF007C6A5A /* RCTLevelPlayNativeAdViewManagerTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = F9E3CF232C04D2CE007C6A5A /* RCTLevelPlayNativeAdViewManagerTemplate.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -31,12 +36,14 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		087CDA722B8C8C8A00B969E2 /* Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Utilities.h; path = IronSourceMediation/Utilities.h; sourceTree = "<group>"; };
 		087CDA732B8C8C8A00B969E2 /* RCTLevelPlayBNDelegateWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RCTLevelPlayBNDelegateWrapper.m; path = IronSourceMediation/RCTLevelPlayBNDelegateWrapper.m; sourceTree = "<group>"; };
 		087CDA742B8C8C8A00B969E2 /* RCTLevelPlayBNDelegateWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RCTLevelPlayBNDelegateWrapper.h; path = IronSourceMediation/RCTLevelPlayBNDelegateWrapper.h; sourceTree = "<group>"; };
+		087CDA752B8C8C8A00B969E2 /* RCTLevelPlayNativeAdView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RCTLevelPlayNativeAdView.m; path = IronSourceMediation/RCTLevelPlayNativeAdView.m; sourceTree = "<group>"; };
 		087CDA762B8C8C8A00B969E2 /* RCTLevelPlayRVDelegateWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RCTLevelPlayRVDelegateWrapper.m; path = IronSourceMediation/RCTLevelPlayRVDelegateWrapper.m; sourceTree = "<group>"; };
+		087CDA772B8C8C8A00B969E2 /* RCTLevelPlayNativeAdView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RCTLevelPlayNativeAdView.h; path = IronSourceMediation/RCTLevelPlayNativeAdView.h; sourceTree = "<group>"; };
 		087CDA782B8C8C8A00B969E2 /* RCTLevelPlayRVDelegateWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RCTLevelPlayRVDelegateWrapper.h; path = IronSourceMediation/RCTLevelPlayRVDelegateWrapper.h; sourceTree = "<group>"; };
 		087CDA792B8C8C8A00B969E2 /* ATTrackingManagerBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ATTrackingManagerBridge.h; path = IronSourceMediation/ATTrackingManagerBridge.h; sourceTree = "<group>"; };
+		087CDA7A2B8C8C8A00B969E2 /* RCTLevelPlayNativeAdViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RCTLevelPlayNativeAdViewManager.h; path = IronSourceMediation/RCTLevelPlayNativeAdViewManager.h; sourceTree = "<group>"; };
 		087CDA7B2B8C8C8A00B969E2 /* IronSourceConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IronSourceConfig.h; path = IronSourceMediation/IronSourceConfig.h; sourceTree = "<group>"; };
 		087CDA7C2B8C8C8A00B969E2 /* ATTrackingManagerBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ATTrackingManagerBridge.m; path = IronSourceMediation/ATTrackingManagerBridge.m; sourceTree = "<group>"; };
 		087CDA7D2B8C8C8A00B969E2 /* RCTLevelPlayISDelegateWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RCTLevelPlayISDelegateWrapper.h; path = IronSourceMediation/RCTLevelPlayISDelegateWrapper.h; sourceTree = "<group>"; };
@@ -46,11 +53,21 @@
 		087CDA812B8C8C8A00B969E2 /* RCTLevelPlayISDelegateWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RCTLevelPlayISDelegateWrapper.m; path = IronSourceMediation/RCTLevelPlayISDelegateWrapper.m; sourceTree = "<group>"; };
 		087CDA822B8C8C8A00B969E2 /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Constants.m; path = IronSourceMediation/Constants.m; sourceTree = "<group>"; };
 		087CDA832B8C8C8A00B969E2 /* IronSourceMediation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IronSourceMediation.m; path = IronSourceMediation/IronSourceMediation.m; sourceTree = "<group>"; };
-		087CDA842B8C8C8A00B969E2 /* Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Utilities.m; path = IronSourceMediation/Utilities.m; sourceTree = "<group>"; };
+		087CDA852B8C8C8A00B969E2 /* RCTLevelPlayNativeAdViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RCTLevelPlayNativeAdViewManager.m; path = IronSourceMediation/RCTLevelPlayNativeAdViewManager.m; sourceTree = "<group>"; };
 		134814201AA4EA6300B7C361 /* libIronSourceMediation.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libIronSourceMediation.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		5926E196D71E5593E32D521B /* libPods-IronSourceMediation.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-IronSourceMediation.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9D55ABD61FF8AABFDA1A6958 /* Pods-IronSourceMediation.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IronSourceMediation.release.xcconfig"; path = "Target Support Files/Pods-IronSourceMediation/Pods-IronSourceMediation.release.xcconfig"; sourceTree = "<group>"; };
 		DB085A88A7796178250BC20A /* Pods-IronSourceMediation.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IronSourceMediation.debug.xcconfig"; path = "Target Support Files/Pods-IronSourceMediation/Pods-IronSourceMediation.debug.xcconfig"; sourceTree = "<group>"; };
+		F925990B2C04BEAF006370DE /* LevelPlayNativeAdTemplateStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LevelPlayNativeAdTemplateStyle.m; path = IronSourceMediation/LevelPlayNativeAdTemplateStyle.m; sourceTree = "<group>"; };
+		F925990C2C04BEAF006370DE /* LevelPlayNativeAdViewMedium.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = LevelPlayNativeAdViewMedium.xib; path = IronSourceMediation/LevelPlayNativeAdViewMedium.xib; sourceTree = "<group>"; };
+		F925990D2C04BEAF006370DE /* LevelPlayNativeAdViewSmall.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = LevelPlayNativeAdViewSmall.xib; path = IronSourceMediation/LevelPlayNativeAdViewSmall.xib; sourceTree = "<group>"; };
+		F925990E2C04BEAF006370DE /* LevelPlayNativeAdElementStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LevelPlayNativeAdElementStyle.h; path = IronSourceMediation/LevelPlayNativeAdElementStyle.h; sourceTree = "<group>"; };
+		F925990F2C04BEAF006370DE /* LevelPlayNativeAdElementStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LevelPlayNativeAdElementStyle.m; path = IronSourceMediation/LevelPlayNativeAdElementStyle.m; sourceTree = "<group>"; };
+		F92599102C04BEAF006370DE /* LevelPlayNativeAdTemplateStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LevelPlayNativeAdTemplateStyle.h; path = IronSourceMediation/LevelPlayNativeAdTemplateStyle.h; sourceTree = "<group>"; };
+		F92599132C04BEC5006370DE /* LevelPlayUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LevelPlayUtils.h; path = IronSourceMediation/LevelPlayUtils.h; sourceTree = "<group>"; };
+		F92599142C04BEC5006370DE /* LevelPlayUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LevelPlayUtils.m; path = IronSourceMediation/LevelPlayUtils.m; sourceTree = "<group>"; };
+		F9E3CF232C04D2CE007C6A5A /* RCTLevelPlayNativeAdViewManagerTemplate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTLevelPlayNativeAdViewManagerTemplate.m; sourceTree = "<group>"; };
+		F9E3CF242C04D2CF007C6A5A /* RCTLevelPlayNativeAdViewManagerTemplate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTLevelPlayNativeAdViewManagerTemplate.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,12 +112,24 @@
 				087CDA832B8C8C8A00B969E2 /* IronSourceMediation.m */,
 				087CDA742B8C8C8A00B969E2 /* RCTLevelPlayBNDelegateWrapper.h */,
 				087CDA732B8C8C8A00B969E2 /* RCTLevelPlayBNDelegateWrapper.m */,
+				F9E3CF242C04D2CF007C6A5A /* RCTLevelPlayNativeAdViewManagerTemplate.h */,
+				F9E3CF232C04D2CE007C6A5A /* RCTLevelPlayNativeAdViewManagerTemplate.m */,
 				087CDA7D2B8C8C8A00B969E2 /* RCTLevelPlayISDelegateWrapper.h */,
 				087CDA812B8C8C8A00B969E2 /* RCTLevelPlayISDelegateWrapper.m */,
+				F925990E2C04BEAF006370DE /* LevelPlayNativeAdElementStyle.h */,
+				F925990F2C04BEAF006370DE /* LevelPlayNativeAdElementStyle.m */,
+				F92599102C04BEAF006370DE /* LevelPlayNativeAdTemplateStyle.h */,
+				F925990B2C04BEAF006370DE /* LevelPlayNativeAdTemplateStyle.m */,
+				F925990C2C04BEAF006370DE /* LevelPlayNativeAdViewMedium.xib */,
+				F925990D2C04BEAF006370DE /* LevelPlayNativeAdViewSmall.xib */,
+				087CDA772B8C8C8A00B969E2 /* RCTLevelPlayNativeAdView.h */,
+				087CDA752B8C8C8A00B969E2 /* RCTLevelPlayNativeAdView.m */,
+				087CDA7A2B8C8C8A00B969E2 /* RCTLevelPlayNativeAdViewManager.h */,
+				087CDA852B8C8C8A00B969E2 /* RCTLevelPlayNativeAdViewManager.m */,
 				087CDA782B8C8C8A00B969E2 /* RCTLevelPlayRVDelegateWrapper.h */,
 				087CDA762B8C8C8A00B969E2 /* RCTLevelPlayRVDelegateWrapper.m */,
-				087CDA722B8C8C8A00B969E2 /* Utilities.h */,
-				087CDA842B8C8C8A00B969E2 /* Utilities.m */,
+				F92599132C04BEC5006370DE /* LevelPlayUtils.h */,
+				F92599142C04BEC5006370DE /* LevelPlayUtils.m */,
 				134814211AA4EA7D00B7C361 /* Products */,
 				46ABCFB4E09F7ADC392DD5F5 /* Pods */,
 				83B6D5244BA9F54D657FD7DA /* Frameworks */,
@@ -199,14 +228,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F92599152C04BEC5006370DE /* LevelPlayUtils.m in Sources */,
 				087CDA892B8C8C8A00B969E2 /* ATTrackingManagerBridge.m in Sources */,
 				087CDA862B8C8C8A00B969E2 /* RCTLevelPlayBNDelegateWrapper.m in Sources */,
-				087CDA8E2B8C8C8A00B969E2 /* Utilities.m in Sources */,
+				087CDA872B8C8C8A00B969E2 /* RCTLevelPlayNativeAdView.m in Sources */,
 				087CDA8D2B8C8C8A00B969E2 /* IronSourceMediation.m in Sources */,
+				F92599112C04BEAF006370DE /* LevelPlayNativeAdTemplateStyle.m in Sources */,
 				087CDA882B8C8C8A00B969E2 /* RCTLevelPlayRVDelegateWrapper.m in Sources */,
 				087CDA8A2B8C8C8A00B969E2 /* IronSourceConfig.m in Sources */,
 				087CDA8C2B8C8C8A00B969E2 /* Constants.m in Sources */,
 				087CDA8B2B8C8C8A00B969E2 /* RCTLevelPlayISDelegateWrapper.m in Sources */,
+				F9E3CF252C04D2CF007C6A5A /* RCTLevelPlayNativeAdViewManagerTemplate.m in Sources */,
+				087CDA8F2B8C8C8A00B969E2 /* RCTLevelPlayNativeAdViewManager.m in Sources */,
+				F92599122C04BEAF006370DE /* LevelPlayNativeAdElementStyle.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
