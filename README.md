@@ -491,3 +491,12 @@ npm run ios
 # or
 yarn run ios
 ```
+
+## Version history
+You can find a summary of the ironSouce SDK version history [here](https://developers.is.com/ironsource-mobile/react-native/sdk-change-log/).
+
+## Contact US
+For any question please contact us [here](https://ironsrc.formtitan.com/knowledge-center#/).
+
+## License
+https://developers.is.com/ironsource-mobile/general/ironsource-platform-online-terms-conditions/
