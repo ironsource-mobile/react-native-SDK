@@ -11,11 +11,11 @@
 
 -(instancetype)initWithDelegate:(id<RCTLevelPlayBNDelegate>)delegate {
     self = [super init];
-    
+
     if (self) {
         _delegate = delegate;
     }
-    
+
     return self;
 }
 

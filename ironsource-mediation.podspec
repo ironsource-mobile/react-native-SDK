@@ -15,6 +15,10 @@ Pod::Spec.new do |s|
 
   s.source_files = "ios/IronSourceMediation/**/*.{h,m,mm}"
 
+  s.resource_bundles = {
+    'ironsource_mediation' => ['ios/IronSourceMediation/**/*.xib']
+  }
+
   s.dependency "React-Core"
-  s.dependency "IronSourceSDK","7.9.1.0"
+  s.dependency "IronSourceSDK","8.1.1.0"
 end

@@ -12,4 +12,12 @@
             <certificates src="user" />
         </trust-anchors>
     </debug-overrides>
+
+    <domain-config cleartextTrafficPermitted="true">
+        <!-- For Facebook Audience Network & Fyber-->
+        <domain includeSubdomains="true">127.0.0.1</domain>
+
+        <!-- For SDK5-->
+        <domain includeSubdomains="true">qa.eventics.qa</domain>
+    </domain-config>
 </network-security-config>

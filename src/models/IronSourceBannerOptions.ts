@@ -1,5 +1,5 @@
 import type { XOR } from './utils'
-import type { IronSourceContainerParams } from './IronSourceContainerParams'
+import type { IronSourceContainerParams } from './IronSourceContainerParams';
 
 /** Banner ===================================================================**/
 // The Banner size should be defined by the name or a specific dimension
@@ -27,6 +27,7 @@ export type IronSourceBannerSizeOption = XOR<
   IronSourceBannerCustomSize
 > & {
   isAdaptive?: boolean // for Adaptive Banners
+  isContainerParams?: IronSourceContainerParams // for Adaptive Banners
 }
 
 /**
@@ -51,5 +52,5 @@ export type IronSourceBannerOptions = IronSourceBannerSizeOption &
   IronSourceBannerPositionOption &
   IronSourceBannerOffsetOption & {
     placementName?: string
-    isContainerParams?: IronSourceContainerParams
+    isContainerParams?: IronSourceContainerParams 
   }

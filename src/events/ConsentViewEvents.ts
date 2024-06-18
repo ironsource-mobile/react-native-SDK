@@ -1,5 +1,6 @@
 import { NativeEventEmitter, NativeModules, Platform } from 'react-native'
-import { ConsentViewError, consentViewErrorCodec } from '../models'
+import { consentViewErrorCodec } from '../models'
+import type { ConsentViewError } from '../models';
 import { consentViewInfoCodec } from '../models/ConsentViewInfo'
 import { decode } from '../models/utils'
 
@@ -143,6 +144,32 @@ const removeAllListeners = () => {
   consentViewDidAccept.removeListener()
 }
 
+/**
+ * @deprecated This module [ConsentViewEvents] is deprecated and will be removed in future releases.
+ * Use IronSource.setConsentViewListener instead.
+ * 
+ * Migration example:
+ * 
+ * Before:
+ * 
+ * import { ConsentViewEvents } from 'ironsource-mediation';
+ * 
+ * ConsentViewEvents.onConsentViewDidLoadSuccess.setListener(yourListener);
+ * // Rest of listeners...
+ * 
+ * After:
+ * 
+ * import { IronSource } from 'ironsource-mediation';
+ * 
+ * const listener: ConsentViewListener = {
+ *   onConsentViewDidLoadSuccess: (consentViewType: string) => {},
+ *   onConsentViewDidFailToLoad: (error: ConsentViewError) => {},
+ *   onConsentViewDidShowSuccess: (consentViewType: string) => {},
+ *   onConsentViewDidFailToShow: (error: ConsentViewError) => {},
+ *   onConsentViewDidAccept: (consentViewType: string) => {},
+ * }
+ * IronSource.setConsentViewListener(listener);
+ */
 export const ConsentViewEvents = {
   consentViewDidLoadSuccess,
   consentViewDidFailToLoad,

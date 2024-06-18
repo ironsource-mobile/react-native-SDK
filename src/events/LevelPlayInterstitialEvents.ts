@@ -2,9 +2,11 @@ import { NativeEventEmitter, NativeModules } from 'react-native'
 import { errorAdInfoCodec } from '../models/nestedCodecs'
 import {
   ironSourceErrorCodec,
+  ironSourceAdInfoCodec,
+} from '../models'
+import type {
   IronSourceError,
   IronSourceAdInfo,
-  ironSourceAdInfoCodec,
 } from '../models'
 import { decode } from '../models/utils'
 
@@ -29,7 +31,7 @@ const eventEmitter = new NativeEventEmitter(IronSourceMediation)
  */
 
 /**
- * Android: onAdAvailable
+ * Android: onAdReady
  *     iOS: didLoadWithAdInfo
  */
 const onAdReady = {
@@ -105,7 +107,7 @@ const onAdShowFailed = {
 
 /**
  * Android: onAdClicked
- *     iOS: didFailToShowWithError
+ *     iOS: didClickWithAdInfo
  */
 const onAdClicked = {
   setListener: (listener: (adInfo: IronSourceAdInfo) => void) => {
@@ -146,6 +148,34 @@ const removeAllListeners = () => {
   onAdShowSucceeded.removeListener()
 }
 
+/**
+ * @deprecated This module [LevelPlayInterstitialEvents] is deprecated and will be removed in future releases.
+ * Use IronSource.setLevelPlayInterstitialListener instead.
+ * 
+ * Migration example:
+ * 
+ * Before:
+ * 
+ * import { LevelPlayInterstitialEvents } from 'ironsource-mediation';
+ * 
+ * LevelPlayInterstitialEvents.onAdReady.setListener(yourListener);
+ * // Rest of listeners...
+ * 
+ * After:
+ * 
+ * import { IronSource } from 'ironsource-mediation';
+ * 
+ * const listener: LevelPlayInterstitialListener = {
+ *   onAdReady: (adInfo: IronSourceAdInfo) => {},
+ *   onAdLoadFailed: (error: IronSourceError) => {},
+ *   onAdOpened: (adInfo: IronSourceAdInfo) => {},
+ *   onAdClosed: (adInfo: IronSourceAdInfo) => {},
+ *   onAdShowFailed: (error: IronSourceError, adInfo: IronSourceAdInfo) => {},
+ *   onAdClicked: (adInfo: IronSourceAdInfo) => {},
+ *   onAdShowSucceeded: (adInfo: IronSourceAdInfo) => {},
+ * }
+ * IronSource.setLevelPlayInterstitialListener(listener);
+ */
 export const LevelPlayInterstitialEvents = {
   onAdReady,
   onAdLoadFailed,

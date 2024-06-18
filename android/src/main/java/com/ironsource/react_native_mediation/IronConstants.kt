@@ -7,45 +7,6 @@ object IronConstants {
     const val E_UNEXPECTED = "E_UNEXPECTED"
 
     /** Listener Event Constants ================================================================**/
-    // RV Listener
-    const val ON_RV_AD_OPENED = "onRewardedVideoAdOpened"
-    const val ON_RV_AD_CLOSED = "onRewardedVideoAdClosed"
-    const val ON_RV_AVAILABILITY_CHANGED = "onRewardedVideoAvailabilityChanged"
-    const val ON_RV_AD_REWARDED = "onRewardedVideoAdRewarded"
-    const val ON_RV_AD_SHOW_FAILED = "onRewardedVideoAdShowFailed"
-    const val ON_RV_AD_CLICKED = "onRewardedVideoAdClicked"
-    const val ON_RV_AD_STARTED = "onRewardedVideoAdStarted"
-    const val ON_RV_AD_ENDED = "onRewardedVideoAdEnded"
-
-    // RV Manual Load Listener
-    const val ON_RV_AD_READY = "onRewardedVideoAdReady"
-    const val ON_RV_AD_LOAD_FAILED = "onRewardedVideoAdLoadFailed"
-
-    // IS Listener
-    const val ON_IS_AD_READY = "onInterstitialAdReady"
-    const val ON_IS_AD_LOAD_FAILED = "onInterstitialAdLoadFailed"
-    const val ON_IS_AD_OPENED = "onInterstitialAdOpened"
-    const val ON_IS_AD_CLOSED = "onInterstitialAdClosed"
-    const val ON_IS_AD_SHOW_SUCCEEDED = "onInterstitialAdShowSucceeded"
-    const val ON_IS_AD_SHOW_FAILED = "onInterstitialAdShowFailed"
-    const val ON_IS_AD_CLICKED = "onInterstitialAdClicked"
-
-    // BN Listener
-    const val ON_BN_AD_LOADED = "onBannerAdLoaded"
-    const val ON_BN_AD_LOAD_FAILED = "onBannerAdLoadFailed"
-    const val ON_BN_AD_CLICKED = "onBannerAdClicked"
-    const val ON_BN_AD_SCREEN_PRESENTED = "onBannerAdScreenPresented"
-    const val ON_BN_AD_SCREEN_DISMISSED = "onBannerAdScreenDismissed"
-    const val ON_BN_AD_LEFT_APPLICATION = "onBannerAdLeftApplication"
-
-    // OW Listener
-    const val ON_OW_AVAILABILITY_CHANGED = "onOfferwallAvailabilityChanged"
-    const val ON_OW_OPENED = "onOfferwallOpened"
-    const val ON_OW_SHOW_FAILED = "onOfferwallShowFailed"
-    const val ON_OW_AD_CREDITED = "onOfferwallAdCredited"
-    const val ON_OW_CREDITS_FAILED = "onGetOfferwallCreditsFailed"
-    const val ON_OW_CLOSED = "onOfferwallClosed"
-
     // ARM ImpressionDataListener
     const val ON_IMPRESSION_SUCCESS = "onImpressionSuccess"
 
@@ -90,47 +51,15 @@ object IronConstants {
     const val LP_BN_ON_AD_SCREEN_DISMISSED = "$LEVEL_PLAY_PREFIX:$BN_PREFIX:onAdScreenDismissed"
     const val LP_BN_ON_AD_LEFT_APPLICATION = "$LEVEL_PLAY_PREFIX:$BN_PREFIX:onAdLeftApplication"
 
+    // Native Ad
+    private const val NATIVE_AD_PREFIX = "NATIVE_AD"
+    const val LP_NATIVE_AD_ON_AD_LOADED = "$LEVEL_PLAY_PREFIX:$NATIVE_AD_PREFIX:onAdLoadedEvent"
+    const val LP_NATIVE_AD_ON_AD_LOAD_FAILED = "$LEVEL_PLAY_PREFIX:$NATIVE_AD_PREFIX:onAdLoadFailedEvent"
+    const val LP_NATIVE_AD_ON_AD_CLICKED = "$LEVEL_PLAY_PREFIX:$NATIVE_AD_PREFIX:onAdClickedEvent"
+    const val LP_NATIVE_AD_ON_AD_IMPRESSION = "$LEVEL_PLAY_PREFIX:$NATIVE_AD_PREFIX:onAdImpressionEvent"
+
     // For JS Event Constants mapping
     fun getEventConstants(): MutableMap<String, Any> = hashMapOf(
-        // RV Listener Events
-        "ON_RV_AD_OPENED" to ON_RV_AD_OPENED,
-        "ON_RV_AD_CLOSED" to ON_RV_AD_CLOSED,
-        "ON_RV_AVAILABILITY_CHANGED" to ON_RV_AVAILABILITY_CHANGED,
-        "ON_RV_AD_REWARDED" to ON_RV_AD_REWARDED,
-        "ON_RV_AD_SHOW_FAILED" to ON_RV_AD_SHOW_FAILED,
-        "ON_RV_AD_CLICKED" to ON_RV_AD_CLICKED,
-        "ON_RV_AD_STARTED" to ON_RV_AD_STARTED,
-        "ON_RV_AD_ENDED" to ON_RV_AD_ENDED,
-
-        // RV Manual Load Listener Events
-        "ON_RV_AD_READY" to ON_RV_AD_READY,
-        "ON_RV_AD_LOAD_FAILED" to ON_RV_AD_LOAD_FAILED,
-
-        // IS Listener Events
-        "ON_IS_AD_READY" to ON_IS_AD_READY,
-        "ON_IS_AD_LOAD_FAILED" to ON_IS_AD_LOAD_FAILED,
-        "ON_IS_AD_OPENED" to ON_IS_AD_OPENED,
-        "ON_IS_AD_CLOSED" to ON_IS_AD_CLOSED,
-        "ON_IS_AD_SHOW_SUCCEEDED" to ON_IS_AD_SHOW_SUCCEEDED,
-        "ON_IS_AD_SHOW_FAILED" to ON_IS_AD_SHOW_FAILED,
-        "ON_IS_AD_CLICKED" to ON_IS_AD_CLICKED,
-
-        // BN Listener Events
-        "ON_BN_AD_LOADED" to ON_BN_AD_LOADED,
-        "ON_BN_AD_LOAD_FAILED" to ON_BN_AD_LOAD_FAILED,
-        "ON_BN_AD_CLICKED" to ON_BN_AD_CLICKED,
-        "ON_BN_AD_SCREEN_PRESENTED" to ON_BN_AD_SCREEN_PRESENTED,
-        "ON_BN_AD_SCREEN_DISMISSED" to ON_BN_AD_SCREEN_DISMISSED,
-        "ON_BN_AD_LEFT_APPLICATION" to ON_BN_AD_LEFT_APPLICATION,
-
-        // OW Listener Events
-        "ON_OW_AVAILABILITY_CHANGED" to ON_OW_AVAILABILITY_CHANGED,
-        "ON_OW_OPENED" to ON_OW_OPENED,
-        "ON_OW_SHOW_FAILED" to ON_OW_SHOW_FAILED,
-        "ON_OW_AD_CREDITED" to ON_OW_AD_CREDITED,
-        "ON_OW_CREDITS_FAILED" to ON_OW_CREDITS_FAILED,
-        "ON_OW_CLOSED" to ON_OW_CLOSED,
-
         // ARM ImpressionDataListener Events
         "ON_IMPRESSION_SUCCESS" to ON_IMPRESSION_SUCCESS,
 
@@ -165,5 +94,12 @@ object IronConstants {
         "LP_BN_ON_AD_SCREEN_PRESENTED" to LP_BN_ON_AD_SCREEN_PRESENTED,
         "LP_BN_ON_AD_SCREEN_DISMISSED" to LP_BN_ON_AD_SCREEN_DISMISSED,
         "LP_BN_ON_AD_LEFT_APPLICATION" to LP_BN_ON_AD_LEFT_APPLICATION,
+
+
+        // Native Ad Listener Events
+        "LP_NATIVE_AD_ON_AD_LOADED" to LP_NATIVE_AD_ON_AD_LOADED,
+        "LP_NATIVE_AD_ON_AD_LOAD_FAILED" to LP_NATIVE_AD_ON_AD_LOAD_FAILED,
+        "LP_NATIVE_AD_ON_AD_CLICKED" to LP_NATIVE_AD_ON_AD_CLICKED,
+        "LP_NATIVE_AD_ON_AD_IMPRESSION" to LP_NATIVE_AD_ON_AD_IMPRESSION,
     )
 }

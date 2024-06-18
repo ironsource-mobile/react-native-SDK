@@ -1,5 +1,6 @@
 import { NativeEventEmitter, NativeModules } from 'react-native'
-import { impressionDataCodec, ImpressionData } from '../models'
+import { impressionDataCodec } from '../models'
+import type { ImpressionData } from '../models';
 import { decode } from '../models/utils'
 
 // The Main Module
@@ -34,6 +35,27 @@ const removeAllListeners = () => {
   onImpressionSuccess.removeListener()
 }
 
+/**
+ * @deprecated This module [ImpressionDataEvents] is deprecated and will be removed in future releases.
+ * Use IronSource.setImpressionDataListener instead.
+ * 
+ * Migration example:
+ * 
+ * Before:
+ * 
+ * import { ImpressionDataEvents } from 'ironsource-mediation';
+ * 
+ * ImpressionDataEvents.onImpressionSuccess.setListener(yourListener);
+ * 
+ * After:
+ * 
+ * import { IronSource } from 'ironsource-mediation';
+ * 
+ * const listener: ImpressionDataListener = {
+ *   onImpressionSuccess: (data?: ImpressionData) => {},
+ * }
+ * IronSource.setImpressionDataListener(listener);
+ */
 export const ImpressionDataEvents = {
   onImpressionSuccess,
   removeAllListeners,

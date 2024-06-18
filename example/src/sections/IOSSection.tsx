@@ -2,8 +2,8 @@ import React, { useEffect } from 'react'
 import { Text, View } from 'react-native'
 import {
   IronSource,
-  ConsentViewEvents,
-  ConsentViewError,
+  type ConsentViewError,
+  type ConsentViewListener,
 } from 'ironsource-mediation'
 import HighlightButton from '../components/HighlightButton'
 import { positioningStyles, textStyles } from '../styles'
@@ -27,29 +27,26 @@ const loadAndShowConsentView = () => {
  */
 function IOSSection() {
   useEffect(() => {
-    ConsentViewEvents.consentViewDidLoadSuccess.setListener(
-      (consentViewType: string) => {
+    const consentViewListener: ConsentViewListener = {
+      onConsentViewDidLoadSuccess: (consentViewType: string) => {
         p(`consentViewDidLoadSuccess consentViewType:${consentViewType}`)
         IronSource.showConsentViewWithType(consentViewType)
-      }
-    )
-    ConsentViewEvents.consentViewDidFailToLoad.setListener(
-      (error: ConsentViewError) =>
-        p(`consentViewDidFailToLoad error:${prettyJSON(error)}`)
-    )
-    ConsentViewEvents.consentViewDidShowSuccess.setListener(
-      (consentViewType: string) =>
+      },
+      onConsentViewDidFailToLoad: (error: ConsentViewError) => {
+        p(`consentViewDidFailToLoad error:${prettyJSON(error)}`)      
+      },
+      onConsentViewDidShowSuccess: (consentViewType: string) => {
         p(`consentViewDidShowSuccess consentViewType:${consentViewType}`)
-    )
-    ConsentViewEvents.consentViewDidFailToShow.setListener(
-      (error: ConsentViewError) =>
+      },
+      onConsentViewDidFailToShow: (error: ConsentViewError) => {
         p(`consentViewDidFailToShow error:${prettyJSON(error)}`)
-    )
-    ConsentViewEvents.consentViewDidAccept.setListener(
-      (consentViewType: string) =>
+      },
+      onConsentViewDidAccept: (consentViewType: string) => {
         p(`consentViewDidAccept consentViewType:${consentViewType}`)
-    )
-    return () => ConsentViewEvents.removeAllListeners()
+      }
+    };
+    
+    IronSource.setConsentViewListener(consentViewListener);
   }, [])
 
   return (

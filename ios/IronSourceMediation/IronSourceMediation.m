@@ -4,48 +4,14 @@
 #import "RCTLevelPlayRVDelegateWrapper.h"
 #import "RCTLevelPlayISDelegateWrapper.h"
 #import "RCTLevelPlayBNDelegateWrapper.h"
+#import "RCTLevelPlayNativeAdViewManager.h"
 
 /// Constants
 #pragma mark - Ad Units
 static NSString *const REWARDED_VIDEO = @"REWARDED_VIDEO";
 static NSString *const INTERSTITIAL = @"INTERSTITIAL";
-static NSString *const OFFERWALL = @"OFFERWALL";
 static NSString *const BANNER = @"BANNER";
 static NSString *const NATIVE_AD = @"NATIVE_AD";
-#pragma mark - RV Event Name Constants
-static NSString *const ON_RV_AD_OPENED = @"onRewardedVideoAdOpened";
-static NSString *const ON_RV_AD_CLOSED = @"onRewardedVideoAdClosed";
-static NSString *const ON_RV_AVAILABILITY_CHANGED = @"onRewardedVideoAvailabilityChanged";
-static NSString *const ON_RV_AD_REWARDED = @"onRewardedVideoAdRewarded";
-static NSString *const ON_RV_AD_SHOW_FAILED = @"onRewardedVideoAdShowFailed";
-static NSString *const ON_RV_AD_CLICKED = @"onRewardedVideoAdClicked";
-static NSString *const ON_RV_AD_STARTED = @"onRewardedVideoAdStarted";
-static NSString *const ON_RV_AD_ENDED = @"onRewardedVideoAdEnded";
-#pragma mark - Manual Load RV Event Name Constants
-static NSString *const ON_RV_AD_READY = @"onRewardedVideoAdReady";
-static NSString *const ON_RV_AD_LOAD_FAILED = @"onRewardedVideoAdLoadFailed";
-#pragma mark - IS Event Name Constants
-static NSString *const ON_IS_AD_READY = @"onInterstitialAdReady";
-static NSString *const ON_IS_AD_LOAD_FAILED = @"onInterstitialAdLoadFailed";
-static NSString *const ON_IS_AD_OPENED = @"onInterstitialAdOpened";
-static NSString *const ON_IS_AD_CLOSED = @"onInterstitialAdClosed";
-static NSString *const ON_IS_AD_SHOW_SUCCEEDED = @"onInterstitialAdShowSucceeded";
-static NSString *const ON_IS_AD_SHOW_FAILED = @"onInterstitialAdShowFailed";
-static NSString *const ON_IS_AD_CLICKED = @"onInterstitialAdClicked";
-#pragma mark - BN Event Name Constants
-static NSString *const ON_BN_AD_LOADED = @"onBannerAdLoaded";
-static NSString *const ON_BN_AD_LOAD_FAILED = @"onBannerAdLoadFailed";
-static NSString *const ON_BN_AD_CLICKED = @"onBannerAdClicked";
-static NSString *const ON_BN_AD_SCREEN_PRESENTED = @"onBannerAdScreenPresented";
-static NSString *const ON_BN_AD_SCREEN_DISMISSED = @"onBannerAdScreenDismissed";
-static NSString *const ON_BN_AD_LEFT_APPLICATION = @"onBannerAdLeftApplication";
-#pragma mark - OW Event Name Constants
-static NSString *const ON_OW_AVAILABILITY_CHANGED = @"onOfferwallAvailabilityChanged";
-static NSString *const ON_OW_OPENED = @"onOfferwallOpened";
-static NSString *const ON_OW_SHOW_FAILED = @"onOfferwallShowFailed";
-static NSString *const ON_OW_AD_CREDITED = @"onOfferwallAdCredited";
-static NSString *const ON_OW_CREDITS_FAILED = @"onGetOfferwallCreditsFailed";
-static NSString *const ON_OW_CLOSED = @"onOfferwallClosed";
 #pragma mark - ARM ImpressionDataDelegate Constant
 static NSString *const ON_IMPRESSION_SUCCESS = @"onImpressionSuccess";
 #pragma mark - ISConsentViewDelegate Constants
@@ -84,16 +50,9 @@ static NSString *const LP_BN_ON_AD_SCREEN_PRESENTED = @"LevelPlay:BN:onAdScreenP
 static NSString *const LP_BN_ON_AD_SCREEN_DISMISSED = @"LevelPlay:BN:onAdScreenDismissed";
 static NSString *const LP_BN_ON_AD_LEFT_APPLICATION = @"LevelPlay:BN:onAdLeftApplication";
 
-
-
 @interface IronSourceMediation() <
-    ISRewardedVideoDelegate,
-    ISInterstitialDelegate,
-    ISOfferwallDelegate,
-    ISBannerDelegate,
     ISImpressionDataDelegate,
     ISConsentViewDelegate,
-    ISRewardedVideoManualDelegate,
     ISInitializationDelegate,
     RCTLevelPlayRVDelegate,
     RCTLevelPlayISDelegate,
@@ -132,20 +91,16 @@ RCT_EXPORT_MODULE()
         self.rvLevelPlayDelegateWrapper = [[RCTLevelPlayRVDelegateWrapper alloc]initWithDelegate:(id)self];
         self.istLevelPlayDelegateWrapper = [[RCTLevelPlayISDelegateWrapper alloc]initWithDelegate:(id)self];
         self.bnLevelPlayDelegateWrapper = [[RCTLevelPlayBNDelegateWrapper alloc]initWithDelegate:(id)self];
-        
+
         // set ironSource Listeners
-        [IronSource setRewardedVideoDelegate:self];
-        [IronSource setInterstitialDelegate:self];
-        [IronSource setBannerDelegate:self];
-        [IronSource setOfferwallDelegate:self];
         [IronSource addImpressionDataDelegate:self];
         [IronSource setConsentViewWithDelegate:self];
-        
+
         //set level play listeneres
         [IronSource setLevelPlayRewardedVideoDelegate:self.rvLevelPlayDelegateWrapper];
         [IronSource setLevelPlayInterstitialDelegate:self.istLevelPlayDelegateWrapper];
         [IronSource setLevelPlayBannerDelegate:self.bnLevelPlayDelegateWrapper];
-        
+
         // observe device orientation changes
         [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
         [[NSNotificationCenter defaultCenter] addObserver:self
@@ -247,7 +202,7 @@ RCT_EXPORT_METHOD(setSegment:(nonnull NSDictionary *) segmentDict
                   withRejecter:(RCTPromiseRejectBlock)reject) {
     ISSegment *segment = [[ISSegment alloc] init];
     NSMutableArray<NSString*> *allKeys = [[segmentDict allKeys] mutableCopy];
-    
+
     for (NSString *key in allKeys)
     {
         if ([key isEqualToString:@"segmentName"]){
@@ -306,7 +261,7 @@ RCT_EXPORT_METHOD(setSegment:(nonnull NSDictionary *) segmentDict
             return reject(E_ILLEGAL_ARGUMENT, [NSString stringWithFormat: @"Invalid parameter. param: %@", key], nil);
         }
     }
-    
+
     [IronSource setSegment:segment];
     return resolve(nil);
 }
@@ -384,8 +339,6 @@ RCT_EXPORT_METHOD(clearWaterfallConfiguration:(nonnull NSString*) adUnit
         return [ISAdUnit IS_AD_UNIT_REWARDED_VIDEO];
     } else if ([adUnit isEqualToString:INTERSTITIAL]){
         return [ISAdUnit IS_AD_UNIT_INTERSTITIAL];
-    } else if ([adUnit isEqualToString:OFFERWALL]){
-        return [ISAdUnit IS_AD_UNIT_OFFERWALL];
     } else if ([adUnit isEqualToString:BANNER]){
         return [ISAdUnit IS_AD_UNIT_BANNER];
     } else if ([adUnit isEqualToString:NATIVE_AD]){
@@ -395,13 +348,26 @@ RCT_EXPORT_METHOD(clearWaterfallConfiguration:(nonnull NSString*) adUnit
     }
 }
 
+/**
+ This must be called before init.
+ @name setClientSideCallbacks
+ @param isEnabled BOOL
+ @return nil
+ */
+RCT_EXPORT_METHOD(setClientSideCallbacks:(BOOL) isEnabled
+                  withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject) {
+    [[ISSupersonicAdsConfiguration configurations] setUseClientSideCallbacks: [NSNumber numberWithBool:isEnabled]];
+    return resolve(nil);
+}
+
 #pragma mark - Init API =========================================================================
 
 /**
  @name setUserId
  @param userId
  @return nil
- 
+
  The SDK falls back to the default if userId is an empty string.
  */
 RCT_EXPORT_METHOD(setUserId:(nonnull NSString *) userId
@@ -422,7 +388,7 @@ RCT_EXPORT_METHOD(init:(nonnull NSString *) appKey
     if([appKey length] == 0){
         return reject(E_ILLEGAL_ARGUMENT, @"appKey must be provided.", nil);
     }
-    
+
     [IronSource initWithAppKey:appKey delegate:self];
     return resolve(nil);
 }
@@ -430,7 +396,7 @@ RCT_EXPORT_METHOD(init:(nonnull NSString *) appKey
 /**
  @name initWithAdUnits
  @param appKey cannot be an empty string
- @param adUnits Array<"REWARDED_VIDEO" | "INTERSTITIAL" | "OFFERWALL" | "BANNER">
+ @param adUnits Array<"REWARDED_VIDEO" | "INTERSTITIAL" | "BANNER" | "NATIVE_AD">
  @return nil
  */
 RCT_EXPORT_METHOD(initWithAdUnits:(nonnull NSString *) appKey
@@ -440,7 +406,7 @@ RCT_EXPORT_METHOD(initWithAdUnits:(nonnull NSString *) appKey
     if([appKey length] == 0){
         return reject(E_ILLEGAL_ARGUMENT, @"appKey must be provided.", nil);
     }
-    
+
     if(adUnits.count){
         NSMutableArray<NSString*> *parsedAdUnits = [[NSMutableArray alloc]init];
         for(NSString *unit in adUnits){
@@ -448,8 +414,6 @@ RCT_EXPORT_METHOD(initWithAdUnits:(nonnull NSString *) appKey
                 [parsedAdUnits addObject:IS_REWARDED_VIDEO];
             } else if ([unit isEqualToString:INTERSTITIAL]){
                 [parsedAdUnits addObject:IS_INTERSTITIAL];
-            } else if ([unit isEqualToString:OFFERWALL]){
-                [parsedAdUnits addObject:IS_OFFERWALL];
             } else if ([unit isEqualToString:BANNER]){
                 [parsedAdUnits addObject:IS_BANNER];
             } else if ([unit isEqualToString:NATIVE_AD]){
@@ -458,7 +422,7 @@ RCT_EXPORT_METHOD(initWithAdUnits:(nonnull NSString *) appKey
                 return reject(E_ILLEGAL_ARGUMENT, [NSString stringWithFormat: @"Unsupported ad unit: %@", unit], nil);
             }
         }
-    
+
         [IronSource initWithAppKey:appKey adUnits:parsedAdUnits delegate:self];
     } else {
         [IronSource initWithAppKey:appKey delegate:self];
@@ -523,7 +487,7 @@ RCT_EXPORT_METHOD(isRewardedVideoPlacementCapped:(nonnull NSString *) placementN
  @name getRewardedVideoPlacementInfo
  @param placementName
  @return ISPlacementInfo in NSDictionary | nil
- 
+
  Returns nil if this is called before init.
  */
 RCT_EXPORT_METHOD(getRewardedVideoPlacementInfo:(nonnull NSString *) placementName
@@ -557,17 +521,6 @@ RCT_EXPORT_METHOD(clearRewardedVideoServerParams:
 }
 
 /**
- @name setManualLoadRewardedVideo
- @return nil
- */
-RCT_EXPORT_METHOD(setManualLoadRewardedVideo:
-                  (RCTPromiseResolveBlock)resolve
-                  withRejecter:(RCTPromiseRejectBlock)reject) {
-    [IronSource setRewardedVideoManualDelegate:self];
-    return resolve(nil);
-}
-
-/**
  Manual Load RV
  @name loadRewardedVideo
  @return nil
@@ -576,6 +529,20 @@ RCT_EXPORT_METHOD(loadRewardedVideo:
                   (RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject) {
     [IronSource loadRewardedVideo];
+    return resolve(nil);
+}
+
+/**
+ @name setManualLoadRewardedVideo
+ @return nil
+ */
+RCT_EXPORT_METHOD(setLevelPlayRewardedVideoManual:
+(RCTPromiseResolveBlock)resolve
+        withRejecter:(RCTPromiseRejectBlock)reject) {
+    // Remove the auto load LevelPlay RewardedVideo listener
+    [IronSource setLevelPlayRewardedVideoDelegate:nil];
+    // Set the LevelPlay RewardedVideo manual
+    [IronSource setLevelPlayRewardedVideoManualDelegate:self.rvLevelPlayDelegateWrapper];
     return resolve(nil);
 }
 
@@ -663,10 +630,10 @@ RCT_EXPORT_METHOD(loadBanner:(nonnull NSDictionary *) options
             if(!hasSizeDescripton && !(hasWidth && hasHeight)) {
                 return reject(E_ILLEGAL_ARGUMENT, @"Banner sizeDescription or width and height must be passed.", nil);
             }
-            
+
             ISBannerSize* size = hasSizeDescripton ? [self getBannerSize:sizeDescription]
                 : [[ISBannerSize alloc] initWithWidth:[width integerValue] andHeight:[height integerValue]];
-            
+
             // Optional params
             NSNumber *verticalOffset = [options valueForKey:@"verticalOffset"];
             NSString *placementName = [options valueForKey:@"placementName"];
@@ -686,11 +653,11 @@ RCT_EXPORT_METHOD(loadBanner:(nonnull NSDictionary *) options
                 ISContainerParams *containerParams = [[ISContainerParams alloc] initWithWidth:containerWidthFloat height:containerHeightFloat];
                 [size setContainerParams:containerParams];
             }
-            
+
             self.bannerVerticalOffset = (verticalOffset != nil || [[NSNull null] isEqual:verticalOffset]) ? verticalOffset : [NSNumber numberWithInt:0];
             self.bannerViewController = [self getRootViewController];
             self.bannerPosition = position;
-            
+
             // Load banner view
             // if already loaded, console error would be shown by iS SDK
             if(placementName == nil || [[NSNull null] isEqual:placementName]){
@@ -880,84 +847,6 @@ RCT_EXPORT_METHOD(getMaximalAdaptiveHeight:(nonnull NSNumber *) width
     });
 }
 
-#pragma mark - OW API ================================================================================
-
-/**
- @name showOfferwall
- @return nil
- */
-RCT_EXPORT_METHOD(showOfferwall:
-                  (RCTPromiseResolveBlock)resolve
-                  withRejecter:(RCTPromiseRejectBlock)reject)  {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [IronSource showOfferwallWithViewController: [self getRootViewController]];
-        return resolve(nil);
-    });
-}
-
-/**
- @name showOfferwallForPlacement
- @param placementName
- @return nil
- */
-RCT_EXPORT_METHOD(showOfferwallForPlacement:(nonnull NSString *) placementName
-                  withResolver:(RCTPromiseResolveBlock)resolve
-                  withRejecter:(RCTPromiseRejectBlock)reject) {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [IronSource showOfferwallWithViewController: [self getRootViewController] placement:placementName];
-        return resolve(nil);
-    });
-}
-
-/**
- @name getOfferwallCredits
- @return nil
- */
-RCT_EXPORT_METHOD(getOfferwallCredits:
-                  (RCTPromiseResolveBlock)resolve
-                  withRejecter:(RCTPromiseRejectBlock)reject)  {
-    [IronSource offerwallCredits];
-    return resolve(nil);
-}
-
-/**
- @name isOfferwallAvailable
- @return boolean in NSNumber
- */
-RCT_EXPORT_METHOD(isOfferwallAvailable:
-                  (RCTPromiseResolveBlock)resolve
-                  withRejecter:(RCTPromiseRejectBlock)reject) {
-    BOOL isAvailable = [IronSource hasOfferwall];
-    return resolve([NSNumber numberWithBool:isAvailable]);
-}
-
-/**
- OW Config API
- This must be called before init.
- @name setClientSideCallbacks
- @param isEnabled BOOL
- @return nil
- */
-RCT_EXPORT_METHOD(setClientSideCallbacks:(BOOL) isEnabled
-                  withResolver:(RCTPromiseResolveBlock)resolve
-                  withRejecter:(RCTPromiseRejectBlock)reject) {
-    [[ISSupersonicAdsConfiguration configurations] setUseClientSideCallbacks: [NSNumber numberWithBool:isEnabled]];
-    return resolve(nil);
-}
-
-/**
- This must be called before showOfferwall
- @name setOfferwallCustomParams
- @param params in NSDictionary with String values only
- @return nil
- */
-RCT_EXPORT_METHOD(setOfferwallCustomParams:(nonnull NSDictionary *) params
-                  withResolver:(RCTPromiseResolveBlock)resolve
-                  withRejecter:(RCTPromiseRejectBlock)reject) {
-    [[ISConfigurations getConfigurations] setOfferwallCustomParameters:params];
-    return resolve(nil);
-}
-
 #pragma mark - ConversionValue API ==================================================================
 
 /**
@@ -998,177 +887,6 @@ RCT_EXPORT_METHOD(showConsentViewWithType:(nonnull NSString *)consentViewType
                                               andType:consentViewType];
         return resolve(nil);
     });
-}
-
-#pragma mark - ISRewardedVideoDelegate Functions ==================================================
-
-- (void)rewardedVideoHasChangedAvailability:(BOOL)isAvailable {
-    NSDictionary *args = @{ @"isAvailable": [NSNumber numberWithBool:isAvailable] };
-    [self sendEventWithEventName:ON_RV_AVAILABILITY_CHANGED withArgs:args];
-}
-
-- (void)didReceiveRewardForPlacement:(ISPlacementInfo *)placementInfo {
-    NSDictionary *args = [self getDictWithPlacementInfo:placementInfo];
-    [self sendEventWithEventName:ON_RV_AD_REWARDED withArgs:args];
-}
-
-- (void)rewardedVideoDidFailToShowWithError:(NSError *)error {
-    NSDictionary *args = [self getDictWithIronSourceError:error];
-    [self sendEventWithEventName:ON_RV_AD_SHOW_FAILED withArgs:args];
-}
-
-- (void)rewardedVideoDidOpen {
-    [self sendEventWithEventName:ON_RV_AD_OPENED withArgs:nil];
-}
-
-- (void)rewardedVideoDidClose {
-    [self sendEventWithEventName:ON_RV_AD_CLOSED withArgs:nil];
-}
-
-- (void)rewardedVideoDidStart {
-    [self sendEventWithEventName:ON_RV_AD_STARTED withArgs:nil];
-}
-
-- (void)rewardedVideoDidEnd {
-    [self sendEventWithEventName:ON_RV_AD_ENDED withArgs:nil];
-}
-
-- (void)didClickRewardedVideo:(ISPlacementInfo *)placementInfo {
-    NSDictionary *args = [self getDictWithPlacementInfo:placementInfo];
-    [self sendEventWithEventName:ON_RV_AD_CLICKED withArgs:args];
-}
-
-#pragma mark - ISRewardedVideoManualDelegate Functions ==================================================
-
-- (void)rewardedVideoDidLoad {
-    [self sendEventWithEventName:ON_RV_AD_READY withArgs:nil];
-}
-
-- (void)rewardedVideoDidFailToLoadWithError:(NSError *)error {
-    NSDictionary *args = [self getDictWithIronSourceError:error];
-    [self sendEventWithEventName:ON_RV_AD_LOAD_FAILED withArgs:args];
-}
-
-#pragma mark - ISInterstitialDelegate Functions ==================================================
-
-- (void)interstitialDidLoad {
-    [self sendEventWithEventName:ON_IS_AD_READY withArgs:nil];
-}
-
-- (void)interstitialDidFailToLoadWithError:(NSError *)error {
-    NSDictionary *args = [self getDictWithIronSourceError:error];
-    [self sendEventWithEventName:ON_IS_AD_LOAD_FAILED withArgs:args];
-}
-
-- (void)interstitialDidOpen{
-    [self sendEventWithEventName:ON_IS_AD_OPENED withArgs:nil];
-}
-
-- (void)interstitialDidClose{
-    [self sendEventWithEventName:ON_IS_AD_CLOSED withArgs:nil];
-}
-
-- (void)interstitialDidShow{
-    [self sendEventWithEventName:ON_IS_AD_SHOW_SUCCEEDED withArgs:nil];
-}
-
-- (void)interstitialDidFailToShowWithError:(NSError *)error{
-    NSDictionary *args = [self getDictWithIronSourceError:error];
-    [self sendEventWithEventName:ON_IS_AD_SHOW_FAILED withArgs:args];
-}
-
-- (void)didClickInterstitial{
-    [self sendEventWithEventName:ON_IS_AD_CLICKED withArgs:nil];
-}
-
-# pragma mark - ISBannerDelegate Functions ===========================================================
-
-- (void)bannerDidLoad:(ISBannerView *)bannerView {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        @synchronized(self) {
-            self.bannerView = bannerView;
-            [self.bannerView setAccessibilityLabel:@"bannerContainer"];
-            [self.bannerView setHidden:self.shouldHideBanner];
-            self.bannerView.center = [self getBannerCenterWithPosition:self.bannerPosition
-                                                              rootView:self.bannerViewController.view
-                                                            bannerView:self.bannerView
-                                                          bannerOffset:self.bannerVerticalOffset];
-            [self.bannerViewController.view addSubview:self.bannerView];
-            
-            if (self.hasEventListeners) {
-                [self sendEventWithName:ON_BN_AD_LOADED body:nil];
-            }
-        }
-    });
-}
-
-- (void)bannerDidFailToLoadWithError:(NSError *)error {
-    NSDictionary *args = [self getDictWithIronSourceError:error];
-    [self sendEventWithEventName:ON_BN_AD_LOAD_FAILED withArgs:args];
-}
-
-- (void)didClickBanner {
-    [self sendEventWithEventName:ON_BN_AD_CLICKED withArgs:nil];
-}
-
-- (void)bannerWillPresentScreen {
-    // Not called by every network
-    [self sendEventWithEventName:ON_BN_AD_SCREEN_PRESENTED withArgs:nil];
-}
-
-- (void)bannerDidDismissScreen {
-    // Not called by every network
-    [self sendEventWithEventName:ON_BN_AD_SCREEN_DISMISSED withArgs:nil];
-}
-
-- (void)bannerWillLeaveApplication {
-    [self sendEventWithEventName:ON_BN_AD_LEFT_APPLICATION withArgs:nil];
-}
-
-#pragma mark - ISOfferwallDelegate Functions ========================================================
-
-- (void)offerwallHasChangedAvailability:(BOOL)available {
-    NSDictionary *args = @{ @"isAvailable": [NSNumber numberWithBool:available] };
-    [self sendEventWithEventName:ON_OW_AVAILABILITY_CHANGED withArgs:args];
-}
-
-- (void)offerwallDidShow {
-    [self sendEventWithEventName:ON_OW_OPENED withArgs:nil];
-}
-
-- (void)offerwallDidFailToShowWithError:(NSError *)error {
-    NSDictionary *args = [self getDictWithIronSourceError:error];
-    [self sendEventWithEventName:ON_OW_SHOW_FAILED withArgs:args];
-}
-
-- (BOOL)didReceiveOfferwallCredits:(NSDictionary *)creditInfo {
-    // creditInfo should have matching keys: credits, totalCredits, totalCreditsFlag
-    NSString *credits = [creditInfo valueForKey:@"credits"]; // implicit cast to NSString
-    NSString *totalCredits = [creditInfo valueForKey:@"totalCredits"]; // implicit cast to NSString
-    NSString *totalCreditsFlag = [creditInfo valueForKey:@"totalCreditsFlag"]; // implicit cast to NSString
-    // creditInfo dictionary values are NSTaggedPointerString,
-    //  so they must be cast before being passed
-    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
-    if(credits != nil){
-        dict[@"credits"] = [NSNumber numberWithInt:credits.intValue];
-    }
-    if(totalCredits != nil){
-        dict[@"totalCredits"] = [NSNumber numberWithInt:totalCredits.intValue];
-    }
-    if(totalCreditsFlag != nil){
-        dict[@"totalCreditsFlag"] = [NSNumber numberWithBool:totalCreditsFlag.boolValue];
-    }
-    [self sendEventWithEventName:ON_OW_AD_CREDITED withArgs:dict];
-    return YES;
-}
-
-- (void)didFailToReceiveOfferwallCreditsWithError:(NSError *)error {
-    NSDictionary *args = [self getDictWithIronSourceError:error];
-    [self sendEventWithEventName:ON_OW_CREDITS_FAILED withArgs:args];
-}
-
-- (void)offerwallDidClose {
-    [self sendEventWithEventName:ON_OW_CLOSED withArgs:nil];
 }
 
 #pragma mark - ISImpressionDataDelegate Functions ===================================================
@@ -1368,6 +1086,18 @@ RCT_EXPORT_METHOD(showConsentViewWithType:(nonnull NSString *)consentViewType
 #pragma mark - RCTLevelPlayBNDelegate Functions ==================================================
 - (void)levelPlayBNDidLoad:(nonnull ISBannerView *)bannerView
                 withAdInfo:(nonnull ISAdInfo *)adInfo {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        @synchronized(self) {
+            self.bannerView = bannerView;
+            [self.bannerView setAccessibilityLabel:@"bannerContainer"];
+            [self.bannerView setHidden:self.shouldHideBanner];
+            self.bannerView.center = [self getBannerCenterWithPosition:self.bannerPosition
+                                                              rootView:self.bannerViewController.view
+                                                            bannerView:self.bannerView
+                                                          bannerOffset:self.bannerVerticalOffset];
+            [self.bannerViewController.view addSubview:self.bannerView];
+        }
+    });
     NSDictionary *args = [self getDictWithAdInfo:adInfo];
     [self sendEventWithEventName:LP_BN_ON_AD_LOADED withArgs:args];
 }
@@ -1489,7 +1219,7 @@ RCT_EXPORT_METHOD(showConsentViewWithType:(nonnull NSString *)consentViewType
                                            andError:(NSError *)error {
     NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
     dict[@"consentViewType"] = consentViewType;
-    
+
     if(error != nil){
         dict[@"errorCode"] = [NSNumber numberWithInteger: error.code];
     }
@@ -1502,45 +1232,6 @@ RCT_EXPORT_METHOD(showConsentViewWithType:(nonnull NSString *)consentViewType
 #pragma mark - RCTEventEmitter Constants ========================================================
 - (NSDictionary *)constantsToExport {
     return @{
-        // RV Listener Events
-        @"ON_RV_AD_OPENED" : ON_RV_AD_OPENED,
-        @"ON_RV_AD_CLOSED" : ON_RV_AD_CLOSED,
-        @"ON_RV_AVAILABILITY_CHANGED" : ON_RV_AVAILABILITY_CHANGED,
-        @"ON_RV_AD_REWARDED" : ON_RV_AD_REWARDED,
-        @"ON_RV_AD_SHOW_FAILED" : ON_RV_AD_SHOW_FAILED,
-        @"ON_RV_AD_CLICKED" : ON_RV_AD_CLICKED,
-        @"ON_RV_AD_STARTED" : ON_RV_AD_STARTED,
-        @"ON_RV_AD_ENDED" : ON_RV_AD_ENDED,
-        
-        // Manual Load RV Listener Events
-        @"ON_RV_AD_READY" : ON_RV_AD_READY,
-        @"ON_RV_AD_LOAD_FAILED" : ON_RV_AD_LOAD_FAILED,
-        
-        // IS Listener Events
-        @"ON_IS_AD_READY" : ON_IS_AD_READY,
-        @"ON_IS_AD_LOAD_FAILED" : ON_IS_AD_LOAD_FAILED,
-        @"ON_IS_AD_OPENED" : ON_IS_AD_OPENED,
-        @"ON_IS_AD_CLOSED" : ON_IS_AD_CLOSED,
-        @"ON_IS_AD_SHOW_SUCCEEDED" : ON_IS_AD_SHOW_SUCCEEDED,
-        @"ON_IS_AD_SHOW_FAILED" : ON_IS_AD_SHOW_FAILED,
-        @"ON_IS_AD_CLICKED" : ON_IS_AD_CLICKED,
-        
-        // BN Listener Events
-        @"ON_BN_AD_LOADED" : ON_BN_AD_LOADED,
-        @"ON_BN_AD_LOAD_FAILED" : ON_BN_AD_LOAD_FAILED,
-        @"ON_BN_AD_CLICKED" : ON_BN_AD_CLICKED,
-        @"ON_BN_AD_SCREEN_PRESENTED" : ON_BN_AD_SCREEN_PRESENTED,
-        @"ON_BN_AD_SCREEN_DISMISSED" : ON_BN_AD_SCREEN_DISMISSED,
-        @"ON_BN_AD_LEFT_APPLICATION" : ON_BN_AD_LEFT_APPLICATION,
-        
-        // OW Listener Events
-        @"ON_OW_AVAILABILITY_CHANGED" : ON_OW_AVAILABILITY_CHANGED,
-        @"ON_OW_OPENED" : ON_OW_OPENED,
-        @"ON_OW_SHOW_FAILED" : ON_OW_SHOW_FAILED,
-        @"ON_OW_AD_CREDITED" : ON_OW_AD_CREDITED,
-        @"ON_OW_CREDITS_FAILED" : ON_OW_CREDITS_FAILED,
-        @"ON_OW_CLOSED" : ON_OW_CLOSED,
-        
         // ARM ImpressionData Event
         @"ON_IMPRESSION_SUCCESS" : ON_IMPRESSION_SUCCESS,
 
@@ -1550,10 +1241,10 @@ RCT_EXPORT_METHOD(showConsentViewWithType:(nonnull NSString *)consentViewType
         @"CONSENT_VIEW_DID_SHOW_SUCCESS" : CONSENT_VIEW_DID_SHOW_SUCCESS,
         @"CONSENT_VIEW_DID_FAIL_TO_SHOW" : CONSENT_VIEW_DID_FAIL_TO_SHOW,
         @"CONSENT_VIEW_DID_ACCEPT" : CONSENT_VIEW_DID_ACCEPT,
-        
+
         // Init Listener Event
         @"ON_INITIALIZATION_COMPLETE" : ON_INITIALIZATION_COMPLETE,
-        
+
         // LevelPlayListener Events
         // LevelPlay RV
         @"LP_RV_ON_AD_AVAILABLE" : LP_RV_ON_AD_AVAILABLE,
@@ -1566,7 +1257,7 @@ RCT_EXPORT_METHOD(showConsentViewWithType:(nonnull NSString *)consentViewType
         // LevelPlay Manual RV
         @"LP_MANUAL_RV_ON_AD_READY" : LP_MANUAL_RV_ON_AD_READY,
         @"LP_MANUAL_RV_ON_AD_LOAD_FAILED" : LP_MANUAL_RV_ON_AD_LOAD_FAILED,
-        
+
         // LevelPlay IS
         @"LP_IS_ON_AD_READY": LP_IS_ON_AD_READY,
         @"LP_IS_ON_AD_LOAD_FAILED": LP_IS_ON_AD_LOAD_FAILED,
@@ -1575,7 +1266,7 @@ RCT_EXPORT_METHOD(showConsentViewWithType:(nonnull NSString *)consentViewType
         @"LP_IS_ON_AD_SHOW_FAILED": LP_IS_ON_AD_SHOW_FAILED,
         @"LP_IS_ON_AD_CLICKED": LP_IS_ON_AD_CLICKED,
         @"LP_IS_ON_AD_SHOW_SUCCEEDED": LP_IS_ON_AD_SHOW_SUCCEEDED,
-        
+
         // LevelPlay BN
         @"LP_BN_ON_AD_LOADED" : LP_BN_ON_AD_LOADED,
         @"LP_BN_ON_AD_LOAD_FAILED" : LP_BN_ON_AD_LOAD_FAILED,
@@ -1591,45 +1282,6 @@ RCT_EXPORT_METHOD(showConsentViewWithType:(nonnull NSString *)consentViewType
 // All events must be registered here.
 - (NSArray<NSString *> *)supportedEvents {
     return @[
-        // RV Listener Events
-        ON_RV_AD_OPENED,
-        ON_RV_AD_CLOSED,
-        ON_RV_AVAILABILITY_CHANGED,
-        ON_RV_AD_REWARDED,
-        ON_RV_AD_SHOW_FAILED,
-        ON_RV_AD_CLICKED,
-        ON_RV_AD_STARTED,
-        ON_RV_AD_ENDED,
-
-        // Manual Load RV Listener Events
-        ON_RV_AD_READY,
-        ON_RV_AD_LOAD_FAILED,
-        
-        // IS Listener Events
-        ON_IS_AD_READY,
-        ON_IS_AD_LOAD_FAILED,
-        ON_IS_AD_OPENED,
-        ON_IS_AD_CLOSED,
-        ON_IS_AD_SHOW_SUCCEEDED,
-        ON_IS_AD_SHOW_FAILED,
-        ON_IS_AD_CLICKED,
-        
-        // BN Listener Events
-        ON_BN_AD_LOADED,
-        ON_BN_AD_LOAD_FAILED,
-        ON_BN_AD_CLICKED,
-        ON_BN_AD_SCREEN_PRESENTED,
-        ON_BN_AD_SCREEN_DISMISSED,
-        ON_BN_AD_LEFT_APPLICATION,
-        
-        // OW Listener Events
-        ON_OW_AVAILABILITY_CHANGED,
-        ON_OW_OPENED,
-        ON_OW_SHOW_FAILED,
-        ON_OW_AD_CREDITED,
-        ON_OW_CREDITS_FAILED,
-        ON_OW_CLOSED,
-        
         // ARM ImpressionData Event
         ON_IMPRESSION_SUCCESS,
 
@@ -1639,10 +1291,10 @@ RCT_EXPORT_METHOD(showConsentViewWithType:(nonnull NSString *)consentViewType
         CONSENT_VIEW_DID_SHOW_SUCCESS,
         CONSENT_VIEW_DID_FAIL_TO_SHOW,
         CONSENT_VIEW_DID_ACCEPT,
-        
+
         // Init Listener Event
         ON_INITIALIZATION_COMPLETE,
-        
+
         // LevelPlayListener Events
         // LevelPlay RV
         LP_RV_ON_AD_AVAILABLE,
@@ -1655,7 +1307,7 @@ RCT_EXPORT_METHOD(showConsentViewWithType:(nonnull NSString *)consentViewType
         // LevelPlay Manual RV
         LP_MANUAL_RV_ON_AD_READY,
         LP_MANUAL_RV_ON_AD_LOAD_FAILED,
-        
+
         // LevelPlay IS
         LP_IS_ON_AD_READY,
         LP_IS_ON_AD_LOAD_FAILED,
@@ -1664,7 +1316,7 @@ RCT_EXPORT_METHOD(showConsentViewWithType:(nonnull NSString *)consentViewType
         LP_IS_ON_AD_SHOW_FAILED,
         LP_IS_ON_AD_CLICKED,
         LP_IS_ON_AD_SHOW_SUCCEEDED,
-        
+
         // LevelPlay BN
         LP_BN_ON_AD_LOADED,
         LP_BN_ON_AD_LOAD_FAILED,

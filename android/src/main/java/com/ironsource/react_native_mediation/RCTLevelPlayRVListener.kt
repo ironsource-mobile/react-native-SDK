@@ -15,7 +15,7 @@ import com.ironsource.react_native_mediation.IronConstants.LP_RV_ON_AD_CLOSED
 import com.ironsource.react_native_mediation.IronConstants.LP_RV_ON_AD_OPENED
 import com.ironsource.react_native_mediation.IronConstants.LP_RV_ON_AD_REWARDED
 import com.ironsource.react_native_mediation.IronConstants.LP_RV_ON_AD_SHOW_FAILED
-import com.ironsource.react_native_mediation.Utils.Companion.sendEvent
+import com.ironsource.react_native_mediation.LevelPlayUtils.Companion.sendEvent
 
 /**
  * New RV Listener from 7.2.3

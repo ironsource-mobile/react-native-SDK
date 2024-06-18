@@ -1,14 +1,10 @@
-import { NativeEventEmitter, NativeModules } from 'react-native'
-import {
-  IronSourceAdInfo,
-  ironSourceAdInfoCodec,
-  IronSourceError,
-  ironSourceErrorCodec,
-} from '../models'
-import { decode } from '../models/utils'
+import { NativeEventEmitter, NativeModules } from 'react-native';
+import { ironSourceAdInfoCodec, ironSourceErrorCodec } from '../models';
+import type { IronSourceAdInfo, IronSourceError } from '../models';
+import { decode } from '../models/utils';
 
 // The Main Module
-const { IronSourceMediation } = NativeModules
+const { IronSourceMediation } = NativeModules;
 // Event Name Constants defined on each platform
 const {
   LP_BN_ON_AD_LOADED,
@@ -17,14 +13,10 @@ const {
   LP_BN_ON_AD_SCREEN_PRESENTED,
   LP_BN_ON_AD_SCREEN_DISMISSED,
   LP_BN_ON_AD_LEFT_APPLICATION,
-} = IronSourceMediation.getConstants()
+} = IronSourceMediation.getConstants();
 
 // Create an EventEmitter to subscribe to BannerListener callbacks
-const eventEmitter = new NativeEventEmitter(IronSourceMediation)
-
-/**
- * BN Listener Callback Events Handler APIs
- */
+const eventEmitter = new NativeEventEmitter(IronSourceMediation);
 
 /**
  * Android: onAdLoaded
@@ -32,13 +24,13 @@ const eventEmitter = new NativeEventEmitter(IronSourceMediation)
  */
 const onAdLoaded = {
   setListener: (listener: (adInfo: IronSourceAdInfo) => void) => {
-    eventEmitter.removeAllListeners(LP_BN_ON_AD_LOADED)
+    eventEmitter.removeAllListeners(LP_BN_ON_AD_LOADED);
     eventEmitter.addListener(LP_BN_ON_AD_LOADED, (adInfoObj: unknown) => {
-      listener(decode(ironSourceAdInfoCodec, adInfoObj))
-    })
+      listener(decode(ironSourceAdInfoCodec, adInfoObj));
+    });
   },
   removeListener: () => eventEmitter.removeAllListeners(LP_BN_ON_AD_LOADED),
-}
+};
 
 /**
  * Android: onAdLoadFailed
@@ -46,14 +38,13 @@ const onAdLoaded = {
  */
 const onAdLoadFailed = {
   setListener: (listener: (error: IronSourceError) => void) => {
-    eventEmitter.removeAllListeners(LP_BN_ON_AD_LOAD_FAILED)
+    eventEmitter.removeAllListeners(LP_BN_ON_AD_LOAD_FAILED);
     eventEmitter.addListener(LP_BN_ON_AD_LOAD_FAILED, (errorObj: unknown) =>
       listener(decode(ironSourceErrorCodec, errorObj))
-    )
+    );
   },
-  removeListener: () =>
-    eventEmitter.removeAllListeners(LP_BN_ON_AD_LOAD_FAILED),
-}
+  removeListener: () => eventEmitter.removeAllListeners(LP_BN_ON_AD_LOAD_FAILED),
+};
 
 /**
  * Android: onAdClicked
@@ -61,13 +52,13 @@ const onAdLoadFailed = {
  */
 const onAdClicked = {
   setListener: (listener: (adInfo: IronSourceAdInfo) => void) => {
-    eventEmitter.removeAllListeners(LP_BN_ON_AD_CLICKED)
+    eventEmitter.removeAllListeners(LP_BN_ON_AD_CLICKED);
     eventEmitter.addListener(LP_BN_ON_AD_CLICKED, (adInfoObj: unknown) => {
-      listener(decode(ironSourceAdInfoCodec, adInfoObj))
-    })
+      listener(decode(ironSourceAdInfoCodec, adInfoObj));
+    });
   },
   removeListener: () => eventEmitter.removeAllListeners(LP_BN_ON_AD_CLICKED),
-}
+};
 
 /**
  * Android: onAdScreenPresented
@@ -75,17 +66,16 @@ const onAdClicked = {
  */
 const onAdScreenPresented = {
   setListener: (listener: (adInfo: IronSourceAdInfo) => void) => {
-    eventEmitter.removeAllListeners(LP_BN_ON_AD_SCREEN_PRESENTED)
+    eventEmitter.removeAllListeners(LP_BN_ON_AD_SCREEN_PRESENTED);
     eventEmitter.addListener(
       LP_BN_ON_AD_SCREEN_PRESENTED,
       (adInfoObj: unknown) => {
-        listener(decode(ironSourceAdInfoCodec, adInfoObj))
+        listener(decode(ironSourceAdInfoCodec, adInfoObj));
       }
-    )
+    );
   },
-  removeListener: () =>
-    eventEmitter.removeAllListeners(LP_BN_ON_AD_SCREEN_PRESENTED),
-}
+  removeListener: () => eventEmitter.removeAllListeners(LP_BN_ON_AD_SCREEN_PRESENTED),
+};
 
 /**
  * Android: onAdScreenDismissed
@@ -93,17 +83,16 @@ const onAdScreenPresented = {
  */
 const onAdScreenDismissed = {
   setListener: (listener: (adInfo: IronSourceAdInfo) => void) => {
-    eventEmitter.removeAllListeners(LP_BN_ON_AD_SCREEN_DISMISSED)
+    eventEmitter.removeAllListeners(LP_BN_ON_AD_SCREEN_DISMISSED);
     eventEmitter.addListener(
       LP_BN_ON_AD_SCREEN_DISMISSED,
       (adInfoObj: unknown) => {
-        listener(decode(ironSourceAdInfoCodec, adInfoObj))
+        listener(decode(ironSourceAdInfoCodec, adInfoObj));
       }
-    )
+    );
   },
-  removeListener: () =>
-    eventEmitter.removeAllListeners(LP_BN_ON_AD_SCREEN_DISMISSED),
-}
+  removeListener: () => eventEmitter.removeAllListeners(LP_BN_ON_AD_SCREEN_DISMISSED),
+};
 
 /**
  * Android: onAdLeftApplication
@@ -113,27 +102,53 @@ const onAdScreenDismissed = {
  */
 const onAdLeftApplication = {
   setListener: (listener: (adInfo: IronSourceAdInfo) => void) => {
-    eventEmitter.removeAllListeners(LP_BN_ON_AD_LEFT_APPLICATION)
+    eventEmitter.removeAllListeners(LP_BN_ON_AD_LEFT_APPLICATION);
     eventEmitter.addListener(
       LP_BN_ON_AD_LEFT_APPLICATION,
       (adInfoObj: unknown) => {
-        listener(decode(ironSourceAdInfoCodec, adInfoObj))
+        listener(decode(ironSourceAdInfoCodec, adInfoObj));
       }
-    )
+    );
   },
-  removeListener: () =>
-    eventEmitter.removeAllListeners(LP_BN_ON_AD_LEFT_APPLICATION),
-}
+  removeListener: () => eventEmitter.removeAllListeners(LP_BN_ON_AD_LEFT_APPLICATION),
+};
 
 const removeAllListeners = () => {
-  onAdLoaded.removeListener()
-  onAdLoadFailed.removeListener()
-  onAdClicked.removeListener()
-  onAdScreenPresented.removeListener()
-  onAdScreenDismissed.removeListener()
-  onAdLeftApplication.removeListener()
-}
+  onAdLoaded.removeListener();
+  onAdLoadFailed.removeListener();
+  onAdClicked.removeListener();
+  onAdScreenPresented.removeListener();
+  onAdScreenDismissed.removeListener();
+  onAdLeftApplication.removeListener();
+};
 
+/**
+ * @deprecated This module [LevelPlayBannerEvents] is deprecated and will be removed in future releases.
+ * Use IronSource.setLevelPlayBannerListener instead.
+ * 
+ * Migration example:
+ * 
+ * Before:
+ * 
+ * import { LevelPlayBannerEvents } from 'ironsource-mediation';
+ * 
+ * LevelPlayBannerEvents.onAdLoaded.setListener(yourListener);
+ * // Rest of listeners...
+ * 
+ * After:
+ * 
+ * import { IronSource } from 'ironsource-mediation';
+ * 
+ * const listener: LevelPlayBannerListener = {
+ *   onAdLoaded: (adInfo: IronSourceAdInfo) => {},
+ *   onAdLoadFailed: (error: IronSourceError) => {},
+ *   onAdClicked: (adInfo: IronSourceAdInfo) => {},
+ *   onAdScreenPresented: (adInfo: IronSourceAdInfo) => {},
+ *   onAdScreenDismissed: (adInfo: IronSourceAdInfo) => {},
+ *   onAdLeftApplication: (adInfo: IronSourceAdInfo) => {},
+ * }
+ * IronSource.setLevelPlayBannerListener(listener);
+ */
 export const LevelPlayBannerEvents = {
   onAdLoaded,
   onAdLoadFailed,
@@ -142,4 +157,4 @@ export const LevelPlayBannerEvents = {
   onAdScreenDismissed,
   onAdLeftApplication,
   removeAllListeners,
-}
+};

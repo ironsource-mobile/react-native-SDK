@@ -38,8 +38,4 @@ class IronSourceConfigModule(reactContext: ReactApplicationContext) :
         ConfigFile.getConfigFile().setPluginData(pluginType, pluginVersion, reactNativeVersion)
         return promise.resolve(null)
     }
-
-    companion object {
-        private val TAG = IronSourceConfigModule::class.java.simpleName
-    }
 }
