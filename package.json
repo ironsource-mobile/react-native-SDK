@@ -48,7 +48,7 @@
   ],
   "repository": "https://github.com/ironsource-mobile/react-native-SDK",
   "author": "ironSource",
-  "license": "MIT",
+  "license": "https://developers.is.com/ironsource-mobile/general/ironsource-platform-online-terms-conditions/",
   "homepage": "https://www.is.com/",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
