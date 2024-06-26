@@ -3,7 +3,7 @@ import { ironSourceErrorCodec } from './errors'
 import { ironSourceAdInfoCodec } from './IronSourceAdInfo'
 import {
   ironSourceRVPlacementCodec,
-} from 'ironsource-mediation'
+} from './IronSourceRVPlacement'
 
 /**
  * Used for Event Listeners
