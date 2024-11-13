@@ -11,15 +11,19 @@
 		087CDA872B8C8C8A00B969E2 /* RCTLevelPlayNativeAdView.m in Sources */ = {isa = PBXBuildFile; fileRef = 087CDA752B8C8C8A00B969E2 /* RCTLevelPlayNativeAdView.m */; };
 		087CDA882B8C8C8A00B969E2 /* RCTLevelPlayRVDelegateWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 087CDA762B8C8C8A00B969E2 /* RCTLevelPlayRVDelegateWrapper.m */; };
 		087CDA892B8C8C8A00B969E2 /* ATTrackingManagerBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 087CDA7C2B8C8C8A00B969E2 /* ATTrackingManagerBridge.m */; };
-		087CDA8A2B8C8C8A00B969E2 /* IronSourceConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 087CDA7E2B8C8C8A00B969E2 /* IronSourceConfig.m */; };
 		087CDA8B2B8C8C8A00B969E2 /* RCTLevelPlayISDelegateWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 087CDA812B8C8C8A00B969E2 /* RCTLevelPlayISDelegateWrapper.m */; };
 		087CDA8C2B8C8C8A00B969E2 /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 087CDA822B8C8C8A00B969E2 /* Constants.m */; };
 		087CDA8D2B8C8C8A00B969E2 /* IronSourceMediation.m in Sources */ = {isa = PBXBuildFile; fileRef = 087CDA832B8C8C8A00B969E2 /* IronSourceMediation.m */; };
 		087CDA8F2B8C8C8A00B969E2 /* RCTLevelPlayNativeAdViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 087CDA852B8C8C8A00B969E2 /* RCTLevelPlayNativeAdViewManager.m */; };
 		897D562C45A4CD347B38F4A6 /* libPods-IronSourceMediation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5926E196D71E5593E32D521B /* libPods-IronSourceMediation.a */; };
+		F919F42D2CBD079D001ECC55 /* RCTLevelPlayBannerAdViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F919F42C2CBD079B001ECC55 /* RCTLevelPlayBannerAdViewManager.m */; };
+		F919F4302CBD0AA9001ECC55 /* RCTLevelPlayBannerAdView.m in Sources */ = {isa = PBXBuildFile; fileRef = F919F42F2CBD0AA7001ECC55 /* RCTLevelPlayBannerAdView.m */; };
 		F92599112C04BEAF006370DE /* LevelPlayNativeAdTemplateStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = F925990B2C04BEAF006370DE /* LevelPlayNativeAdTemplateStyle.m */; };
 		F92599122C04BEAF006370DE /* LevelPlayNativeAdElementStyle.m in Sources */ = {isa = PBXBuildFile; fileRef = F925990F2C04BEAF006370DE /* LevelPlayNativeAdElementStyle.m */; };
 		F92599152C04BEC5006370DE /* LevelPlayUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = F92599142C04BEC5006370DE /* LevelPlayUtils.m */; };
+		F9303E4F2CE0D77C0098CFEC /* LevelPlayInterstitialAdDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F9303E4E2CE0D77C0098CFEC /* LevelPlayInterstitialAdDelegate.m */; };
+		F9303E502CE0D77C0098CFEC /* LevelPlayAdObjectManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F9303E4C2CE0D77C0098CFEC /* LevelPlayAdObjectManager.m */; };
+		F96259182CE0DDBD00399C06 /* IronSourceConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = F96259172CE0DDBD00399C06 /* IronSourceConfig.m */; };
 		F9E3CF252C04D2CF007C6A5A /* RCTLevelPlayNativeAdViewManagerTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = F9E3CF232C04D2CE007C6A5A /* RCTLevelPlayNativeAdViewManagerTemplate.m */; };
 /* End PBXBuildFile section */
 
@@ -44,10 +48,8 @@
 		087CDA782B8C8C8A00B969E2 /* RCTLevelPlayRVDelegateWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RCTLevelPlayRVDelegateWrapper.h; path = IronSourceMediation/RCTLevelPlayRVDelegateWrapper.h; sourceTree = "<group>"; };
 		087CDA792B8C8C8A00B969E2 /* ATTrackingManagerBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ATTrackingManagerBridge.h; path = IronSourceMediation/ATTrackingManagerBridge.h; sourceTree = "<group>"; };
 		087CDA7A2B8C8C8A00B969E2 /* RCTLevelPlayNativeAdViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RCTLevelPlayNativeAdViewManager.h; path = IronSourceMediation/RCTLevelPlayNativeAdViewManager.h; sourceTree = "<group>"; };
-		087CDA7B2B8C8C8A00B969E2 /* IronSourceConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IronSourceConfig.h; path = IronSourceMediation/IronSourceConfig.h; sourceTree = "<group>"; };
 		087CDA7C2B8C8C8A00B969E2 /* ATTrackingManagerBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ATTrackingManagerBridge.m; path = IronSourceMediation/ATTrackingManagerBridge.m; sourceTree = "<group>"; };
 		087CDA7D2B8C8C8A00B969E2 /* RCTLevelPlayISDelegateWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RCTLevelPlayISDelegateWrapper.h; path = IronSourceMediation/RCTLevelPlayISDelegateWrapper.h; sourceTree = "<group>"; };
-		087CDA7E2B8C8C8A00B969E2 /* IronSourceConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IronSourceConfig.m; path = IronSourceMediation/IronSourceConfig.m; sourceTree = "<group>"; };
 		087CDA7F2B8C8C8A00B969E2 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Constants.h; path = IronSourceMediation/Constants.h; sourceTree = "<group>"; };
 		087CDA802B8C8C8A00B969E2 /* IronSourceMediation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IronSourceMediation.h; path = IronSourceMediation/IronSourceMediation.h; sourceTree = "<group>"; };
 		087CDA812B8C8C8A00B969E2 /* RCTLevelPlayISDelegateWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RCTLevelPlayISDelegateWrapper.m; path = IronSourceMediation/RCTLevelPlayISDelegateWrapper.m; sourceTree = "<group>"; };
@@ -58,6 +60,10 @@
 		5926E196D71E5593E32D521B /* libPods-IronSourceMediation.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-IronSourceMediation.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9D55ABD61FF8AABFDA1A6958 /* Pods-IronSourceMediation.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IronSourceMediation.release.xcconfig"; path = "Target Support Files/Pods-IronSourceMediation/Pods-IronSourceMediation.release.xcconfig"; sourceTree = "<group>"; };
 		DB085A88A7796178250BC20A /* Pods-IronSourceMediation.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IronSourceMediation.debug.xcconfig"; path = "Target Support Files/Pods-IronSourceMediation/Pods-IronSourceMediation.debug.xcconfig"; sourceTree = "<group>"; };
+		F919F42B2CBD06EB001ECC55 /* RCTLevelPlayBannerAdViewManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RCTLevelPlayBannerAdViewManager.h; path = IronSourceMediation/RCTLevelPlayBannerAdViewManager.h; sourceTree = "<group>"; };
+		F919F42C2CBD079B001ECC55 /* RCTLevelPlayBannerAdViewManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = RCTLevelPlayBannerAdViewManager.m; path = IronSourceMediation/RCTLevelPlayBannerAdViewManager.m; sourceTree = "<group>"; };
+		F919F42E2CBD097F001ECC55 /* RCTLevelPlayBannerAdView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RCTLevelPlayBannerAdView.h; path = IronSourceMediation/RCTLevelPlayBannerAdView.h; sourceTree = "<group>"; };
+		F919F42F2CBD0AA7001ECC55 /* RCTLevelPlayBannerAdView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = RCTLevelPlayBannerAdView.m; path = IronSourceMediation/RCTLevelPlayBannerAdView.m; sourceTree = "<group>"; };
 		F925990B2C04BEAF006370DE /* LevelPlayNativeAdTemplateStyle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LevelPlayNativeAdTemplateStyle.m; path = IronSourceMediation/LevelPlayNativeAdTemplateStyle.m; sourceTree = "<group>"; };
 		F925990C2C04BEAF006370DE /* LevelPlayNativeAdViewMedium.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = LevelPlayNativeAdViewMedium.xib; path = IronSourceMediation/LevelPlayNativeAdViewMedium.xib; sourceTree = "<group>"; };
 		F925990D2C04BEAF006370DE /* LevelPlayNativeAdViewSmall.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = LevelPlayNativeAdViewSmall.xib; path = IronSourceMediation/LevelPlayNativeAdViewSmall.xib; sourceTree = "<group>"; };
@@ -66,8 +72,14 @@
 		F92599102C04BEAF006370DE /* LevelPlayNativeAdTemplateStyle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LevelPlayNativeAdTemplateStyle.h; path = IronSourceMediation/LevelPlayNativeAdTemplateStyle.h; sourceTree = "<group>"; };
 		F92599132C04BEC5006370DE /* LevelPlayUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LevelPlayUtils.h; path = IronSourceMediation/LevelPlayUtils.h; sourceTree = "<group>"; };
 		F92599142C04BEC5006370DE /* LevelPlayUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LevelPlayUtils.m; path = IronSourceMediation/LevelPlayUtils.m; sourceTree = "<group>"; };
-		F9E3CF232C04D2CE007C6A5A /* RCTLevelPlayNativeAdViewManagerTemplate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RCTLevelPlayNativeAdViewManagerTemplate.m; sourceTree = "<group>"; };
-		F9E3CF242C04D2CF007C6A5A /* RCTLevelPlayNativeAdViewManagerTemplate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RCTLevelPlayNativeAdViewManagerTemplate.h; sourceTree = "<group>"; };
+		F9303E4B2CE0D77C0098CFEC /* LevelPlayAdObjectManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = LevelPlayAdObjectManager.h; path = IronSourceMediation/LevelPlayAdObjectManager.h; sourceTree = "<group>"; };
+		F9303E4C2CE0D77C0098CFEC /* LevelPlayAdObjectManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = LevelPlayAdObjectManager.m; path = IronSourceMediation/LevelPlayAdObjectManager.m; sourceTree = "<group>"; };
+		F9303E4D2CE0D77C0098CFEC /* LevelPlayInterstitialAdDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = LevelPlayInterstitialAdDelegate.h; path = IronSourceMediation/LevelPlayInterstitialAdDelegate.h; sourceTree = "<group>"; };
+		F9303E4E2CE0D77C0098CFEC /* LevelPlayInterstitialAdDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = LevelPlayInterstitialAdDelegate.m; path = IronSourceMediation/LevelPlayInterstitialAdDelegate.m; sourceTree = "<group>"; };
+		F96259162CE0DDBD00399C06 /* IronSourceConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IronSourceConfig.h; path = IronSourceMediation/IronSourceConfig.h; sourceTree = "<group>"; };
+		F96259172CE0DDBD00399C06 /* IronSourceConfig.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = IronSourceConfig.m; path = IronSourceMediation/IronSourceConfig.m; sourceTree = "<group>"; };
+		F9E3CF232C04D2CE007C6A5A /* RCTLevelPlayNativeAdViewManagerTemplate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RCTLevelPlayNativeAdViewManagerTemplate.m; path = IronSourceMediation/RCTLevelPlayNativeAdViewManagerTemplate.m; sourceTree = "<group>"; };
+		F9E3CF242C04D2CF007C6A5A /* RCTLevelPlayNativeAdViewManagerTemplate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RCTLevelPlayNativeAdViewManagerTemplate.h; path = IronSourceMediation/RCTLevelPlayNativeAdViewManagerTemplate.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,16 +114,24 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
+				F919F42F2CBD0AA7001ECC55 /* RCTLevelPlayBannerAdView.m */,
+				F919F42E2CBD097F001ECC55 /* RCTLevelPlayBannerAdView.h */,
+				F919F42C2CBD079B001ECC55 /* RCTLevelPlayBannerAdViewManager.m */,
+				F919F42B2CBD06EB001ECC55 /* RCTLevelPlayBannerAdViewManager.h */,
 				087CDA792B8C8C8A00B969E2 /* ATTrackingManagerBridge.h */,
 				087CDA7C2B8C8C8A00B969E2 /* ATTrackingManagerBridge.m */,
 				087CDA7F2B8C8C8A00B969E2 /* Constants.h */,
 				087CDA822B8C8C8A00B969E2 /* Constants.m */,
-				087CDA7B2B8C8C8A00B969E2 /* IronSourceConfig.h */,
-				087CDA7E2B8C8C8A00B969E2 /* IronSourceConfig.m */,
+				F96259162CE0DDBD00399C06 /* IronSourceConfig.h */,
+				F96259172CE0DDBD00399C06 /* IronSourceConfig.m */,
 				087CDA802B8C8C8A00B969E2 /* IronSourceMediation.h */,
 				087CDA832B8C8C8A00B969E2 /* IronSourceMediation.m */,
 				087CDA742B8C8C8A00B969E2 /* RCTLevelPlayBNDelegateWrapper.h */,
 				087CDA732B8C8C8A00B969E2 /* RCTLevelPlayBNDelegateWrapper.m */,
+				F9303E4B2CE0D77C0098CFEC /* LevelPlayAdObjectManager.h */,
+				F9303E4C2CE0D77C0098CFEC /* LevelPlayAdObjectManager.m */,
+				F9303E4D2CE0D77C0098CFEC /* LevelPlayInterstitialAdDelegate.h */,
+				F9303E4E2CE0D77C0098CFEC /* LevelPlayInterstitialAdDelegate.m */,
 				F9E3CF242C04D2CF007C6A5A /* RCTLevelPlayNativeAdViewManagerTemplate.h */,
 				F9E3CF232C04D2CE007C6A5A /* RCTLevelPlayNativeAdViewManagerTemplate.m */,
 				087CDA7D2B8C8C8A00B969E2 /* RCTLevelPlayISDelegateWrapper.h */,
@@ -232,12 +252,16 @@
 				087CDA892B8C8C8A00B969E2 /* ATTrackingManagerBridge.m in Sources */,
 				087CDA862B8C8C8A00B969E2 /* RCTLevelPlayBNDelegateWrapper.m in Sources */,
 				087CDA872B8C8C8A00B969E2 /* RCTLevelPlayNativeAdView.m in Sources */,
+				F9303E4F2CE0D77C0098CFEC /* LevelPlayInterstitialAdDelegate.m in Sources */,
+				F9303E502CE0D77C0098CFEC /* LevelPlayAdObjectManager.m in Sources */,
 				087CDA8D2B8C8C8A00B969E2 /* IronSourceMediation.m in Sources */,
 				F92599112C04BEAF006370DE /* LevelPlayNativeAdTemplateStyle.m in Sources */,
 				087CDA882B8C8C8A00B969E2 /* RCTLevelPlayRVDelegateWrapper.m in Sources */,
-				087CDA8A2B8C8C8A00B969E2 /* IronSourceConfig.m in Sources */,
 				087CDA8C2B8C8C8A00B969E2 /* Constants.m in Sources */,
 				087CDA8B2B8C8C8A00B969E2 /* RCTLevelPlayISDelegateWrapper.m in Sources */,
+				F919F42D2CBD079D001ECC55 /* RCTLevelPlayBannerAdViewManager.m in Sources */,
+				F96259182CE0DDBD00399C06 /* IronSourceConfig.m in Sources */,
+				F919F4302CBD0AA9001ECC55 /* RCTLevelPlayBannerAdView.m in Sources */,
 				F9E3CF252C04D2CF007C6A5A /* RCTLevelPlayNativeAdViewManagerTemplate.m in Sources */,
 				087CDA8F2B8C8C8A00B969E2 /* RCTLevelPlayNativeAdViewManager.m in Sources */,
 				F92599122C04BEAF006370DE /* LevelPlayNativeAdElementStyle.m in Sources */,

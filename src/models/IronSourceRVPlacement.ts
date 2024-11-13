@@ -1,13 +1,8 @@
-import * as t from 'io-ts'
-
 /**
  * Used for Event Listeners
  */
-
-export const ironSourceRVPlacementCodec = t.type({
-  placementName: t.string,
-  rewardName: t.string,
-  rewardAmount: t.number,
-})
-
-export type IronSourceRVPlacement = t.TypeOf<typeof ironSourceRVPlacementCodec>
+export type IronSourceRVPlacement = {
+  placementName: string,
+  rewardName: string,
+  rewardAmount: number,
+}

@@ -21,8 +21,16 @@ import com.ironsource.mediationsdk.WaterfallConfiguration
 import com.ironsource.react_native_mediation.IronConstants.E_ACTIVITY_IS_NULL
 import com.ironsource.react_native_mediation.IronConstants.E_ILLEGAL_ARGUMENT
 import com.ironsource.react_native_mediation.IronConstants.E_UNEXPECTED
+import com.ironsource.react_native_mediation.IronConstants.ON_INIT_FAILED
+import com.ironsource.react_native_mediation.IronConstants.ON_INIT_SUCCESS
 import com.ironsource.react_native_mediation.LevelPlayUtils.Companion.sendEvent
-import java.lang.IllegalStateException
+import com.unity3d.mediation.LevelPlay
+import com.unity3d.mediation.LevelPlayAdSize
+import com.unity3d.mediation.LevelPlayConfiguration
+import com.unity3d.mediation.LevelPlayInitError
+import com.unity3d.mediation.LevelPlayInitListener
+import com.unity3d.mediation.LevelPlayInitRequest
+import com.unity3d.mediation.interstitial.LevelPlayInterstitialAd
 import java.util.concurrent.Executors
 import kotlin.math.abs
 
@@ -30,7 +38,8 @@ class IronSourceMediationModule(reactContext: ReactApplicationContext) :
   ReactContextBaseJavaModule(reactContext),
   LifecycleEventListener,
   ImpressionDataListener,
-  InitializationListener {
+  InitializationListener,
+  LevelPlayInitListener{
   // Banner Related Fields
   private var mBannerContainer: FrameLayout? = null
   private var mBanner: IronSourceBannerLayout? = null
@@ -40,10 +49,13 @@ class IronSourceMediationModule(reactContext: ReactApplicationContext) :
     RCTLevelPlayBNListener(reactContext, ::onBannerAdLoadFailed)
   private val mLevelPlayRVListener: RCTLevelPlayRVListener = RCTLevelPlayRVListener(reactContext)
   private val mLevelPlayISListener: RCTLevelPlayISListener = RCTLevelPlayISListener(reactContext)
+  // LevelPlay Ad Instance Manager
+  private var levelPlayAdObjectManager: LevelPlayAdObjectManager
 
   init {
     reactContext.addLifecycleEventListener(this)
     setListeners()
+    levelPlayAdObjectManager = LevelPlayAdObjectManager(reactContext)
   }
 
   override fun getName(): String {
@@ -71,6 +83,16 @@ class IronSourceMediationModule(reactContext: ReactApplicationContext) :
   /** InitializationListener ==================================================================**/
   override fun onInitializationComplete() {
     sendEvent(reactApplicationContext, IronConstants.ON_INITIALIZATION_COMPLETE)
+  }
+
+  /** InitializationListener ==================================================================**/
+
+  override fun onInitFailed(error: LevelPlayInitError) {
+    sendEvent(reactApplicationContext, ON_INIT_FAILED, error.toReadableMap())
+  }
+
+  override fun onInitSuccess(configuration: LevelPlayConfiguration) {
+    sendEvent(reactApplicationContext, ON_INIT_SUCCESS, configuration.toReadableMap())
   }
 
 
@@ -751,6 +773,78 @@ class IronSourceMediationModule(reactContext: ReactApplicationContext) :
   fun getMaximalAdaptiveHeight(width: Int, promise: Promise) {
     val adaptiveHeight = ISBannerSize.getMaximalAdaptiveHeight(width)
     return promise.resolve(adaptiveHeight)
+  }
+
+  /** LevelPlay Init ========================================================================= **/
+  @ReactMethod
+  fun initLevelPlay(map: ReadableMap, promise: Promise) {
+    currentActivity?.apply {
+      val appKey = map.getString("appKey")!!
+      val userId = map.getString("userId")!!
+      val legacyAdFormats = map.getArray("adFormats")!!.toArrayList().map {
+        when (it) {
+          "REWARDED" -> LevelPlay.AdFormat.REWARDED
+          "INTERSTITIAL" -> LevelPlay.AdFormat.INTERSTITIAL
+          "BANNER" -> LevelPlay.AdFormat.BANNER
+          "NATIVE_AD" -> LevelPlay.AdFormat.NATIVE_AD
+          else -> return@initLevelPlay promise.reject(E_ILLEGAL_ARGUMENT, "Unsupported ad format: $it")
+        }
+      }.toList()
+      val initRequest = LevelPlayInitRequest.Builder(appKey)
+        .withUserId(userId)
+        .withLegacyAdFormats(legacyAdFormats)
+        .build()
+      LevelPlay.init(this, initRequest, this@IronSourceMediationModule)
+    }
+    return promise.resolve(null)
+  }
+
+  /** LevelPlay Interstitial Ad ============================================================== **/
+  @ReactMethod
+  fun loadInterstitialAd(map: ReadableMap, promise: Promise) {
+    val adObjectId = map.getInt("adObjectId")
+    val adUnitId = map.getString("adUnitId")!!
+    levelPlayAdObjectManager.loadInterstitialAd(adObjectId, adUnitId)
+    return promise.resolve(null)
+  }
+
+  @ReactMethod
+  fun showInterstitialAd(map: ReadableMap, promise: Promise) {
+    val adObjectId = map.getInt("adObjectId")
+    val placementName: String? = map.getString("placementName")
+    levelPlayAdObjectManager.showInterstitialAd(adObjectId, placementName)
+    return promise.resolve(null)
+  }
+
+  @ReactMethod
+  fun isInterstitialAdReady(map: ReadableMap, promise: Promise) {
+    val adObjectId = map.getInt("adObjectId")
+    return promise.resolve(levelPlayAdObjectManager.isInterstitialAdReady(adObjectId))
+  }
+
+  @ReactMethod
+  fun removeInterstitialAd(map: ReadableMap, promise: Promise) {
+    val adObjectId = map.getInt("adObjectId")
+    levelPlayAdObjectManager.removeAd(adObjectId)
+    return promise.resolve(null)
+  }
+
+  @ReactMethod
+  fun removeAllInterstitialAds(map: ReadableMap, promise: Promise) {
+    levelPlayAdObjectManager.removeAllAds()
+    return promise.resolve(null)
+  }
+
+  @ReactMethod
+  fun isInterstitialAdPlacementCapped(map: ReadableMap, promise: Promise) {
+    val placementName = map.getString("placementName")!!
+    return promise.resolve(LevelPlayInterstitialAd.isPlacementCapped(placementName))
+  }
+  /** LevelPlayAdSize API ==================================================================== **/
+  @ReactMethod
+  fun createAdaptiveAdSize(width: Int?, promise: Promise) {
+    val size = LevelPlayAdSize.createAdaptiveAdSize(reactApplicationContext, width)
+    return promise.resolve(size.toReadableMap())
   }
 
   /** Event Emitter Constants ================================================================ **/

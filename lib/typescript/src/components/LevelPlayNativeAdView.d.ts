@@ -1,6 +1,6 @@
 import * as React from 'react';
-import type { NativeMethods, ViewProps, ColorValue } from 'react-native';
-import { LevelPlayNativeAd, type IronSourceAdInfo, type IronSourceError } from "ironsource-mediation";
+import { type NativeMethods, type ViewProps, type ColorValue } from 'react-native';
+import { type IronSourceAdInfo, type IronSourceError, LevelPlayNativeAd } from '../models';
 export type LevelPlayNativeAdViewType = React.Component<LevelPlayNativeAdViewProps> & NativeMethods;
 export interface LevelPlayNativeAdViewProps extends ViewProps {
     templateType?: LevelPlayTemplateType;
@@ -34,6 +34,9 @@ export type LevelPlayNativeAdViewNativeEvents = {
         };
     }): void;
 };
+/**
+ * LevelPlay React component for displaying native ads
+ */
 export declare function LevelPlayNativeAdView(props: LevelPlayNativeAdViewProps): React.JSX.Element | null;
 export declare enum LevelPlayTemplateType {
     Small = "SMALL",
@@ -53,6 +56,7 @@ export interface LevelPlayNativeAdElementStyle {
     cornerRadius?: number;
 }
 export interface LevelPlayNativeAdTemplateStyle {
+    mainBackgroundColor?: ColorValue;
     titleStyle?: LevelPlayNativeAdElementStyle;
     bodyStyle?: LevelPlayNativeAdElementStyle;
     advertiserStyle?: LevelPlayNativeAdElementStyle;

@@ -5,12 +5,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface LevelPlayNativeAdTemplateStyle : NSObject <NSCopying>
 
+@property (nonatomic, strong, nullable) NSNumber *mainBackgroundColor;
 @property (nonatomic, strong, nullable) LevelPlayNativeAdElementStyle *titleStyle;
 @property (nonatomic, strong, nullable) LevelPlayNativeAdElementStyle *bodyStyle;
 @property (nonatomic, strong, nullable) LevelPlayNativeAdElementStyle *advertiserStyle;
 @property (nonatomic, strong, nullable) LevelPlayNativeAdElementStyle *callToActionStyle;
 
-- (instancetype)initWithTitle:(LevelPlayNativeAdElementStyle *)titleStyle
+- (instancetype)initWithMainBackgroundColor:(NSNumber *)mainBackgroundColor
+                    titleStyle:(LevelPlayNativeAdElementStyle *)titleStyle
                     bodyStyle:(LevelPlayNativeAdElementStyle *)bodyStyle
               advertiserStyle:(LevelPlayNativeAdElementStyle *)advertiserStyle
             callToActionStyle:(LevelPlayNativeAdElementStyle *)callToActionStyle;

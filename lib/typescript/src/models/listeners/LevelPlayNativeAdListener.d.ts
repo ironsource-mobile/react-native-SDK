@@ -1,6 +1,9 @@
 import type { IronSourceAdInfo } from "../IronSourceAdInfo";
 import type { IronSourceError } from "../errors";
-import type { LevelPlayNativeAd } from "../LevelPlayNativeAd";
+import { LevelPlayNativeAd } from "../LevelPlayNativeAd";
+/**
+ * Interface for handling LevelPlayNativeAd events
+ */
 export interface LevelPlayNativeAdListener {
     /**
      * Called after a native ad has been successfully loaded

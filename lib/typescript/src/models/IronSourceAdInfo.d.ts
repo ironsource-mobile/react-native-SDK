@@ -1,21 +1,21 @@
-import * as t from 'io-ts';
 /**
  * Used for Event Listeners
  * AdInfo params:
  * https://developers.is.com/ironsource-mobile/android/levelplay-listener-adinfo-integration/#step-3
  */
-export declare const ironSourceAdInfoCodec: t.TypeC<{
-    auctionId: t.UnionC<[t.Type<string, any, any>, t.UndefinedC]>;
-    adUnit: t.UnionC<[t.Type<string, any, any>, t.UndefinedC]>;
-    adNetwork: t.UnionC<[t.Type<string, any, any>, t.UndefinedC]>;
-    instanceName: t.UnionC<[t.Type<string, any, any>, t.UndefinedC]>;
-    instanceId: t.UnionC<[t.Type<string, any, any>, t.UndefinedC]>;
-    country: t.UnionC<[t.Type<string, any, any>, t.UndefinedC]>;
-    revenue: t.UnionC<[t.Type<number, any, any>, t.UndefinedC]>;
-    precision: t.UnionC<[t.Type<string, any, any>, t.UndefinedC]>;
-    ab: t.UnionC<[t.Type<string, any, any>, t.UndefinedC]>;
-    segmentName: t.UnionC<[t.Type<string, any, any>, t.UndefinedC]>;
-    encryptedCPM: t.UnionC<[t.Type<string, any, any>, t.UndefinedC]>;
-}>;
-export type IronSourceAdInfo = t.TypeOf<typeof ironSourceAdInfoCodec>;
+export type IronSourceAdInfo = {
+    auctionId: string | null;
+    adUnit: string | null;
+    country: string | null;
+    ab: string | null;
+    segmentName: string | null;
+    adNetwork: string | null;
+    instanceName: string | null;
+    instanceId: string | null;
+    revenue: number | null;
+    precision: string | null;
+    lifetimeRevenue: number | null;
+    encryptedCPM: string | null;
+    conversionValue: number | null;
+};
 //# sourceMappingURL=IronSourceAdInfo.d.ts.map

@@ -1,6 +1,6 @@
 {
   "name": "ironsource-mediation",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "A ReactNative bridge plugin for ironSource SDK",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -70,11 +70,6 @@
   "peerDependencies": {
     "react": "*",
     "react-native": "*"
-  },
-  "dependencies": {
-    "fp-ts": "^2.16.3",
-    "io-ts": "^2.2.21",
-    "io-ts-reporters": "^2.0.1"
   },
   "jest": {
     "preset": "react-native",

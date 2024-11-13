@@ -12,6 +12,11 @@ import com.ironsource.mediationsdk.adunit.adapter.utility.AdInfo
 import com.ironsource.mediationsdk.impressionData.ImpressionData
 import com.ironsource.mediationsdk.logger.IronSourceError
 import com.ironsource.mediationsdk.model.Placement
+import com.unity3d.mediation.LevelPlayAdError
+import com.unity3d.mediation.LevelPlayAdInfo
+import com.unity3d.mediation.LevelPlayAdSize
+import com.unity3d.mediation.LevelPlayConfiguration
+import com.unity3d.mediation.LevelPlayInitError
 import java.io.ByteArrayOutputStream
 
 /** Bundle placement data into a readable map to send to the React Native layer. */
@@ -48,6 +53,7 @@ fun AdInfo.toReadableMap(): ReadableMap {
     map.putString("segmentName", this.segmentName)
     map.putDouble("revenue", this.revenue)
     map.putString("precision", this.precision)
+    map.putDouble("lifetimeRevenue", this.lifetimeRevenue)
     map.putString("encryptedCPM", this.encryptedCPM)
     return map
 }
@@ -57,6 +63,9 @@ fun ImpressionData.toReadableMap(): ReadableMap {
     val map = Arguments.createMap()
     this.auctionId?.let { map.putString("auctionId", it) }
     this.adUnit?.let { map.putString("adUnit", it) }
+    this.mediationAdUnitName?.let { map.putString("adUnitName", it) }
+    this.mediationAdUnitId?.let { map.putString("adUnitId", it) }
+    this.adFormat?.let { map.putString("adFormat", it) }
     this.country?.let { map.putString("country", it) }
     this.ab?.let { map.putString("ab", it) }
     this.segmentName?.let { map.putString("segmentName", it) }
@@ -74,8 +83,7 @@ fun ImpressionData.toReadableMap(): ReadableMap {
 /**
  * Bundle the native ad into a readable map to send to the React Native layer.
  * If the native ad object is null ,all fields in the map will also be null
- * (except hasIconDrawable which is 'true'/'false').
- * */
+ */
 fun LevelPlayNativeAd?.toReadableMap(): ReadableMap {
     val nativeAdMap = Arguments.createMap()
     nativeAdMap.putString("title", this?.title)
@@ -100,7 +108,10 @@ fun Drawable.toBase64(): String {
     return Base64.encodeToString(byteArray, Base64.DEFAULT)
 }
 
-/** Convert a drawable to a bitmap to help with the base64 conversion*/
+/**
+ * Convert a drawable to a bitmap to help with the base64 conversion
+ *
+ */
 fun Drawable.toBitmap(): Bitmap {
     if (this is BitmapDrawable) {
         if (this.bitmap != null) {
@@ -118,6 +129,79 @@ fun Drawable.toBitmap(): Bitmap {
     this.setBounds(0, 0, canvas.width, canvas.height)
     this.draw(canvas)
     return bitmap
+}
+
+/**
+ * Convert LevelPlayInitError to readable map.
+ */
+fun LevelPlayInitError.toReadableMap(): ReadableMap {
+  val map = Arguments.createMap()
+  map.putString("errorMessage", this.errorMessage)
+  map.putInt("errorCode", this.errorCode)
+  return map
+}
+
+/**
+ * Convert LevelPlayConfiguration to readable map.
+ */
+fun LevelPlayConfiguration.toReadableMap(): ReadableMap {
+  val map = Arguments.createMap()
+  map.putBoolean("isAdQualityEnabled", this.isAdQualityEnabled)
+  return map
+}
+
+/**
+ * Convert LevelPlayAdInfo to readable map.
+ */
+fun LevelPlayAdInfo.toReadableMap(): ReadableMap {
+  val map = Arguments.createMap()
+  map.putString("adUnitId", this.getAdUnitId())
+  map.putString("adFormat", this.getAdFormat())
+
+  val impressionData = Arguments.createMap()
+  impressionData.putString("auctionId", this.getAuctionId())
+  impressionData.putString("adUnitName", this.getAdUnitName())
+  impressionData.putString("adUnitId", this.getAdUnitId())
+  impressionData.putString("adFormat", this.getAdFormat())
+  impressionData.putString("country", this.getCountry())
+  impressionData.putString("ab", this.getAb())
+  impressionData.putString("segmentName", this.getSegmentName())
+  impressionData.putString("placement", this.getPlacementName())
+  impressionData.putString("adNetwork", this.getAdNetwork())
+  impressionData.putString("instanceName", this.getInstanceName())
+  impressionData.putString("instanceId", this.getInstanceId())
+  impressionData.putDouble("revenue", this.getRevenue())
+  impressionData.putString("precision", this.getPrecision())
+  impressionData.putString("encryptedCPM", this.getEncryptedCPM())
+  map.putMap("impressionData", impressionData)
+
+  map.putMap("adSize", this.getAdSize().toReadableMap())
+  return map
+}
+
+/**
+ * Convert LevelPlayAdSize to readable map.
+ */
+fun LevelPlayAdSize?.toReadableMap(): ReadableMap? {
+  if (this == null) return null
+
+  val map = Arguments.createMap()
+  map.putInt("width", this.getWidth())
+  map.putInt("height", this.getHeight())
+  map.putString("adLabel", this.getDescription())
+  map.putBoolean("isAdaptive", this.isAdaptive)
+  return map
+}
+
+/**
+ * Convert LevelPlayAdError to readable map.
+ */
+fun LevelPlayAdError.toReadableMap(): ReadableMap {
+  val map = Arguments.createMap()
+  map.putString("adUnitId", this.adUnitId)
+  map.putInt("errorCode", this.getErrorCode())
+  map.putString("errorMessage", this.getErrorMessage())
+  return map
 }
 
 

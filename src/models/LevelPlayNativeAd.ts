@@ -1,8 +1,10 @@
 import { findNodeHandle, Platform, UIManager } from 'react-native';
 import type { LevelPlayNativeAdViewType } from '../components/LevelPlayNativeAdView';
-import type { LevelPlayNativeAdListener } from './listeners';
+import type { LevelPlayNativeAdListener } from './listeners/LevelPlayNativeAdListener';
 
-// Class representing a level play native ad
+/**
+ * Class representing a level play native ad
+ */
 export class LevelPlayNativeAd {
   // Codec fields for native ad properties
   title: string | null | undefined;
@@ -108,7 +110,7 @@ export class LevelPlayNativeAd {
 }
 
 // Builder class
-class LevelPlayNativeAdBuilder {
+export class LevelPlayNativeAdBuilder {
   private instance: LevelPlayNativeAd;
 
   constructor() {

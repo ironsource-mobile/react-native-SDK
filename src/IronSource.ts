@@ -3,28 +3,38 @@
  */
 
 import { NativeModules, Platform, NativeEventEmitter } from 'react-native'
-import { setPluginData } from './config/IronSourceConfig'
 import {
   ANDROID_SDK_VERSION,
   IOS_SDK_VERSION,
   PLUGIN_TYPE,
   PLUGIN_VERSION,
-} from './IronSourceConstants'
-import type {
-  AdUnit,
-  IronSourceBannerOptions,
-  IronSourceRVPlacement,
-  IronSourceSegment,
+} from './utils/IronSourceConstants'
+import {
+  type AdUnit,
+  type IronSourceBannerOptions,
+  type IronSourceRVPlacement,
+  type IronSourceSegment,
 } from './models'
-import { decode } from './models/utils';
-import { consentViewErrorCodec, impressionDataCodec, ironSourceAdInfoCodec, ironSourceErrorCodec } from './models';
-import type { ConsentViewListener, ImpressionDataListener, LevelPlayBannerListener, LevelPlayInterstitialListener, LevelPlayRewardedVideoListener, LevelPlayRewardedVideoManualListener } from './models/listeners';
-import { errorAdInfoCodec, placementAdInfoCodec } from './models/nestedCodecs';
-import { consentViewInfoCodec } from './models/ConsentViewInfo';
-import type { InitializationListener } from './models/listeners/InitializationListener';
+import {
+  impressionDataFromMap,
+  conentViewErrorFromMap,
+  ironSourceAdInfoFromMap,
+  ironSourceErrorFromMap,
+  ironSourceRvPlacementFromMap,
+} from './utils/utils';
+import type {
+  InitializationListener,
+  ConsentViewListener,
+  ImpressionDataListener,
+  LevelPlayBannerListener,
+  LevelPlayInterstitialListener,
+  LevelPlayRewardedVideoListener,
+  LevelPlayRewardedVideoManualListener,
+} from './models/listeners'
+import { setPluginData } from './utils/IronSourceConfig';
 
 /** Extract IronSourceMediation module **/
-const { IronSourceMediation } = NativeModules;
+const { IronSourceMediation } = NativeModules
 
 /** Types =======================================================================**/
 
@@ -234,12 +244,16 @@ type IronSourceNativeModuleType = {
    *     iOS: loadBannerWithViewController
    *
    * It falls back to BANNER in the case of invalid sizeDescriptions.
+   * 
+   * @deprecated This method will be removed in future versions. Please use LevelPlayBannerAdViewListenr instead.
    */
   loadBanner(options: IronSourceBannerOptions): Promise<void>
 
   /**
    * Android: destroyBanner
    *     iOS: destroyBanner
+   * 
+   * @deprecated This method will be removed in future versions. Please use LevelPlayBannerAdViewListenr instead.
    */
   destroyBanner(): Promise<void>
 
@@ -248,6 +262,8 @@ type IronSourceNativeModuleType = {
    *     iOS: n/a
    *
    * This simply changes the visibility of the hidden banner view.
+   * 
+   * @deprecated This method will be removed in future versions. Please use LevelPlayBannerAdViewListenr instead.
    */
   displayBanner(): Promise<void>
 
@@ -256,18 +272,24 @@ type IronSourceNativeModuleType = {
    *     iOS: n/a
    * This simply changes the visibility of the banner view.
    * Reloading does not take place while it's hidden.
+   * 
+   * @deprecated This method will be removed in future versions. Please use LevelPlayBannerAdViewListenr instead.
    */
   hideBanner(): Promise<void>
 
   /**
    * Android: isBannerPlacementCapped
    *     iOS: isBannerCappedForPlacement
+   * 
+   * @deprecated This method will be removed in future versions. Please use LevelPlayBannerAdViewListenr instead.
    */
   isBannerPlacementCapped(placementName: string): Promise<boolean>
 
   /**
    * Android: getMaximalAdaptiveHeight
    *     iOS: getMaximalAdaptiveHeight
+   * 
+   * @deprecated This method will be removed in future versions. Please use LevelPlayBannerAdViewListenr instead.
    */
   getMaximalAdaptiveHeight(width: number): Promise<number>
 
@@ -333,6 +355,12 @@ type LevelPlayListeners = {
   setInitializationListener: (listener: InitializationListener) => void
   setImpressionDataListener: (listener: ImpressionDataListener) => void
   setConsentViewListener: (listener: ConsentViewListener) => void
+  /**
+   * Sets the setLevelPlayBannerListener to handle banner ad events.
+   * @param listener The setLevelPlayBannerListener object containing event handlers.
+   * 
+   * @deprecated This method will be removed in future versions. Please use LevelPlayBannerAdViewListenr instead.
+   */
   setLevelPlayBannerListener: (listener: LevelPlayBannerListener) => void
   setLevelPlayInterstitialListener: (listener: LevelPlayInterstitialListener) => void
   setLevelPlayRewardedVideoListener: (listener: LevelPlayRewardedVideoListener) => void
@@ -342,7 +370,8 @@ type LevelPlayListeners = {
 /**
  * Exposed Module Type
  */
-type IronSourceType = UtilFunctions & LevelPlayListeners &
+type IronSourceType = UtilFunctions &
+  LevelPlayListeners &
   IronSourceProxyType &
   Omit<
     IronSourceNativeModuleType,
@@ -374,8 +403,8 @@ const getNativeSDKVersion: () => string = () => {
   return Platform.OS === 'android'
     ? ANDROID_SDK_VERSION
     : Platform.OS === 'ios'
-    ? IOS_SDK_VERSION
-    : 'unsupported'
+      ? IOS_SDK_VERSION
+      : 'unsupported'
 }
 
 /** Module  =======================================================================**/
@@ -391,7 +420,6 @@ const init: InitFunction = async (
 ): Promise<void> => {
   try {
     const reactNativeVersion = getReactNativeVersion()
-    console.log('reactNativeVersion', reactNativeVersion) // TODO: delete
     // set plugin data
     await setPluginData(PLUGIN_TYPE, PLUGIN_VERSION, reactNativeVersion)
   } catch (e) {
@@ -434,7 +462,7 @@ const IOSMethodStubs = {
 }
 
 /** LevelPlay Listeners Setters =================================================================**/
-const eventEmitter = new NativeEventEmitter(IronSourceMediation);
+const eventEmitter = new NativeEventEmitter(IronSourceMediation)
 
 // Event Name Constants defined on each platform
 const {
@@ -474,7 +502,7 @@ const {
   // Manual Load RV Events
   LP_MANUAL_RV_ON_AD_READY,
   LP_MANUAL_RV_ON_AD_LOAD_FAILED,
-} = IronSourceMediation.getConstants();
+} = IronSourceMediation.getConstants()
 
 /**
  * Sets the setInitializationListener to handle impression data events.
@@ -482,31 +510,31 @@ const {
  */
 const setInitializationListener = (listener: InitializationListener) => {
   // Remove any existing listeners
-  eventEmitter.removeAllListeners(ON_INITIALIZATION_COMPLETE);
- 
+  eventEmitter.removeAllListeners(ON_INITIALIZATION_COMPLETE)
+
   // Add the new listener if provided
   if (listener.onInitializationComplete) {
     eventEmitter.addListener(ON_INITIALIZATION_COMPLETE, () => {
-      listener.onInitializationComplete!();
-    });
+      listener.onInitializationComplete!()
+    })
   }
- }
+}
 
 /**
  * Sets the setImpressionDataListener to handle impression data events.
  * @param listener The setImpressionDataListener object containing event handlers.
  */
 const setImpressionDataListener = (listener: ImpressionDataListener) => {
- // Remove any existing listeners
- eventEmitter.removeAllListeners(ON_IMPRESSION_SUCCESS);
+  // Remove any existing listeners
+  eventEmitter.removeAllListeners(ON_IMPRESSION_SUCCESS)
 
- // Add the new listener if provided
- if (listener.onImpressionSuccess) {
-   eventEmitter.addListener(ON_IMPRESSION_SUCCESS, (dataObj?: unknown) => {
-     const data = dataObj ? decode(impressionDataCodec, dataObj) : undefined;
-     listener.onImpressionSuccess!(data);
-   });
- }
+  // Add the new listener if provided
+  if (listener.onImpressionSuccess) {
+    eventEmitter.addListener(ON_IMPRESSION_SUCCESS, (data?: any) => {
+      const impressionData = data ? impressionDataFromMap(data) : undefined
+      listener.onImpressionSuccess!(impressionData)
+    })
+  }
 }
 
 /**
@@ -515,256 +543,312 @@ const setImpressionDataListener = (listener: ImpressionDataListener) => {
  */
 const setConsentViewListener = (listener: ConsentViewListener) => {
   if (Platform.OS !== 'ios') {
-    console.error('Only supported for iOS.');
-    return;
+    console.error('Only supported for iOS.')
+    return
   }
 
   // Remove all existing listeners for these events
-  eventEmitter.removeAllListeners(CONSENT_VIEW_DID_LOAD_SUCCESS);
-  eventEmitter.removeAllListeners(CONSENT_VIEW_DID_FAIL_TO_LOAD);
-  eventEmitter.removeAllListeners(CONSENT_VIEW_DID_SHOW_SUCCESS);
-  eventEmitter.removeAllListeners(CONSENT_VIEW_DID_FAIL_TO_SHOW);
-  eventEmitter.removeAllListeners(CONSENT_VIEW_DID_ACCEPT);
+  eventEmitter.removeAllListeners(CONSENT_VIEW_DID_LOAD_SUCCESS)
+  eventEmitter.removeAllListeners(CONSENT_VIEW_DID_FAIL_TO_LOAD)
+  eventEmitter.removeAllListeners(CONSENT_VIEW_DID_SHOW_SUCCESS)
+  eventEmitter.removeAllListeners(CONSENT_VIEW_DID_FAIL_TO_SHOW)
+  eventEmitter.removeAllListeners(CONSENT_VIEW_DID_ACCEPT)
 
   // Add the new listeners if provided
   if (listener.onConsentViewDidLoadSuccess) {
-    eventEmitter.addListener(CONSENT_VIEW_DID_LOAD_SUCCESS, (consentViewInfoObj: unknown) => {
-      const { consentViewType } = decode(consentViewInfoCodec, consentViewInfoObj);
-      listener.onConsentViewDidLoadSuccess!(consentViewType);
-    });
+    eventEmitter.addListener(
+      CONSENT_VIEW_DID_LOAD_SUCCESS,
+      (data: any) => {
+        const consentViewType = data.consentViewType as string;
+        listener.onConsentViewDidLoadSuccess!(consentViewType);
+      }
+    )
   }
 
   if (listener.onConsentViewDidFailToLoad) {
-    eventEmitter.addListener(CONSENT_VIEW_DID_FAIL_TO_LOAD, (errorObj: unknown) => {
-      const error = decode(consentViewErrorCodec, errorObj);
-      listener.onConsentViewDidFailToLoad!(error);
-    });
+    eventEmitter.addListener(
+      CONSENT_VIEW_DID_FAIL_TO_LOAD,
+      (data: any) => {
+        const error = conentViewErrorFromMap(data);
+        listener.onConsentViewDidFailToLoad!(error)
+      }
+    )
   }
 
   if (listener.onConsentViewDidShowSuccess) {
-    eventEmitter.addListener(CONSENT_VIEW_DID_SHOW_SUCCESS, (consentViewInfoObj: unknown) => {
-      const { consentViewType } = decode(consentViewInfoCodec, consentViewInfoObj);
-      listener.onConsentViewDidShowSuccess!(consentViewType);
-    });
+    eventEmitter.addListener(
+      CONSENT_VIEW_DID_SHOW_SUCCESS,
+      (data: any) => {
+        const consentViewType = data.consentViewType as string;
+        listener.onConsentViewDidShowSuccess!(consentViewType)
+      }
+    )
   }
 
   if (listener.onConsentViewDidFailToShow) {
-    eventEmitter.addListener(CONSENT_VIEW_DID_FAIL_TO_SHOW, (errorObj: unknown) => {
-      const error = decode(consentViewErrorCodec, errorObj);
-      listener.onConsentViewDidFailToShow!(error);
-    });
+    eventEmitter.addListener(
+      CONSENT_VIEW_DID_FAIL_TO_SHOW,
+      (data: any) => {
+        const error = conentViewErrorFromMap(data);
+        listener.onConsentViewDidFailToShow!(error)
+      }
+    )
   }
 
   if (listener.onConsentViewDidAccept) {
-    eventEmitter.addListener(CONSENT_VIEW_DID_ACCEPT, (consentViewInfoObj: unknown) => {
-      const { consentViewType } = consentViewInfoObj as { consentViewType: string };
-      listener.onConsentViewDidAccept!(consentViewType);
-    });
+    eventEmitter.addListener(
+      CONSENT_VIEW_DID_ACCEPT,
+      (data: any) => {
+        const consentViewType = data.consentViewType as string;
+        listener.onConsentViewDidAccept!(consentViewType)
+      }
+    )
   }
-};
+}
 
 /**
  * Sets the setLevelPlayBannerListener to handle banner ad events.
  * @param listener The setLevelPlayBannerListener object containing event handlers.
+ * 
+ * @deprecated This method will be removed in future versions. Please use LevelPlayBannerAdViewListenr instead.
  */
 const setLevelPlayBannerListener = (listener: LevelPlayBannerListener) => {
   // Remove existing listeners
-  eventEmitter.removeAllListeners(LP_BN_ON_AD_LOADED);
-  eventEmitter.removeAllListeners(LP_BN_ON_AD_LOAD_FAILED);
-  eventEmitter.removeAllListeners(LP_BN_ON_AD_CLICKED);
-  eventEmitter.removeAllListeners(LP_BN_ON_AD_SCREEN_PRESENTED);
-  eventEmitter.removeAllListeners(LP_BN_ON_AD_SCREEN_DISMISSED);
-  eventEmitter.removeAllListeners(LP_BN_ON_AD_LEFT_APPLICATION);
+  eventEmitter.removeAllListeners(LP_BN_ON_AD_LOADED)
+  eventEmitter.removeAllListeners(LP_BN_ON_AD_LOAD_FAILED)
+  eventEmitter.removeAllListeners(LP_BN_ON_AD_CLICKED)
+  eventEmitter.removeAllListeners(LP_BN_ON_AD_SCREEN_PRESENTED)
+  eventEmitter.removeAllListeners(LP_BN_ON_AD_SCREEN_DISMISSED)
+  eventEmitter.removeAllListeners(LP_BN_ON_AD_LEFT_APPLICATION)
 
   // Add new listeners
   if (listener.onAdLoaded) {
-    eventEmitter.addListener(LP_BN_ON_AD_LOADED, (adInfoObj: unknown) => {
-      listener.onAdLoaded!(decode(ironSourceAdInfoCodec, adInfoObj));
-    });
+    eventEmitter.addListener(LP_BN_ON_AD_LOADED, (data: any) => {
+      const ironSourceAdInfo = ironSourceAdInfoFromMap(data);
+      listener.onAdLoaded!(ironSourceAdInfo)
+    })
   }
   if (listener.onAdLoadFailed) {
-    eventEmitter.addListener(LP_BN_ON_AD_LOAD_FAILED, (errorObj: unknown) => {
-      listener.onAdLoadFailed!(decode(ironSourceErrorCodec, errorObj));
-    });
+    eventEmitter.addListener(LP_BN_ON_AD_LOAD_FAILED, (data: any) => {
+      const ironSourceError = ironSourceErrorFromMap(data);
+      listener.onAdLoadFailed!(ironSourceError);
+    })
   }
   if (listener.onAdClicked) {
-    eventEmitter.addListener(LP_BN_ON_AD_CLICKED, (adInfoObj: unknown) => {
-      listener.onAdClicked!(decode(ironSourceAdInfoCodec, adInfoObj));
-    });
+    eventEmitter.addListener(LP_BN_ON_AD_CLICKED, (data: any) => {
+      const ironSourceAdInfo = ironSourceAdInfoFromMap(data);
+      listener.onAdClicked!(ironSourceAdInfo)
+    })
   }
   if (listener.onAdScreenPresented) {
-    eventEmitter.addListener(LP_BN_ON_AD_SCREEN_PRESENTED, (adInfoObj: unknown) => {
-      listener.onAdScreenPresented!(decode(ironSourceAdInfoCodec, adInfoObj));
-    });
+      eventEmitter.addListener(LP_BN_ON_AD_SCREEN_PRESENTED, (data: any) => {
+        const ironSourceAdInfo = ironSourceAdInfoFromMap(data);
+        listener.onAdScreenPresented!(ironSourceAdInfo)
+      }
+    )
   }
   if (listener.onAdScreenDismissed) {
-    eventEmitter.addListener(LP_BN_ON_AD_SCREEN_DISMISSED, (adInfoObj: unknown) => {
-      listener.onAdScreenDismissed!(decode(ironSourceAdInfoCodec, adInfoObj));
-    });
+      eventEmitter.addListener(LP_BN_ON_AD_SCREEN_DISMISSED, (data: any) => {
+          const ironSourceAdInfo = ironSourceAdInfoFromMap(data);
+          listener.onAdScreenDismissed!(ironSourceAdInfo)
+      }
+    )
   }
   if (listener.onAdLeftApplication) {
-    eventEmitter.addListener(LP_BN_ON_AD_LEFT_APPLICATION, (adInfoObj: unknown) => {
-      listener.onAdLeftApplication!(decode(ironSourceAdInfoCodec, adInfoObj));
-    });
+      eventEmitter.addListener(LP_BN_ON_AD_LEFT_APPLICATION, (data: any) => {
+        const ironSourceAdInfo = ironSourceAdInfoFromMap(data);
+        listener.onAdScreenDismissed!(ironSourceAdInfo)
+      }
+    )
   }
-};
+}
 
 /**
  * Sets the LevelPlayInterstitialListener to handle interstitial ad events.
  * @param listener The LevelPlayInterstitialListener object containing event handlers.
  */
-const setLevelPlayInterstitialListener = (listener: LevelPlayInterstitialListener) => {
-  eventEmitter.removeAllListeners(LP_IS_ON_AD_READY);
-  eventEmitter.removeAllListeners(LP_IS_ON_AD_LOAD_FAILED);
-  eventEmitter.removeAllListeners(LP_IS_ON_AD_OPENED);
-  eventEmitter.removeAllListeners(LP_IS_ON_AD_CLOSED);
-  eventEmitter.removeAllListeners(LP_IS_ON_AD_SHOW_FAILED);
-  eventEmitter.removeAllListeners(LP_IS_ON_AD_CLICKED);
-  eventEmitter.removeAllListeners(LP_IS_ON_AD_SHOW_SUCCEEDED);
+const setLevelPlayInterstitialListener = (
+  listener: LevelPlayInterstitialListener
+) => {
+  eventEmitter.removeAllListeners(LP_IS_ON_AD_READY)
+  eventEmitter.removeAllListeners(LP_IS_ON_AD_LOAD_FAILED)
+  eventEmitter.removeAllListeners(LP_IS_ON_AD_OPENED)
+  eventEmitter.removeAllListeners(LP_IS_ON_AD_CLOSED)
+  eventEmitter.removeAllListeners(LP_IS_ON_AD_SHOW_FAILED)
+  eventEmitter.removeAllListeners(LP_IS_ON_AD_CLICKED)
+  eventEmitter.removeAllListeners(LP_IS_ON_AD_SHOW_SUCCEEDED)
 
   if (listener.onAdReady) {
-      eventEmitter.addListener(LP_IS_ON_AD_READY, (adInfoObj: unknown) => {
-          listener.onAdReady!(decode(ironSourceAdInfoCodec, adInfoObj));
-      });
+    eventEmitter.addListener(LP_IS_ON_AD_READY, (data: any) => {
+      const ironSourceAdInfo = ironSourceAdInfoFromMap(data);
+      listener.onAdReady!(ironSourceAdInfo)
+    })
   }
   if (listener.onAdLoadFailed) {
-      eventEmitter.addListener(LP_IS_ON_AD_LOAD_FAILED, (errorObj: unknown) => {
-          listener.onAdLoadFailed!(decode(ironSourceErrorCodec, errorObj));
-      });
+    eventEmitter.addListener(LP_IS_ON_AD_LOAD_FAILED, (data: any) => {
+      const ironSourceError = ironSourceErrorFromMap(data);
+      listener.onAdLoadFailed!(ironSourceError);
+    })
   }
   if (listener.onAdOpened) {
-      eventEmitter.addListener(LP_IS_ON_AD_OPENED, (adInfoObj: unknown) => {
-          listener.onAdOpened!(decode(ironSourceAdInfoCodec, adInfoObj));
-      });
+    eventEmitter.addListener(LP_IS_ON_AD_OPENED, (data: any) => {
+      const ironSourceAdInfo = ironSourceAdInfoFromMap(data);
+      listener.onAdOpened!(ironSourceAdInfo)
+    })
   }
   if (listener.onAdClosed) {
-      eventEmitter.addListener(LP_IS_ON_AD_CLOSED, (adInfoObj: unknown) => {
-          listener.onAdClosed!(decode(ironSourceAdInfoCodec, adInfoObj));
-      });
+    eventEmitter.addListener(LP_IS_ON_AD_CLOSED, (data: any) => {
+      const ironSourceAdInfo = ironSourceAdInfoFromMap(data);
+      listener.onAdClosed!(ironSourceAdInfo)
+    })
   }
   if (listener.onAdShowFailed) {
-      eventEmitter.addListener(LP_IS_ON_AD_SHOW_FAILED, (obj: unknown) => {
-          const { error, adInfo } = decode(errorAdInfoCodec, obj);
-          listener.onAdShowFailed!(error, adInfo);
-      });
+    eventEmitter.addListener(LP_IS_ON_AD_SHOW_FAILED, (data: any) => {
+      const ironSourceError = ironSourceErrorFromMap(data.error);
+      const ironSourceAdInfo = ironSourceAdInfoFromMap(data.adInfo);
+      listener.onAdShowFailed!(ironSourceError, ironSourceAdInfo)
+    })
   }
   if (listener.onAdClicked) {
-      eventEmitter.addListener(LP_IS_ON_AD_CLICKED, (adInfoObj: unknown) => {
-          listener.onAdClicked!(decode(ironSourceAdInfoCodec, adInfoObj));
-      });
+    eventEmitter.addListener(LP_IS_ON_AD_CLICKED, (data: any) => {
+      const ironSourceAdInfo = ironSourceAdInfoFromMap(data);
+      listener.onAdClicked!(ironSourceAdInfo)
+    })
   }
   if (listener.onAdShowSucceeded) {
-      eventEmitter.addListener(LP_IS_ON_AD_SHOW_SUCCEEDED, (adInfoObj: unknown) => {
-          listener.onAdShowSucceeded!(decode(ironSourceAdInfoCodec, adInfoObj));
-      });
+    eventEmitter.addListener(LP_IS_ON_AD_SHOW_SUCCEEDED, (data: any) => {
+      const ironSourceAdInfo = ironSourceAdInfoFromMap(data);
+      listener.onAdShowSucceeded!(ironSourceAdInfo)
+      }
+    )
   }
-};
+}
 
 /**
  * Sets the LevelPlayRewardedVideoListener to handle rewarded video ad events.
  * @param listener The LevelPlayRewardedVideoListener object containing event handlers.
  */
-const setLevelPlayRewardedVideoListener = (listener: LevelPlayRewardedVideoListener) => {
-  eventEmitter.removeAllListeners(LP_RV_ON_AD_AVAILABLE);
-  eventEmitter.removeAllListeners(LP_RV_ON_AD_UNAVAILABLE);
-  eventEmitter.removeAllListeners(LP_RV_ON_AD_OPENED);
-  eventEmitter.removeAllListeners(LP_RV_ON_AD_CLOSED);
-  eventEmitter.removeAllListeners(LP_RV_ON_AD_REWARDED);
-  eventEmitter.removeAllListeners(LP_RV_ON_AD_SHOW_FAILED);
-  eventEmitter.removeAllListeners(LP_RV_ON_AD_CLICKED);
+const setLevelPlayRewardedVideoListener = (
+  listener: LevelPlayRewardedVideoListener
+) => {
+  eventEmitter.removeAllListeners(LP_RV_ON_AD_AVAILABLE)
+  eventEmitter.removeAllListeners(LP_RV_ON_AD_UNAVAILABLE)
+  eventEmitter.removeAllListeners(LP_RV_ON_AD_OPENED)
+  eventEmitter.removeAllListeners(LP_RV_ON_AD_CLOSED)
+  eventEmitter.removeAllListeners(LP_RV_ON_AD_REWARDED)
+  eventEmitter.removeAllListeners(LP_RV_ON_AD_SHOW_FAILED)
+  eventEmitter.removeAllListeners(LP_RV_ON_AD_CLICKED)
 
   if (listener.onAdAvailable) {
-      eventEmitter.addListener(LP_RV_ON_AD_AVAILABLE, (adInfoObj: unknown) => {
-          listener.onAdAvailable!(decode(ironSourceAdInfoCodec, adInfoObj));
-      });
+    eventEmitter.addListener(LP_RV_ON_AD_AVAILABLE, (data: any) => {
+      const ironSourceAdInfo = ironSourceAdInfoFromMap(data);
+      listener.onAdAvailable!(ironSourceAdInfo)
+    })
   }
   if (listener.onAdUnavailable) {
-      eventEmitter.addListener(LP_RV_ON_AD_UNAVAILABLE, () => listener.onAdUnavailable!());
+    eventEmitter.addListener(LP_RV_ON_AD_UNAVAILABLE, () =>
+      listener.onAdUnavailable!()
+    )
   }
   if (listener.onAdOpened) {
-      eventEmitter.addListener(LP_RV_ON_AD_OPENED, (adInfoObj: unknown) => {
-          listener.onAdOpened!(decode(ironSourceAdInfoCodec, adInfoObj));
-      });
+    eventEmitter.addListener(LP_RV_ON_AD_OPENED, (data: any) => {
+      const ironSourceAdInfo = ironSourceAdInfoFromMap(data);
+      listener.onAdOpened!(ironSourceAdInfo)
+    })
   }
   if (listener.onAdClosed) {
-      eventEmitter.addListener(LP_RV_ON_AD_CLOSED, (adInfoObj: unknown) => {
-          listener.onAdClosed!(decode(ironSourceAdInfoCodec, adInfoObj));
-      });
+    eventEmitter.addListener(LP_RV_ON_AD_CLOSED, (data: any) => {
+      const ironSourceAdInfo = ironSourceAdInfoFromMap(data);
+      listener.onAdClosed!(ironSourceAdInfo)
+    })
   }
   if (listener.onAdRewarded) {
-      eventEmitter.addListener(LP_RV_ON_AD_REWARDED, (obj: unknown) => {
-          const { placement, adInfo } = decode(placementAdInfoCodec, obj);
-          listener.onAdRewarded!(placement, adInfo);
-      });
+    eventEmitter.addListener(LP_RV_ON_AD_REWARDED, (data: any) => {
+      const ironSourcePlacement = ironSourceRvPlacementFromMap(data.placement);
+      const ironSourceAdInfo = ironSourceAdInfoFromMap(data.adInfo);
+      listener.onAdRewarded!(ironSourcePlacement, ironSourceAdInfo)
+    })
   }
   if (listener.onAdShowFailed) {
-      eventEmitter.addListener(LP_RV_ON_AD_SHOW_FAILED, (obj: unknown) => {
-          const { error, adInfo } = decode(errorAdInfoCodec, obj);
-          listener.onAdShowFailed!(error, adInfo);
-      });
+    eventEmitter.addListener(LP_RV_ON_AD_SHOW_FAILED, (data: any) => {
+      const ironSourceError = ironSourceErrorFromMap(data.error);
+      const ironSourceAdInfo = ironSourceAdInfoFromMap(data.adInfo);
+      listener.onAdShowFailed!(ironSourceError, ironSourceAdInfo);
+    })
   }
   if (listener.onAdClicked) {
-      eventEmitter.addListener(LP_RV_ON_AD_CLICKED, (obj: unknown) => {
-          const { placement, adInfo } = decode(placementAdInfoCodec, obj);
-          listener.onAdClicked!(placement, adInfo);
-      });
+    eventEmitter.addListener(LP_RV_ON_AD_CLICKED, (data: any) => {
+      const ironSourcePlacement = ironSourceRvPlacementFromMap(data.placement);
+      const ironSourceAdInfo = ironSourceAdInfoFromMap(data.adInfo);
+      listener.onAdClicked!(ironSourcePlacement, ironSourceAdInfo)
+    })
   }
-};
+}
 
 /**
  * Sets the LevelPlayRewardedVideoManualListener to handle rewarded video ad events.
  * @param listener The LevelPlayRewardedVideoManualListener object containing event handlers.
  */
-const setLevelPlayRewardedVideoManualListener = async (listener: LevelPlayRewardedVideoManualListener) => {
-  eventEmitter.removeAllListeners(LP_RV_ON_AD_OPENED);
-  eventEmitter.removeAllListeners(LP_RV_ON_AD_CLOSED);
-  eventEmitter.removeAllListeners(LP_RV_ON_AD_REWARDED);
-  eventEmitter.removeAllListeners(LP_RV_ON_AD_SHOW_FAILED);
-  eventEmitter.removeAllListeners(LP_RV_ON_AD_CLICKED);
-  eventEmitter.removeAllListeners(LP_MANUAL_RV_ON_AD_READY);
-  eventEmitter.removeAllListeners(LP_MANUAL_RV_ON_AD_LOAD_FAILED);
+const setLevelPlayRewardedVideoManualListener = async (
+  listener: LevelPlayRewardedVideoManualListener
+) => {
+  eventEmitter.removeAllListeners(LP_RV_ON_AD_OPENED)
+  eventEmitter.removeAllListeners(LP_RV_ON_AD_CLOSED)
+  eventEmitter.removeAllListeners(LP_RV_ON_AD_REWARDED)
+  eventEmitter.removeAllListeners(LP_RV_ON_AD_SHOW_FAILED)
+  eventEmitter.removeAllListeners(LP_RV_ON_AD_CLICKED)
+  eventEmitter.removeAllListeners(LP_MANUAL_RV_ON_AD_READY)
+  eventEmitter.removeAllListeners(LP_MANUAL_RV_ON_AD_LOAD_FAILED)
 
-  await IronSource.setLevelPlayRewardedVideoManual();
+  await IronSource.setLevelPlayRewardedVideoManual()
 
   if (listener.onAdOpened) {
-      eventEmitter.addListener(LP_RV_ON_AD_OPENED, (adInfoObj: unknown) => {
-          listener.onAdOpened!(decode(ironSourceAdInfoCodec, adInfoObj));
-      });
+    eventEmitter.addListener(LP_RV_ON_AD_OPENED, (data: any) => {
+      const ironSourceAdInfo = ironSourceAdInfoFromMap(data);
+      listener.onAdOpened!(ironSourceAdInfo)
+    })
   }
   if (listener.onAdClosed) {
-      eventEmitter.addListener(LP_RV_ON_AD_CLOSED, (adInfoObj: unknown) => {
-          listener.onAdClosed!(decode(ironSourceAdInfoCodec, adInfoObj));
-      });
+    eventEmitter.addListener(LP_RV_ON_AD_CLOSED, (data: any) => {
+      const ironSourceAdInfo = ironSourceAdInfoFromMap(data);
+      listener.onAdClosed!(ironSourceAdInfo)
+    })
   }
   if (listener.onAdRewarded) {
-      eventEmitter.addListener(LP_RV_ON_AD_REWARDED, (obj: unknown) => {
-          const { placement, adInfo } = decode(placementAdInfoCodec, obj);
-          listener.onAdRewarded!(placement, adInfo);
-      });
+    eventEmitter.addListener(LP_RV_ON_AD_REWARDED, (data: any) => {
+      const ironSourcePlacement = ironSourceRvPlacementFromMap(data.placement);
+      const ironSourceAdInfo = ironSourceAdInfoFromMap(data.adInfo);
+      listener.onAdRewarded!(ironSourcePlacement, ironSourceAdInfo)
+    })
   }
   if (listener.onAdShowFailed) {
-      eventEmitter.addListener(LP_RV_ON_AD_SHOW_FAILED, (obj: unknown) => {
-          const { error, adInfo } = decode(errorAdInfoCodec, obj);
-          listener.onAdShowFailed!(error, adInfo);
-      });
+    eventEmitter.addListener(LP_RV_ON_AD_SHOW_FAILED, (data: any) => {
+      const ironSourceError = ironSourceErrorFromMap(data.error);
+      const ironSourceAdInfo = ironSourceAdInfoFromMap(data.adInfo);
+      listener.onAdShowFailed!(ironSourceError, ironSourceAdInfo);
+    })
   }
   if (listener.onAdClicked) {
-      eventEmitter.addListener(LP_RV_ON_AD_CLICKED, (obj: unknown) => {
-          const { placement, adInfo } = decode(placementAdInfoCodec, obj);
-          listener.onAdClicked!(placement, adInfo);
-      });
+    eventEmitter.addListener(LP_RV_ON_AD_CLICKED, (data: any) => {
+      const ironSourcePlacement = ironSourceRvPlacementFromMap(data.placement);
+      const ironSourceAdInfo = ironSourceAdInfoFromMap(data.adInfo);
+      listener.onAdRewarded!(ironSourcePlacement, ironSourceAdInfo)
+    })
   }
   if (listener.onAdReady) {
-      eventEmitter.addListener(LP_MANUAL_RV_ON_AD_READY, (adInfoObj: unknown) => {
-          listener.onAdReady!(decode(ironSourceAdInfoCodec, adInfoObj));
-      });
+    eventEmitter.addListener(LP_MANUAL_RV_ON_AD_READY, (data: any) => {
+      const ironSourceAdInfo = ironSourceAdInfoFromMap(data);
+      listener.onAdReady!(ironSourceAdInfo)
+    })
   }
   if (listener.onAdLoadFailed) {
-      eventEmitter.addListener(LP_MANUAL_RV_ON_AD_LOAD_FAILED, (errorObj: unknown) => {
-          listener.onAdLoadFailed!(decode(ironSourceErrorCodec, errorObj));
-      });
+    eventEmitter.addListener(LP_MANUAL_RV_ON_AD_LOAD_FAILED, (data: any) => {
+      const ironSourceError = ironSourceErrorFromMap(data);
+      listener.onAdLoadFailed!(ironSourceError)
+      }
+    )
   }
-};
+}
 
 /**=======================================================================================**/
 
@@ -784,12 +868,12 @@ const mergedModule: IronSourceType = {
   setLevelPlayBannerListener,
   setLevelPlayInterstitialListener,
   setLevelPlayRewardedVideoListener,
-  setLevelPlayRewardedVideoManualListener
+  setLevelPlayRewardedVideoManualListener,
 }
 
 export const IronSource: Readonly<IronSourceType> = Object.freeze(
   Platform.OS === 'ios'
     ? mergedModule
     : // overwrite stub iOS related methods
-      { ...mergedModule, ...IOSMethodStubs },
+      { ...mergedModule, ...IOSMethodStubs }
 )

@@ -1,0 +1,1 @@
+{"version":3,"file":"LevelPlay.d.ts","sourceRoot":"","sources":["../../../src/LevelPlay.ts"],"names":[],"mappings":"AACA,OAAO,KAAK,EAAE,qBAAqB,EAAE,oBAAoB,EAAE,MAAM,UAAU,CAAA;AAU3E;;GAEG;AACH,KAAK,aAAa,GAAG;IACnB;;;;;OAKG;IACH,IAAI,CACF,WAAW,EAAE,oBAAoB,EACjC,YAAY,EAAE,qBAAqB,GAClC,OAAO,CAAC,IAAI,CAAC,CAAA;CACjB,CAAA;AAgCD,eAAO,MAAM,SAAS,EAAE,aAEvB,CAAA"}

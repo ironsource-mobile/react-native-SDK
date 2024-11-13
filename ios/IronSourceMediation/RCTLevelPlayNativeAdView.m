@@ -4,6 +4,10 @@
 #import "RCTLevelPlayNativeAdView.h"
 #import "LevelPlayUtils.h"
 
+@interface RCTLevelPlayNativeAdView()<LevelPlayNativeAdDelegate>
+
+@end
+
 /**
  Class for implementing instance of RCTLevelPlayNativeAdView.
  */
@@ -32,7 +36,7 @@
     // If the native ad is not initialized, create a new one
     if (_nativeAd == nil) {
         _nativeAd = [[[[LevelPlayNativeAdBuilder new]
-                withViewController:(UIViewController *)self]
+                withViewController:[LevelPlayUtils getRootViewController]]
                 withPlacementName:self.placement] // Replace with your placement or leave empty
                 withDelegate:self]    // We implement the delegate in step 2
                 .build;
@@ -41,21 +45,11 @@
 }
 
 /**
- * Destroys the native ad and informs the Flutter side upon completion.
+ * Destroys the native ad.
  */
 - (void)destroyAd {
-    [self removeViews];
     [self.nativeAd destroyAd];
     self.nativeAd = nil;
-}
-
-/**
- Removes all the subviews associated with the native ad view.
- This method removes the title view, body view, advertiser view, call to action view, icon view, and media view if they exist.
- */
--(void) removeViews
-{
-    [self.isNativeAdView removeFromSuperview];
 }
 
 #pragma mark - Setters for React Props
@@ -77,12 +71,14 @@
     NSString *viewType = [creationParams[@"viewType"] isKindOfClass:[NSString class]] ? creationParams[@"viewType"] : nil;
     NSDictionary *templateStyleDict = [creationParams[@"templateStyle"] isKindOfClass:[NSDictionary class]] ? creationParams[@"templateStyle"] : nil;
     // Parse LevelPlayNativeAdElementStyle objects
+    NSNumber *mainBackgroundColor = templateStyleDict[@"mainBackgroundColor"];
     LevelPlayNativeAdElementStyle *titleStyle = [self parseElementStyle:templateStyleDict[@"titleStyle"]];
     LevelPlayNativeAdElementStyle *bodyStyle = [self parseElementStyle:templateStyleDict[@"bodyStyle"]];
     LevelPlayNativeAdElementStyle *advertiserStyle = [self parseElementStyle:templateStyleDict[@"advertiserStyle"]];
     LevelPlayNativeAdElementStyle *callToActionStyle = [self parseElementStyle:templateStyleDict[@"callToActionStyle"]];
     // Create the template style from parsed element styles(if exist)
-    LevelPlayNativeAdTemplateStyle *templateStyle = [[LevelPlayNativeAdTemplateStyle alloc] initWithTitle:titleStyle
+    LevelPlayNativeAdTemplateStyle *templateStyle = [[LevelPlayNativeAdTemplateStyle alloc] initWithMainBackgroundColor:mainBackgroundColor
+                                                                                                titleStyle:titleStyle
                                                                                                 bodyStyle:bodyStyle
                                                                                           advertiserStyle:advertiserStyle
                                                                                         callToActionStyle:callToActionStyle];
@@ -135,13 +131,10 @@
     // Set the frame of the isNativeAdView to fill the entire superview
     self.isNativeAdView.frame = self.bounds;
 
-    [self addSubview:isNativeAdView];
+    // Hide the ad elements when its not loaded
+    self.isNativeAdView.hidden = YES;
 
-    // Apply styles before ad loaded
-    [self applyStylesWithTitleView:self.isNativeAdView.adTitleView
-                          bodyView:self.isNativeAdView.adBodyView
-                    advertiserView:self.isNativeAdView.adAdvertiserView
-                  callToActionView:self.isNativeAdView.adCallToActionView];
+    [self addSubview:isNativeAdView];
 }
 
 - (void)applyStylesWithTitleView:(UILabel *)titleView
@@ -149,6 +142,13 @@
                   advertiserView:(UILabel *)advertiserView
                 callToActionView:(UIButton *)callToActionView {
     if (self.templateStyle) {
+        if(self.templateStyle.mainBackgroundColor) {
+            UIColor *mainBackgroundColor = [UIColor colorWithRed:((CGFloat)(([self.templateStyle.mainBackgroundColor integerValue] >> 16) & 0xFF)) / 255.0
+                                                       green:((CGFloat)(([self.templateStyle.mainBackgroundColor integerValue] >> 8) & 0xFF)) / 255.0
+                                                        blue:((CGFloat)([self.templateStyle.mainBackgroundColor integerValue] & 0xFF)) / 255.0
+                                                       alpha:1.0];
+            self.isNativeAdView.backgroundColor = mainBackgroundColor;
+        }
         [self applyStyleToTextView:titleView style:self.templateStyle.titleStyle];
         [self applyStyleToTextView:bodyView style:self.templateStyle.bodyStyle];
         [self applyStyleToTextView:advertiserView style:self.templateStyle.advertiserStyle];
@@ -275,6 +275,15 @@
     if (self.onAdLoadedEvent) {
         self.onAdLoadedEvent(@{@"nativeAd": adDict, @"adInfo": adInfoDict});
     }
+
+    // Apply styles
+    [self applyStylesWithTitleView:self.isNativeAdView.adTitleView
+                          bodyView:self.isNativeAdView.adBodyView
+                    advertiserView:self.isNativeAdView.adAdvertiserView
+                  callToActionView:self.isNativeAdView.adCallToActionView];
+
+    // Visible the ad
+    self.isNativeAdView.hidden = NO;
 }
 
 /**

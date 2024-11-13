@@ -1,1 +1,0 @@
-{"version":3,"names":["_reactNative","require","IronSourceConfig","NativeModules","setPluginData","exports"],"sourceRoot":"../../../src","sources":["config/IronSourceConfig.ts"],"mappings":";;;;;;AAIA,IAAAA,YAAA,GAAAC,OAAA;AAJA;AACA;AACA;;AAUA,MAAM;EAAEC;AAAiB,CAAC,GAAGC,0BAAa;AAEnC,MAAMC,aAAa,GAAAC,OAAA,CAAAD,aAAA,GACxBF,gBAAgB,CAACE,aAAsC","ignoreList":[]}

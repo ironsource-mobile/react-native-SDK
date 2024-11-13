@@ -8,8 +8,8 @@
  */
 @implementation RCTLevelPlayNativeAdViewManagerTemplate
 
-// Export default view type module named 'levelPlayNativeAdViewType'
-RCT_EXPORT_MODULE(levelPlayNativeAdViewType)
+// Export default view type module named 'levelPlayNativeAdView'
+RCT_EXPORT_MODULE(levelPlayNativeAdView)
 
 - (instancetype)init
 {

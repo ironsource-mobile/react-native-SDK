@@ -33,6 +33,9 @@ class RCTLevelPlayNativeAdView(context: Context) : FrameLayout(context), LevelPl
 
   private fun applyStyles(titleView: TextView, bodyView: TextView, advertiserView: TextView, callToActionView: Button) {
     templateStyles?.let { styles ->
+      styles.mainBackgroundColor?.let {
+        nativeAdLayout?.setBackgroundColor(it)
+      }
       applyStyle(titleView, styles.titleStyle)
       applyStyle(bodyView, styles.bodyStyle)
       applyStyle(advertiserView, styles.advertiserStyle)
@@ -105,12 +108,8 @@ class RCTLevelPlayNativeAdView(context: Context) : FrameLayout(context), LevelPl
 
   /**
    * Destroys the native ad.
-   * Removes all views from the nativeAdLayout, destroys the native ad object,
-   * and invokes a method on the MethodChannel to notify Flutter that the ad has been destroyed.
    */
   fun destroyAd() {
-    // Remove all views from the layout
-    nativeAdLayout?.removeAllViews()
     // Destroy the native ad
     nativeAd?.destroyAd()
     // Set nativeAd to null
@@ -149,12 +148,6 @@ class RCTLevelPlayNativeAdView(context: Context) : FrameLayout(context), LevelPl
     this.onBindLevelPlayNativeAdView = onBindLevelPlayNativeAdView
     // Set the native ad layout
     addView(nativeAdLayout)
-    // Apply styles before ad loaded
-    applyStyles(
-      nativeAdLayout.findViewById(R.id.adTitle),
-      nativeAdLayout.findViewById(R.id.adBody),
-      nativeAdLayout.findViewById(R.id.adAdvertiser),
-      nativeAdLayout.findViewById(R.id.adCallToAction))
     // Schedule a callback to run on the next frame synchronization point
     Choreographer.getInstance().postFrameCallback(object: Choreographer.FrameCallback {
       override fun doFrame(frameTimeNanos: Long) {
@@ -188,27 +181,37 @@ class RCTLevelPlayNativeAdView(context: Context) : FrameLayout(context), LevelPl
 
     onBindLevelPlayNativeAdView?.invoke(nativeAd)
 
-    sendEventToParticularUI(reactContext, id, IronConstants.LP_NATIVE_AD_ON_AD_LOADED, map)
+    sendEventToParticularUI(reactContext, id, IronConstants.ON_NATIVE_AD_AD_LOADED, map)
+
+    // Apply styles
+    applyStyles(
+      nativeAdLayout!!.findViewById(R.id.adTitle),
+      nativeAdLayout!!.findViewById(R.id.adBody),
+      nativeAdLayout!!.findViewById(R.id.adAdvertiser),
+      nativeAdLayout!!.findViewById(R.id.adCallToAction))
+
+    // Visible the ad
+    nativeAdLayout!!.visibility = View.VISIBLE
   }
 
   override fun onAdLoadFailed(nativeAd: LevelPlayNativeAd?, error: IronSourceError?) {
     val map = Arguments.createMap()
     map.putMap("nativeAd", nativeAd.toReadableMap())
     map.putMap("error", error?.toReadableMap())
-    sendEventToParticularUI(reactContext, id, IronConstants.LP_NATIVE_AD_ON_AD_LOAD_FAILED, map)
+    sendEventToParticularUI(reactContext, id, IronConstants.ON_NATIVE_AD_AD_LOAD_FAILED, map)
   }
 
   override fun onAdClicked(nativeAd: LevelPlayNativeAd?, adInfo: AdInfo?) {
     val map = Arguments.createMap()
     map.putMap("nativeAd", nativeAd.toReadableMap())
     map.putMap("adInfo", adInfo?.toReadableMap())
-    sendEventToParticularUI(reactContext, id, IronConstants.LP_NATIVE_AD_ON_AD_CLICKED, map)
+    sendEventToParticularUI(reactContext, id, IronConstants.ON_NATIVE_AD_AD_CLICKED, map)
   }
 
   override fun onAdImpression(nativeAd: LevelPlayNativeAd?, adInfo: AdInfo?) {
     val map = Arguments.createMap()
     map.putMap("nativeAd", nativeAd.toReadableMap())
     map.putMap("adInfo", adInfo?.toReadableMap())
-    sendEventToParticularUI(reactContext, id, IronConstants.LP_NATIVE_AD_ON_AD_IMPRESSION, map)
+    sendEventToParticularUI(reactContext, id, IronConstants.ON_NATIVE_AD_AD_IMPRESSION, map)
   }
 }

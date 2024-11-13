@@ -14,10 +14,6 @@ import com.ironsource.react_native_mediation.IronConstants.LP_IS_ON_AD_SHOW_FAIL
 import com.ironsource.react_native_mediation.IronConstants.LP_IS_ON_AD_SHOW_SUCCEEDED
 import com.ironsource.react_native_mediation.LevelPlayUtils.Companion.sendEvent
 
-/**
- * New IS Listener from 7.2.3
- * TODO: Ask if the AdInfo could be null
- */
 class RCTLevelPlayISListener(private val reactApplicationContext: ReactApplicationContext) :
     LevelPlayInterstitialListener {
 

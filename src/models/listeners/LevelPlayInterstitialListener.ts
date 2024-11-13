@@ -1,7 +1,9 @@
 import type {IronSourceAdInfo} from "../IronSourceAdInfo";
 import type {IronSourceError} from "../errors";
 
-// Interface for handling LevelPlayInterstitial events
+/**
+ * Interface for handling LevelPlayInterstitial events
+ */
 export interface LevelPlayInterstitialListener {
     /**
      * Indicates that the interstitial ad was loaded successfully.

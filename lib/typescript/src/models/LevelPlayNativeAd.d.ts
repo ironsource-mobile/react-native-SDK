@@ -1,6 +1,8 @@
-/// <reference types="react" />
 import type { LevelPlayNativeAdViewType } from '../components/LevelPlayNativeAdView';
-import type { LevelPlayNativeAdListener } from './listeners';
+import type { LevelPlayNativeAdListener } from './listeners/LevelPlayNativeAdListener';
+/**
+ * Class representing a level play native ad
+ */
 export declare class LevelPlayNativeAd {
     title: string | null | undefined;
     advertiser: string | null | undefined;
@@ -19,7 +21,7 @@ export declare class LevelPlayNativeAd {
     toString(): string;
     static builder(): LevelPlayNativeAdBuilder;
 }
-declare class LevelPlayNativeAdBuilder {
+export declare class LevelPlayNativeAdBuilder {
     private instance;
     constructor();
     withListener(listener: LevelPlayNativeAdListener | null | undefined): LevelPlayNativeAdBuilder;
@@ -30,5 +32,4 @@ export type LevelPlayNativeAdIcon = {
     uri: string | null | undefined;
     imageData: string | null | undefined;
 };
-export {};
 //# sourceMappingURL=LevelPlayNativeAd.d.ts.map

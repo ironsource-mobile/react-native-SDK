@@ -1,1 +1,0 @@
-{"version":3,"names":["t","availabilityCodec","type","isAvailable","boolean"],"sourceRoot":"../../../src","sources":["models/Availability.ts"],"mappings":"AAAA,OAAO,KAAKA,CAAC,MAAM,OAAO;;AAE1B;AACA;AACA;AACA;AACA;;AAEA,OAAO,MAAMC,iBAAiB,GAAGD,CAAC,CAACE,IAAI,CAAC;EACtCC,WAAW,EAAEH,CAAC,CAACI;AACjB,CAAC,CAAC","ignoreList":[]}

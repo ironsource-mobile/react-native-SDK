@@ -1,4 +1,6 @@
-// Interface for handling Initialization events
+/**
+ * Interface for handling Initialization events
+ */
 export interface InitializationListener {
     /**
      * InitializationListener Callback Events Handler APIs

@@ -1,9 +1,8 @@
 /**
  * This is the main IronSource bridge module.
  */
-import type { AdUnit, IronSourceBannerOptions, IronSourceRVPlacement, IronSourceSegment } from './models';
-import type { ConsentViewListener, ImpressionDataListener, LevelPlayBannerListener, LevelPlayInterstitialListener, LevelPlayRewardedVideoListener, LevelPlayRewardedVideoManualListener } from './models/listeners';
-import type { InitializationListener } from './models/listeners/InitializationListener';
+import { type AdUnit, type IronSourceBannerOptions, type IronSourceRVPlacement, type IronSourceSegment } from './models';
+import type { InitializationListener, ConsentViewListener, ImpressionDataListener, LevelPlayBannerListener, LevelPlayInterstitialListener, LevelPlayRewardedVideoListener, LevelPlayRewardedVideoManualListener } from './models/listeners';
 /** Types =======================================================================**/
 /**
  * Native Module Type
@@ -176,11 +175,15 @@ type IronSourceNativeModuleType = {
      *     iOS: loadBannerWithViewController
      *
      * It falls back to BANNER in the case of invalid sizeDescriptions.
+     *
+     * @deprecated This method will be removed in future versions. Please use LevelPlayBannerAdViewListenr instead.
      */
     loadBanner(options: IronSourceBannerOptions): Promise<void>;
     /**
      * Android: destroyBanner
      *     iOS: destroyBanner
+     *
+     * @deprecated This method will be removed in future versions. Please use LevelPlayBannerAdViewListenr instead.
      */
     destroyBanner(): Promise<void>;
     /**
@@ -188,6 +191,8 @@ type IronSourceNativeModuleType = {
      *     iOS: n/a
      *
      * This simply changes the visibility of the hidden banner view.
+     *
+     * @deprecated This method will be removed in future versions. Please use LevelPlayBannerAdViewListenr instead.
      */
     displayBanner(): Promise<void>;
     /**
@@ -195,16 +200,22 @@ type IronSourceNativeModuleType = {
      *     iOS: n/a
      * This simply changes the visibility of the banner view.
      * Reloading does not take place while it's hidden.
+     *
+     * @deprecated This method will be removed in future versions. Please use LevelPlayBannerAdViewListenr instead.
      */
     hideBanner(): Promise<void>;
     /**
      * Android: isBannerPlacementCapped
      *     iOS: isBannerCappedForPlacement
+     *
+     * @deprecated This method will be removed in future versions. Please use LevelPlayBannerAdViewListenr instead.
      */
     isBannerPlacementCapped(placementName: string): Promise<boolean>;
     /**
      * Android: getMaximalAdaptiveHeight
      *     iOS: getMaximalAdaptiveHeight
+     *
+     * @deprecated This method will be removed in future versions. Please use LevelPlayBannerAdViewListenr instead.
      */
     getMaximalAdaptiveHeight(width: number): Promise<number>;
     /** iOS ConversionValue API ========================================================**/
@@ -263,6 +274,12 @@ type LevelPlayListeners = {
     setInitializationListener: (listener: InitializationListener) => void;
     setImpressionDataListener: (listener: ImpressionDataListener) => void;
     setConsentViewListener: (listener: ConsentViewListener) => void;
+    /**
+     * Sets the setLevelPlayBannerListener to handle banner ad events.
+     * @param listener The setLevelPlayBannerListener object containing event handlers.
+     *
+     * @deprecated This method will be removed in future versions. Please use LevelPlayBannerAdViewListenr instead.
+     */
     setLevelPlayBannerListener: (listener: LevelPlayBannerListener) => void;
     setLevelPlayInterstitialListener: (listener: LevelPlayInterstitialListener) => void;
     setLevelPlayRewardedVideoListener: (listener: LevelPlayRewardedVideoListener) => void;

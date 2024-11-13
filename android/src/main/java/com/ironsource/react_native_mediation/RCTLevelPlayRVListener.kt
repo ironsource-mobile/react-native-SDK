@@ -17,10 +17,6 @@ import com.ironsource.react_native_mediation.IronConstants.LP_RV_ON_AD_REWARDED
 import com.ironsource.react_native_mediation.IronConstants.LP_RV_ON_AD_SHOW_FAILED
 import com.ironsource.react_native_mediation.LevelPlayUtils.Companion.sendEvent
 
-/**
- * New RV Listener from 7.2.3
- * TODO: Ask if the AdInfo could be null
- */
 class RCTLevelPlayRVListener(private val reactApplicationContext: ReactApplicationContext) :
     LevelPlayRewardedVideoListener, LevelPlayRewardedVideoManualListener {
 

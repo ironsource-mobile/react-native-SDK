@@ -2,7 +2,9 @@ import type {IronSourceAdInfo} from "../IronSourceAdInfo";
 import type { IronSourceRVPlacement } from "../IronSourceRVPlacement";
 import type {IronSourceError} from "../errors";
 
-// Interface for handling LevelPlayRewardedVideo base events
+/**
+ * Interface for handling LevelPlayRewardedVideo base events
+ */
 export interface LevelPlayRewardedVideoBaseListener {
     /**
      * The Rewarded Video ad view has opened.

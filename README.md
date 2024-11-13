@@ -2,8 +2,10 @@
 
 A bridge for ironSource SDK
 
+- [ironSource Knowledge Center](https://developers.is.com/)
 - [Android SDK](https://developers.ironsrc.com/ironsource-mobile/android/android-sdk/)
 - [iOS SDK](https://developers.ironsrc.com/ironsource-mobile/ios/ios-sdk/)
+- [React-Native Plugin](https://developers.is.com/ironsource-mobile/react-native/react-native-plugin-integration/)
 
 # Getting Started
 
@@ -126,57 +128,55 @@ function SomeComponent() {
   useEffect(() => {
     const listener: LevelPlayRewardedVideoListener = {
       onAdAvailable: (adInfo: IronSourceAdInfo) => {},
-      onAdUnAvailable: () => {},
+      onAdUnavailable: () => {},
       onAdOpened: (adInfo: IronSourceAdInfo) => {},
       onAdClosed: (adInfo: IronSourceAdInfo) => {},
       onAdRewarded: (placement: IronSourceRVPlacement, adInfo: IronSourceAdInfo) => {},
       onAdShowFailed: (error: IronSourceError, adInfo: IronSourceAdInfo) => {},
       onAdClicked: (placement: IronSourceRVPlacement, adInfo: IronSourceAdInfo) => {},
     };
-    IronSource.setLevelPlayRewardedVideoManualListener(listener);
+    IronSource.setLevelPlayRewardedVideoListener(listener);
   }, [])
 
   // return some view
 }
 ```
 
-#### LevelPlayInterstitialListener
+#### LevelPlayInterstitialAdListener
 ```typescript
-import { IronSource } from 'ironsource-mediation'
-
 function SomeComponent() {
   useEffect(() => {
-    const listener: LevelPlayInterstitialListener = {
-      onAdReady: (adInfo: IronSourceAdInfo) => {},
-      onAdLoadFailed: (error: IronSourceError) => {},
-      onAdOpened: (adInfo: IronSourceAdInfo) => {},
-      onAdClosed: (adInfo: IronSourceAdInfo) => {},
-      onAdShowFailed: (error: IronSourceError, adInfo: IronSourceAdInfo) => {},
-      onAdClicked: (adInfo: IronSourceAdInfo) => {},
-      onAdShowSucceeded: (adInfo: IronSourceAdInfo) => {},
+    const listener: LevelPlayInterstitialAdListener = {
+      onAdLoaded: (adInfo: LevelPlayAdInfo) => {},
+      onAdLoadFailed: (error: LevelPlayAdError) => {},
+      onAdInfoChanged: (adInfo: LevelPlayAdInfo) => {},
+      onAdDisplayed: (adInfo: LevelPlayAdInfo) => {},
+      onAdDisplayFailed: (error: LevelPlayAdError, adInfo: LevelPlayAdInfo) => {},
+      onAdClicked: (adInfo: LevelPlayAdInfo) => {},
+      onAdClosed: (adInfo: LevelPlayAdInfo) => {}
     }
-    IronSource.setLevelPlayInterstitialListener(listener);
+    // Use listener ...
   }, [])
 
   // return some view
 }
 ```
 
-#### LevelPlayBannerListener
+#### LevelPlayBannerAdViewListener
 ```typescript
-import { IronSource } from 'ironsource-mediation'
-
 function SomeComponent() {
   useEffect(() => {
-    const listener: LevelPlayBannerListener = {
-      onAdLoaded: (adInfo: IronSourceAdInfo) => {},
-      onAdLoadFailed: (error: IronSourceError) => {},
-      onAdClicked: (adInfo: IronSourceAdInfo) => {},
-      onAdScreenPresented: (adInfo: IronSourceAdInfo) => {},
-      onAdScreenDismissed: (adInfo: IronSourceAdInfo) => {},
-      onAdLeftApplication: (adInfo: IronSourceAdInfo) => {},
-    }
-    IronSource.setLevelPlayBannerListener(listener);
+    const listener: LevelPlayBannerAdViewListener = {
+        onAdLoaded: (adInfo: LevelPlayAdInfo) => {},
+        onAdLoadFailed: (error: LevelPlayAdError) => {},
+        onAdDisplayed: (adInfo: LevelPlayAdInfo) => {},
+        onAdDisplayFailed: (adInfo: LevelPlayAdInfo, error: LevelPlayAdError) => {},
+        onAdClicked: (adInfo: LevelPlayAdInfo) => {},
+        onAdExpanded: (adInfo: LevelPlayAdInfo) => {},
+        onAdCollapsed: (adInfo: LevelPlayAdInfo) => {},
+        onAdLeftApplication: (adInfo: LevelPlayAdInfo) => {},
+      };
+    // Use listener ...  
   }, [])
 
   // return some view
@@ -202,38 +202,18 @@ function SomeComponent() {
 }
 ```
 
-### Initialize the SDK
+### Initialize the plugin
 
 ```typescript
-async function initIronSource() {
-  try {
-    // This API can be called in parallel
-    IronSource.validateIntegration().catch(e => console.error(e))
-
-    // Set adapters and network SDKs to debug
-    await IronSource.setAdaptersDebug(true)
-
-    // This should be enabled to detect network condition errors
-    await IronSource.shouldTrackNetworkState(true)
-
-    // GDPR Consent
-    await IronSource.setConsent(true)
-
-    // COPPA
-    await IronSource.setMetaData('is_child_directed', ['false'])
-
-    // Do not use advertiserId for this.
-    // Use an application user id.
-    await IronSource.setUserId(APP_USER_ID)
-
-    // To init with all ad units
-    // await IronSource.init(APP_KEY);
-
-    // Or only specific ones
-    await IronSource.initWithAdUnits(APP_KEY, ['REWARDED_VIDEO'])
-  } catch (e) {
-    console.error(e)
-  }
+async function initLevelPlay() {
+  let initRequest: LevelPlayInitRequest = LevelPlayInitRequest.builder(APP_KEY)
+      .withLegacyAdFormats([AdFormat.BANNER, AdFormat.INTERSTITIAL, AdFormat.REWARDED, AdFormat.NATIVE_AD])
+      .build();
+    const initListener: LevelPlayInitListener = {
+      onInitFailed: (error: LevelPlayInitError) => {},
+      onInitSuccess: (configuration: LevelPlayConfiguration) => {}
+    }
+    await LevelPlay.init(initRequest, initListener)
 }
 ```
 
@@ -249,29 +229,83 @@ const showRewardedVideo = async () => {
 ```
 
 #### LevelPlayInterstitial
-```typescript
-const loadInterstitial = async () => {
-  await IronSource.loadInterstitial();
-}
 
-const showInterstitial = async () => {
-  if (await IronSource.isInterstitialReady()) {
-    IronSource.showInterstitial();
-  }
-}
+```typescript
+const SomeComponent: React.FC = () => {
+  const [interstitialAd, setInterstitialAd] = useState<LevelPlayInterstitialAd | null>()
+
+  useEffect(() => {
+    const levelPlayInterstitialAd = new LevelPlayInterstitialAd([YOUR_AD_UNIT]);
+    levelPlayInterstitialAd.setListener([YOUR_LISTENER]);
+    setInterstitialAd(levelPlayInterstitialAd);
+  }, []);
+
+  const loadAd = async () => {
+    try {
+      await interstitialAd?.loadAd();
+    } catch (error) {
+      console.error('Failed to load ad:', error);
+    }
+  };
+
+  const showAd = async () => {
+    if (await interstitialAd?.isAdReady()) {
+        await interstitialAd!.showAd([YOUR_PLACEMENT]);
+    }
+  };
+
+  /// Rest of component, return some view ...
 ```
 
 #### LevelPlayBanner
+
 ```typescript
-const loadBanner = async () => {
-  const bannerOptions: IronSourceBannerOptions = {
-    position: 'BOTTOM',
-    sizeDescription: 'BANNER',
-    verticalOffset: -30,
-    placementName: BANNER_PLACEMENT, // optional
-  };
-  IronSource.loadBanner(bannerOptions)
-}
+const SomeComponent: React.FC = () => {
+  // State to manage the reference to the banner ad view
+  const bannerAdViewRef = useRef<LevelPlayBannerAdViewMethods>(null);
+
+  // Load ad
+  const loadAd = useCallback(() => {
+    bannerAdViewRef.current?.loadAd();
+  }, []);
+
+  const destroyAdAndCreateNew = useCallback(() => {
+    bannerAdViewRef.current?.destroy();
+    setAdKey((prevKey) => prevKey + 1);
+  }, []);
+
+  const pauseAutoRefresh = useCallback(() => {
+    bannerAdViewRef.current?.pauseAutoRefresh();
+  }, []);
+
+  const resumeAutoRefresh = useCallback(() => {
+    bannerAdViewRef.current?.resumeAutoRefresh();
+  }, []);
+
+  return (
+    <View>
+      <Text style={[styles.h2, styles.alignCenter]}>
+        Banner Ad View
+      </Text>
+      <View style={styles.horizontalSpaceBetween}>
+        <HighlightButton buttonText={'Load Ad'} onPress={loadAd} />
+        <HighlightButton buttonText={'Destroy Ad'} onPress={destroyAdAndCreateNew} />
+      </View>
+      <View style={styles.horizontalSpaceBetween}>
+        <HighlightButton buttonText={'Pause Auto Refresh'} onPress={pauseAutoRefresh} />
+        <HighlightButton buttonText={'Resume Auto Refresh'} onPress={resumeAutoRefresh} />
+      </View>
+      <LevelPlayBannerAdView 
+        ref={bannerAdViewRef}
+        adUnitId={[YOUR_AD_UNIT]}
+        adSize={[YOUR_LEVEL_PLAY_AD_SIZE]}
+        placementName={[YOUR_PLACEMENT]}
+        listener={[YOUR_LISTENER]}
+        style={{width: adSize.width, height: adSize.height, alignSelf: 'center'}} // Use the values from the LevelPlayAdSize instance
+      />
+    </View>
+  );
+};
 ```
 
 #### LevelPlayNativeAd
@@ -317,6 +351,7 @@ Note:
 
 - Make sure to read the official documents at [ironSource Knowledge Center](https://developers.ironsrc.com/ironsource-mobile/android/android-sdk/) for proper usage.
 - Some config functions must be called before `IronSource.init`.
+- LevelPlayBannerListener is deprecated - Please use LevelPlayBannerAdViewListener with LevelPlayBannerAdView instead.
 
 ### Manual Load RV
 
@@ -343,87 +378,6 @@ const loadRewardedVideo = async () => {
     await IronSource.loadRewardedVideo()
   } catch (e) {
     console.error(e)
-  }
-}
-```
-
-### Banner Size
-
-As you can see the definitions on [ironSource KC](https://developers.is.com/ironsource-mobile/android/banner-integration-android/#step-1), a Banner size can be set in two ways:
-
-- Size Description
-- Custom
-
-```typescript
-type IronSourceBannerSize = 'BANNER' | 'LARGE' | 'RECTANGLE' | 'SMART'
-type IronSourceBannerSizeOption = {
-  sizeDescription: IronSourceBannerSize
-}
-// or
-type IronSourceBannerSizeOption = {
-  width: number
-  height: number
-}
-```
-
-Note:
-
-- If you set both a size description and width/height on your JS app, the size description will be used.
-
-### Banner Positioning
-
-For the native SDKs, a banner view must be implemented directly to the UI component.
-This bridge takes care of native level view implementation. Therefore, positioning parameters are provided as below:
-
-#### Position
-
-```typescript
-type IronSourceBannerPositionOption = {
-  position: 'TOP' | 'BOTTOM' | 'CENTER'
-}
-```
-
-#### Offset
-
-This parameter represents the vertical offset of the banner:
-
-- Negative values: Upward offset
-- Positive values: Downward offset
-
-Unit:
-
-- Android: dp
-- iOS: point
-
-Note:
-
-- Offset in the same direction of the position will be ignored. e.g. Bottom & 50, Top & -50
-- However, the offsets in the opposite direction or both directions on the Center position can go beyond the screen boundaries. e.g. Bottom & -10000
-- Make sure that a banner presented will be visible
-
-```typescript
-type IronSourceBannerOffsetOption = {
-  verticalOffset?: number
-}
-```
-
-<ins>Load Example</ins>
-
-```typescript
-const loadBanner = async () => {
-  const bannerOptions: IronSourceBannerOptions = {
-    position: 'BOTTOM',
-    sizeDescription: 'BANNER',
-    isAdaptive: true, // Optional
-    verticalOffset: -30, // Optional - add 30dp/point margin bottom
-    placementName: BANNER_PLACEMENT, // Optional
-  }
-
-  const isCapped = await IronSource.isBannerPlacementCapped(BANNER_PLACEMENT)
-  if (!isCapped) {
-    IronSource.loadBanner(bannerOptions)
-  } else {
-    console.log(`Banner Placement${BANNER_PLACEMENT} is capped`)
   }
 }
 ```
@@ -492,11 +446,11 @@ npm run ios
 yarn run ios
 ```
 
-## Version History
-You can find a summary of the ironSouce SDK version history [here](https://developers.is.com/ironsource-mobile/react-native/sdk-change-log/)
+## Version history 
+You can find a summary of the ironSouce SDK version history [here](https://developers.is.com/ironsource-mobile/react-native/sdk-change-log/).
 
-## Contact US
-For any question please contact us [here](https://ironsrc.formtitan.com/knowledge-center#/)
+## Contact US 
+For any question please contact us [here](https://ironsrc.formtitan.com/knowledge-center#/). 
 
-## License
-The license can be viewed [here](https://github.com/ironsource-mobile/react-native-SDK/blob/master/LICENSE)
+## License 
+https://developers.is.com/ironsource-mobile/general/ironsource-platform-online-terms-conditions/

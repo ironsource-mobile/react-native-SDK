@@ -1,3 +1,3 @@
 export * from './LevelPlayNativeAdView';
-export * from './LevelPlayNativeAdComponent';
+export * from './LevelPlayBannerAdView';
 //# sourceMappingURL=index.d.ts.map

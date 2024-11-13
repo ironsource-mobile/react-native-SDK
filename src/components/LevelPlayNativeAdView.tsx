@@ -1,8 +1,23 @@
 import * as React from 'react';
 import { useRef, useCallback, useEffect, useState } from 'react';
-import type {NativeMethods, ViewProps, ColorValue} from 'react-native'
-import {LevelPlayNativeAd, type IronSourceAdInfo, type IronSourceError} from "ironsource-mediation";
-import {LevelPlayNativeAdComponent} from './LevelPlayNativeAdComponent';
+import {type NativeMethods, type ViewProps, type ColorValue, type HostComponent, requireNativeComponent} from 'react-native'
+import { type IronSourceAdInfo, type IronSourceError, LevelPlayNativeAd } from '../models';
+
+// Object to cache native components
+const componentCache: { [key: string]: HostComponent<LevelPlayNativeAdViewProps & ViewProps & LevelPlayNativeAdViewNativeEvents> } = {};
+
+/**
+ * Retrieves or creates a native component for a given viewType and returns it as a HostComponent.
+ * 
+ * @param viewType The type of the native component to be retrieved or created.
+ * @returns A HostComponent representing the native component with specified props and events.
+ */
+const LevelPlayNativeAdComponent = (viewType: string): HostComponent<LevelPlayNativeAdViewProps & ViewProps & LevelPlayNativeAdViewNativeEvents> => {
+  if (!componentCache[viewType]) {
+    componentCache[viewType] = requireNativeComponent<LevelPlayNativeAdViewProps & ViewProps & LevelPlayNativeAdViewNativeEvents>(viewType);
+  }
+  return componentCache[viewType];
+};
 
 // Defining the type of the LevelPlayNativeAdView React component
 export type LevelPlayNativeAdViewType = React.Component<LevelPlayNativeAdViewProps> & NativeMethods
@@ -23,7 +38,9 @@ export type LevelPlayNativeAdViewNativeEvents = {
   onAdImpressionEvent(event: { nativeEvent: { nativeAd: LevelPlayNativeAd; adInfo: IronSourceAdInfo } }): void;
 };
 
-// React component for displaying native ads
+/**
+ * LevelPlay React component for displaying native ads
+ */
 export function LevelPlayNativeAdView(props : LevelPlayNativeAdViewProps) {
     // Access props directly
     const templateType = props.templateType;
@@ -42,10 +59,10 @@ export function LevelPlayNativeAdView(props : LevelPlayNativeAdViewProps) {
   useEffect(() => {
     // Set nativeAdViewRef and viewType
     nativeAd?.setNativeAdViewRef(nativeAdViewRef);
-    nativeAd?.setViewType(viewType || 'levelPlayNativeAdViewType');
+    nativeAd?.setViewType(viewType || 'levelPlayNativeAdView');
 
     // Get the native component based on viewType
-    const component = LevelPlayNativeAdComponent(viewType || 'levelPlayNativeAdViewType');
+    const component = LevelPlayNativeAdComponent(viewType || 'levelPlayNativeAdView');
     setNativeComponent(component);
 
   }, []);
@@ -75,25 +92,25 @@ export function LevelPlayNativeAdView(props : LevelPlayNativeAdViewProps) {
     if (nativeAd?.listener?.onAdLoaded) {
       nativeAd?.listener?.onAdLoaded(extractCompletedNativeAd(event.nativeEvent.nativeAd), event.nativeEvent.adInfo);
     }
-  }, []);
+  }, [nativeAd?.listener]);
 
-  const onAdLoadFailedEvent = (event: { nativeEvent: { nativeAd: LevelPlayNativeAd; error: IronSourceError } }) => {
+  const onAdLoadFailedEvent = useCallback((event: { nativeEvent: { nativeAd: LevelPlayNativeAd; error: IronSourceError } }) => {
     if (nativeAd?.listener?.onAdLoadFailed) {
       nativeAd?.listener?.onAdLoadFailed(extractCompletedNativeAd(event.nativeEvent.nativeAd), event.nativeEvent.error);
     }
-  };
+  }, [nativeAd?.listener]);
 
-  const onAdClickedEvent = (event: { nativeEvent: { nativeAd: LevelPlayNativeAd; adInfo: IronSourceAdInfo } }) => {
+  const onAdClickedEvent = useCallback((event: { nativeEvent: { nativeAd: LevelPlayNativeAd; adInfo: IronSourceAdInfo } }) => {
     if (nativeAd?.listener?.onAdClicked) {
       nativeAd?.listener?.onAdClicked(extractCompletedNativeAd(event.nativeEvent.nativeAd), event.nativeEvent.adInfo);
     }
-  };
+  }, [nativeAd?.listener]);
 
-  const onAdImpressionEvent = (event: { nativeEvent: { nativeAd: LevelPlayNativeAd; adInfo: IronSourceAdInfo } }) => {
+  const onAdImpressionEvent = useCallback((event: { nativeEvent: { nativeAd: LevelPlayNativeAd; adInfo: IronSourceAdInfo } }) => {
     if (nativeAd?.listener?.onAdImpression) {
       nativeAd?.listener?.onAdImpression(extractCompletedNativeAd(event.nativeEvent.nativeAd), event.nativeEvent.adInfo);
     }
-  };
+  }, [nativeAd?.listener]);
 
   if (!NativeComponent) {
     return null; // Render nothing if the component is not set yet
@@ -143,6 +160,7 @@ export interface LevelPlayNativeAdElementStyle {
 
 /// LevelPlayNativeAdElementStyle - class holder for all available styling element
 export interface LevelPlayNativeAdTemplateStyle {
+  mainBackgroundColor?: ColorValue,
   titleStyle?: LevelPlayNativeAdElementStyle;
   bodyStyle?: LevelPlayNativeAdElementStyle;
   advertiserStyle?: LevelPlayNativeAdElementStyle;

@@ -8,4 +8,11 @@ export * from './IronSourceAdInfo';
 export * from './LevelPlayNativeAd';
 export * from './IronSourceContainerParams';
 export * from './listeners';
+export * from './AdFormat';
+export * from './LevelPlayConfiguration';
+export * from './LevelPlayInitRequest';
+export * from './LevelPlayAdInfo';
+export * from './LevelPlayAdError';
+export * from './LevelPlayInterstitialAd';
+export * from './LevelPlayAdSize';
 //# sourceMappingURL=index.d.ts.map

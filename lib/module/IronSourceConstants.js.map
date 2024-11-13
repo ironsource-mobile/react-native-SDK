@@ -1,1 +1,0 @@
-{"version":3,"names":["PLUGIN_TYPE","PLUGIN_VERSION","ANDROID_SDK_VERSION","IOS_SDK_VERSION"],"sourceRoot":"../../src","sources":["IronSourceConstants.ts"],"mappings":"AAAA,OAAO,MAAMA,WAAW,GAAG,aAAa;AACxC,OAAO,MAAMC,cAAc,GAAG,OAAO;AACrC,OAAO,MAAMC,mBAAmB,GAAG,OAAO;AAC1C,OAAO,MAAMC,eAAe,GAAG,OAAO","ignoreList":[]}

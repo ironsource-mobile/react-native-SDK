@@ -10,10 +10,10 @@ import com.facebook.react.uimanager.ThemedReactContext
 import com.facebook.react.uimanager.annotations.ReactProp
 import com.ironsource.mediationsdk.ads.nativead.LevelPlayNativeAd
 import com.ironsource.mediationsdk.ads.nativead.NativeAdLayout
-import com.ironsource.react_native_mediation.IronConstants.LP_NATIVE_AD_ON_AD_CLICKED
-import com.ironsource.react_native_mediation.IronConstants.LP_NATIVE_AD_ON_AD_IMPRESSION
-import com.ironsource.react_native_mediation.IronConstants.LP_NATIVE_AD_ON_AD_LOADED
-import com.ironsource.react_native_mediation.IronConstants.LP_NATIVE_AD_ON_AD_LOAD_FAILED
+import com.ironsource.react_native_mediation.IronConstants.ON_NATIVE_AD_AD_CLICKED
+import com.ironsource.react_native_mediation.IronConstants.ON_NATIVE_AD_AD_IMPRESSION
+import com.ironsource.react_native_mediation.IronConstants.ON_NATIVE_AD_AD_LOADED
+import com.ironsource.react_native_mediation.IronConstants.ON_NATIVE_AD_AD_LOAD_FAILED
 
 /**
  * Manager abstract class for creating instances of RCTLevelPlayNativeAdView with build-in templates and custom layouts.
@@ -28,7 +28,7 @@ abstract class RCTLevelPlayNativeAdViewManager(
 ) : SimpleViewManager<RCTLevelPlayNativeAdView>() {
 
   override fun getName(): String {
-    return DEFAULT_VIEW_TYPE
+    return MANAGER_NAME
   }
 
   override fun createViewInstance(context: ThemedReactContext): RCTLevelPlayNativeAdView {
@@ -59,10 +59,10 @@ abstract class RCTLevelPlayNativeAdViewManager(
   // the callback name that should be used.
   override fun getExportedCustomDirectEventTypeConstants(): MutableMap<String, Any> {
     return mutableMapOf(
-      LP_NATIVE_AD_ON_AD_LOADED to mapOf("registrationName" to "onAdLoadedEvent"),
-      LP_NATIVE_AD_ON_AD_LOAD_FAILED to mapOf("registrationName" to "onAdLoadFailedEvent"),
-      LP_NATIVE_AD_ON_AD_IMPRESSION to mapOf("registrationName" to "onAdImpressionEvent"),
-      LP_NATIVE_AD_ON_AD_CLICKED to mapOf("registrationName" to "onAdClickedEvent"),
+      ON_NATIVE_AD_AD_LOADED to mapOf("registrationName" to "onAdLoadedEvent"),
+      ON_NATIVE_AD_AD_LOAD_FAILED to mapOf("registrationName" to "onAdLoadFailedEvent"),
+      ON_NATIVE_AD_AD_IMPRESSION to mapOf("registrationName" to "onAdImpressionEvent"),
+      ON_NATIVE_AD_AD_CLICKED to mapOf("registrationName" to "onAdClickedEvent"),
     )
   }
 
@@ -81,12 +81,13 @@ abstract class RCTLevelPlayNativeAdViewManager(
     val templateType = value?.getString("templateType") ?: ""
     val viewType = value?.getString("viewType")
     // Parse LevelPlayNativeAdElementStyle objects
+    val mainBackgroundColor = parseColor(templateStyle["mainBackgroundColor"] as? String)
     val titleElementStyle = parseElementStyle(templateStyle["titleStyle"] as? Map<String, Any?>)
     val bodyElementStyle = parseElementStyle(templateStyle["bodyStyle"] as? Map<String, Any?>)
     val advertiserElementStyle = parseElementStyle(templateStyle["advertiserStyle"] as? Map<String, Any?>)
     val callToActionElementStyle = parseElementStyle(templateStyle["callToActionStyle"] as? Map<String, Any?>)
     // Create the template style from parsed element styles(if exist)
-    val levelPlayNativeAdTemplateStyle = LevelPlayNativeAdTemplateStyle(titleElementStyle, bodyElementStyle, advertiserElementStyle, callToActionElementStyle)
+    val levelPlayNativeAdTemplateStyle = LevelPlayNativeAdTemplateStyle(mainBackgroundColor, titleElementStyle, bodyElementStyle, advertiserElementStyle, callToActionElementStyle)
     // Create the native ad layout
     val layoutInflater = LayoutInflater.from(reactApplicationContext)
     val nativeAdLayout = if (layoutId != null && layoutId > 0) {
@@ -152,7 +153,7 @@ abstract class RCTLevelPlayNativeAdViewManager(
   abstract fun bindNativeAdToView(nativeAd: LevelPlayNativeAd?, nativeAdLayout: NativeAdLayout)
 
   companion object {
-    const val DEFAULT_VIEW_TYPE = "levelPlayNativeAdViewType"
+    const val MANAGER_NAME = "levelPlayNativeAdView"
     private const val COMMAND_LOAD = 1
     private const val COMMAND_DESTROY = 2
   }

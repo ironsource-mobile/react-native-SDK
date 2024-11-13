@@ -52,11 +52,33 @@ object IronConstants {
     const val LP_BN_ON_AD_LEFT_APPLICATION = "$LEVEL_PLAY_PREFIX:$BN_PREFIX:onAdLeftApplication"
 
     // Native Ad
-    private const val NATIVE_AD_PREFIX = "NATIVE_AD"
-    const val LP_NATIVE_AD_ON_AD_LOADED = "$LEVEL_PLAY_PREFIX:$NATIVE_AD_PREFIX:onAdLoadedEvent"
-    const val LP_NATIVE_AD_ON_AD_LOAD_FAILED = "$LEVEL_PLAY_PREFIX:$NATIVE_AD_PREFIX:onAdLoadFailedEvent"
-    const val LP_NATIVE_AD_ON_AD_CLICKED = "$LEVEL_PLAY_PREFIX:$NATIVE_AD_PREFIX:onAdClickedEvent"
-    const val LP_NATIVE_AD_ON_AD_IMPRESSION = "$LEVEL_PLAY_PREFIX:$NATIVE_AD_PREFIX:onAdImpressionEvent"
+    const val ON_NATIVE_AD_AD_LOADED = "onNativeAdAdLoaded"
+    const val ON_NATIVE_AD_AD_LOAD_FAILED = "onNativeAdAdLoadFailed"
+    const val ON_NATIVE_AD_AD_CLICKED = "onNativeAdAdClicked"
+    const val ON_NATIVE_AD_AD_IMPRESSION = "onNativeAdAdImpression"
+
+    // LevelPlayInit
+    const val ON_INIT_FAILED = "onInitFailed"
+    const val ON_INIT_SUCCESS = "onInitSuccess"
+
+    // LevelPlay Interstitial Ad
+    const val ON_INTERSTITIAL_AD_LOADED = "onInterstitialAdLoaded"
+    const val ON_INTERSTITIAL_AD_LOAD_FAILED = "onInterstitialAdLoadFailed"
+    const val ON_INTERSTITIAL_AD_INFO_CHANGED = "onInterstitialAdInfoChanged"
+    const val ON_INTERSTITIAL_AD_DISPLAYED = "onInterstitialAdDisplayed"
+    const val ON_INTERSTITIAL_AD_DISPLAY_FAILED = "onInterstitialAdDisplayFailed"
+    const val ON_INTERSTITIAL_AD_CLICKED = "onInterstitialAdClicked"
+    const val ON_INTERSTITIAL_AD_CLOSED = "onInterstitialAdClosed"
+
+    // Native Ad
+    const val ON_BANNER_AD_LOADED = "onBannerAdLoaded"
+    const val ON_BANNER_AD_LOAD_FAILED = "onBannerAdLoadFailed"
+    const val ON_BANNER_AD_DISPLAYED = "onBannerAdDisplayed"
+    const val ON_BANNER_AD_DISPLAY_FAILED = "onBannerAdDisplayFailed"
+    const val ON_BANNER_AD_CLICKED = "onBannerAdClicked"
+    const val ON_BANNER_AD_COLLAPSED = "onBannerAdCollapsed"
+    const val ON_BANNER_AD_EXPANDED = "onBannerAdExpanded"
+    const val ON_BANNER_AD_LEFT_APPLICATION = "onBannerAdLeftApplication"
 
     // For JS Event Constants mapping
     fun getEventConstants(): MutableMap<String, Any> = hashMapOf(
@@ -97,9 +119,22 @@ object IronConstants {
 
 
         // Native Ad Listener Events
-        "LP_NATIVE_AD_ON_AD_LOADED" to LP_NATIVE_AD_ON_AD_LOADED,
-        "LP_NATIVE_AD_ON_AD_LOAD_FAILED" to LP_NATIVE_AD_ON_AD_LOAD_FAILED,
-        "LP_NATIVE_AD_ON_AD_CLICKED" to LP_NATIVE_AD_ON_AD_CLICKED,
-        "LP_NATIVE_AD_ON_AD_IMPRESSION" to LP_NATIVE_AD_ON_AD_IMPRESSION,
+        "ON_NATIVE_AD_AD_LOADED" to ON_NATIVE_AD_AD_LOADED,
+        "ON_NATIVE_AD_AD_LOAD_FAILED" to ON_NATIVE_AD_AD_LOAD_FAILED,
+        "ON_NATIVE_AD_AD_CLICKED" to ON_NATIVE_AD_AD_CLICKED,
+        "ON_NATIVE_AD_AD_IMPRESSION" to ON_NATIVE_AD_AD_IMPRESSION,
+
+        // LevelPlay Init
+        "ON_INIT_FAILED" to ON_INIT_FAILED,
+        "ON_INIT_SUCCESS" to ON_INIT_SUCCESS,
+
+        // LevelPlay Interstitial Ad
+        "ON_INTERSTITIAL_AD_LOADED" to ON_INTERSTITIAL_AD_LOADED,
+        "ON_INTERSTITIAL_AD_LOAD_FAILED" to ON_INTERSTITIAL_AD_LOAD_FAILED,
+        "ON_INTERSTITIAL_AD_INFO_CHANGED" to ON_INTERSTITIAL_AD_INFO_CHANGED,
+        "ON_INTERSTITIAL_AD_DISPLAYED" to ON_INTERSTITIAL_AD_DISPLAYED,
+        "ON_INTERSTITIAL_AD_DISPLAY_FAILED" to ON_INTERSTITIAL_AD_DISPLAY_FAILED,
+        "ON_INTERSTITIAL_AD_CLICKED" to ON_INTERSTITIAL_AD_CLICKED,
+        "ON_INTERSTITIAL_AD_CLOSED" to ON_INTERSTITIAL_AD_CLOSED,
     )
 }

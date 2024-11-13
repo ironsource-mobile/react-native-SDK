@@ -1,11 +1,9 @@
-import * as t from 'io-ts';
 /**
  * Used for Event Listeners
  */
-export declare const ironSourceRVPlacementCodec: t.TypeC<{
-    placementName: t.StringC;
-    rewardName: t.StringC;
-    rewardAmount: t.NumberC;
-}>;
-export type IronSourceRVPlacement = t.TypeOf<typeof ironSourceRVPlacementCodec>;
+export type IronSourceRVPlacement = {
+    placementName: string;
+    rewardName: string;
+    rewardAmount: number;
+};
 //# sourceMappingURL=IronSourceRVPlacement.d.ts.map

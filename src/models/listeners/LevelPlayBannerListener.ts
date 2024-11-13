@@ -1,7 +1,10 @@
 import type {IronSourceAdInfo} from "../IronSourceAdInfo";
 import type {IronSourceError} from "../errors";
 
-// Interface for handling LevelPlayBanner events
+/**
+ * Interface for handling LevelPlayBanner events
+ * @deprecated This method will be removed in future versions. Please use LevelPlayBannerAdViewListenr with LevelPlayBannerAdView instead.
+ */
 export interface LevelPlayBannerListener {
     /**
      * Invoked each time a banner was loaded. Either on refresh, or manual load.

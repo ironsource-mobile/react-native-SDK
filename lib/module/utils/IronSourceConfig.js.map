@@ -1,0 +1,1 @@
+{"version":3,"names":["NativeModules","IronSourceConfig","setPluginData"],"sourceRoot":"../../../src","sources":["utils/IronSourceConfig.ts"],"mappings":"AAAA;AACA;AACA;;AAEA,SAASA,aAAa,QAAQ,cAAc;AAQ5C,MAAM;EAAEC;AAAiB,CAAC,GAAGD,aAAa;AAE1C,OAAO,MAAME,aAAa,GACxBD,gBAAgB,CAACC,aAAsC","ignoreList":[]}

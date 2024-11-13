@@ -20,5 +20,5 @@ Pod::Spec.new do |s|
   }
 
   s.dependency "React-Core"
-  s.dependency "IronSourceSDK","8.1.1.0"
+  s.dependency "IronSourceSDK","8.4.0.0"
 end

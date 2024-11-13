@@ -6,10 +6,6 @@ import com.ironsource.mediationsdk.logger.IronSourceError
 import com.ironsource.mediationsdk.sdk.LevelPlayBannerListener
 import com.ironsource.react_native_mediation.LevelPlayUtils.Companion.sendEvent
 
-/**
- * New IS Listener from 7.2.3
- * TODO: Ask if the AdInfo could be null
- */
 class RCTLevelPlayBNListener(
     private val reactAppContext: ReactApplicationContext,
     val onBannerAdLoadFailedCallBack: () -> Unit

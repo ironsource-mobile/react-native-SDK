@@ -67,5 +67,5 @@ dependencies {
     implementation 'com.facebook.react:react-android:0.72.9'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     // ironSource
-    implementation 'com.ironsource.sdk:mediationsdk:8.1.0'
+    implementation 'com.ironsource.sdk:mediationsdk:8.4.0'
 }

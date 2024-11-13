@@ -5,50 +5,8 @@
 #import "RCTLevelPlayISDelegateWrapper.h"
 #import "RCTLevelPlayBNDelegateWrapper.h"
 #import "RCTLevelPlayNativeAdViewManager.h"
-
-/// Constants
-#pragma mark - Ad Units
-static NSString *const REWARDED_VIDEO = @"REWARDED_VIDEO";
-static NSString *const INTERSTITIAL = @"INTERSTITIAL";
-static NSString *const BANNER = @"BANNER";
-static NSString *const NATIVE_AD = @"NATIVE_AD";
-#pragma mark - ARM ImpressionDataDelegate Constant
-static NSString *const ON_IMPRESSION_SUCCESS = @"onImpressionSuccess";
-#pragma mark - ISConsentViewDelegate Constants
-static NSString *const CONSENT_VIEW_DID_LOAD_SUCCESS = @"consentViewDidLoadSuccess";
-static NSString *const CONSENT_VIEW_DID_FAIL_TO_LOAD = @"consentViewDidFailToLoad";
-static NSString *const CONSENT_VIEW_DID_SHOW_SUCCESS = @"consentViewDidShowSuccess";
-static NSString *const CONSENT_VIEW_DID_FAIL_TO_SHOW = @"consentViewDidFailToShow";
-static NSString *const CONSENT_VIEW_DID_ACCEPT = @"consentViewDidAccept";
-#pragma mark - ISInitializationDelegate Constant
-static NSString *const ON_INITIALIZATION_COMPLETE = @"initializationDidComplete";
-#pragma mark - LevelPlayListener Constants
-#pragma mark - LevelPlay RV
-static NSString *const LP_RV_ON_AD_AVAILABLE   = @"LevelPlay:RV:onAdAvailable";
-static NSString *const LP_RV_ON_AD_UNAVAILABLE = @"LevelPlay:RV:onAdUnavailable";
-static NSString *const LP_RV_ON_AD_OPENED      = @"LevelPlay:RV:onAdOpened";
-static NSString *const LP_RV_ON_AD_CLOSED      = @"LevelPlay:RV:onAdClosed";
-static NSString *const LP_RV_ON_AD_REWARDED    = @"LevelPlay:RV:onAdRewarded";
-static NSString *const LP_RV_ON_AD_SHOW_FAILED = @"LevelPlay:RV:onAdShowFailed";
-static NSString *const LP_RV_ON_AD_CLICKED     = @"LevelPlay:RV:onAdClicked";
-#pragma mark - LevelPlay Manual RV
-static NSString *const LP_MANUAL_RV_ON_AD_READY       = @"LevelPlay:ManualRV:onAdReady";
-static NSString *const LP_MANUAL_RV_ON_AD_LOAD_FAILED = @"LevelPlay:ManualRV:onAdLoadFailed";
-#pragma mark - LevelPlay IS
-static NSString *const LP_IS_ON_AD_READY          = @"LevelPlay:IS:onAdReady";
-static NSString *const LP_IS_ON_AD_LOAD_FAILED    = @"LevelPlay:IS:onAdLoadFailed";
-static NSString *const LP_IS_ON_AD_OPENED         = @"LevelPlay:IS:onAdOpened";
-static NSString *const LP_IS_ON_AD_CLOSED         = @"LevelPlay:IS:onAdClosed";
-static NSString *const LP_IS_ON_AD_SHOW_FAILED    = @"LevelPlay:IS:onAdShowFailed";
-static NSString *const LP_IS_ON_AD_CLICKED        = @"LevelPlay:IS:onAdClicked";
-static NSString *const LP_IS_ON_AD_SHOW_SUCCEEDED = @"LevelPlay:IS:onAdShowSucceeded";
-#pragma mark - LevelPlay BN
-static NSString *const LP_BN_ON_AD_LOADED           = @"LevelPlay:BN:onAdLoaded";
-static NSString *const LP_BN_ON_AD_LOAD_FAILED      = @"LevelPlay:BN:onAdLoadFailed";
-static NSString *const LP_BN_ON_AD_CLICKED          = @"LevelPlay:BN:onAdClicked";
-static NSString *const LP_BN_ON_AD_SCREEN_PRESENTED = @"LevelPlay:BN:onAdScreenPresented";
-static NSString *const LP_BN_ON_AD_SCREEN_DISMISSED = @"LevelPlay:BN:onAdScreenDismissed";
-static NSString *const LP_BN_ON_AD_LEFT_APPLICATION = @"LevelPlay:BN:onAdLeftApplication";
+#import "LevelPlayUtils.h"
+#import "LevelPlayAdObjectManager.h"
 
 @interface IronSourceMediation() <
     ISImpressionDataDelegate,
@@ -69,6 +27,11 @@ static NSString *const LP_BN_ON_AD_LEFT_APPLICATION = @"LevelPlay:BN:onAdLeftApp
 @property (nonatomic, strong) RCTLevelPlayRVDelegateWrapper *rvLevelPlayDelegateWrapper;
 @property (nonatomic, strong) RCTLevelPlayISDelegateWrapper *istLevelPlayDelegateWrapper;
 @property (nonatomic, strong) RCTLevelPlayBNDelegateWrapper *bnLevelPlayDelegateWrapper;
+
+// LevelPlay Ad Instance Manager
+@property (nonatomic,strong) LevelPlayAdObjectManager *levelPlayAdObjectManager;
+
+
 @end
 
 @implementation IronSourceMediation
@@ -108,6 +71,9 @@ RCT_EXPORT_MODULE()
                                                      name:UIDeviceOrientationDidChangeNotification
                                                    object:nil];
         self.shouldHideBanner = NO;
+      
+      // LevelPlay Object Manager registry
+      self.levelPlayAdObjectManager = [[LevelPlayAdObjectManager alloc] init];
     }
     return self;
 }
@@ -494,7 +460,7 @@ RCT_EXPORT_METHOD(getRewardedVideoPlacementInfo:(nonnull NSString *) placementNa
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject) {
     ISPlacementInfo *placementInfo = [IronSource rewardedVideoPlacementInfo:placementName];
-    return resolve(placementInfo != nil ? [self getDictWithPlacementInfo:placementInfo] : nil);
+    return resolve(placementInfo != nil ? [LevelPlayUtils getDictWithPlacementInfo:placementInfo] : nil);
 }
 
 /**
@@ -889,54 +855,114 @@ RCT_EXPORT_METHOD(showConsentViewWithType:(nonnull NSString *)consentViewType
     });
 }
 
+#pragma mark - LevelPlay Init API ===================================================================
+RCT_EXPORT_METHOD(initLevelPlay:(nonnull id)args
+                  withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject) {
+    NSString *appKey = [args valueForKey:@"appKey"];
+    NSString *userId = [args valueForKey:@"userId"];
+    NSArray<NSString*> *adFormats = [args valueForKey:@"adFormats"];
+
+    NSMutableArray<NSString*> *parsedLegacyAdFormats = [[NSMutableArray alloc]init];
+    if(adFormats != nil && adFormats.count) {
+        for(NSString *unit in adFormats){
+            if([unit isEqualToString:@"REWARDED"]){
+                [parsedLegacyAdFormats addObject:IS_REWARDED_VIDEO];
+            } else if ([unit isEqualToString:@"INTERSTITIAL"]){
+                [parsedLegacyAdFormats addObject:IS_INTERSTITIAL];
+            } else if ([unit isEqualToString:@"BANNER"]){
+                [parsedLegacyAdFormats addObject:IS_BANNER];
+            } else if ([unit isEqualToString:@"NATIVE_AD"]){
+                [parsedLegacyAdFormats addObject:IS_NATIVE_AD];
+            }
+        }
+    }
+    LPMInitRequestBuilder *requestBuilder = [[LPMInitRequestBuilder alloc] initWithAppKey: appKey];
+    [requestBuilder withLegacyAdFormats: parsedLegacyAdFormats];
+    if(userId != nil){
+        [requestBuilder withUserId: userId];
+    }
+    LPMInitRequest *initRequest = [requestBuilder build];
+    [LevelPlay initWithRequest:initRequest completion:^(LPMConfiguration *_Nullable config, NSError *_Nullable error){
+        if(error) {
+            // There was an error on initialization. Take necessary actions or retry
+            [self sendEventWithEventName:ON_INIT_FAILED withArgs:[LevelPlayUtils getDictWithInitError: error]];
+        } else {
+            // Initialization was successful. You can now load banner ad or perform other tasks
+            [self sendEventWithEventName:ON_INIT_SUCCESS withArgs:[LevelPlayUtils getDictWithInitSuccess: config]];
+        }
+    }];
+    return resolve(nil);
+}
+
+#pragma mark - LevelPlay Interstitial Ad API ===================================================================
+RCT_EXPORT_METHOD(loadInterstitialAd:(nonnull id)args
+                  withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject) {
+  NSNumber *adObjectId = [args valueForKey:@"adObjectId"];
+  NSString *adUnitId = [args valueForKey:@"adUnitId"];
+  [self.levelPlayAdObjectManager loadInterstitialAd:adObjectId adUnitId:adUnitId eventEmitter:self];
+  return resolve(nil);
+}
+
+RCT_EXPORT_METHOD(showInterstitialAd:(nonnull id)args
+                  withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject) {
+  NSNumber *adObjectId = [args valueForKey:@"adObjectId"];
+  NSString *placementName = [args valueForKey:@"placementName"] ?: [NSNull null];
+  [self.levelPlayAdObjectManager showInterstitialAd:adObjectId placementName:placementName rootViewController:[LevelPlayUtils getRootViewController]];
+  return resolve(nil);
+}
+
+RCT_EXPORT_METHOD(isInterstitialAdReady:(nonnull id)args
+                  withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject) {
+  NSNumber *adObjectId = [args valueForKey:@"adObjectId"];
+  BOOL isAdReady = [self.levelPlayAdObjectManager isInterstitialAdReady:adObjectId];
+  return resolve([NSNumber numberWithBool: isAdReady]);
+}
+
+RCT_EXPORT_METHOD(removeInterstitialAd:(nonnull id)args
+                  withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject) {
+  NSNumber *adObjectId = [args valueForKey:@"adObjectId"];
+  [self.levelPlayAdObjectManager removeAd:adObjectId];
+  return resolve(nil);
+}
+
+RCT_EXPORT_METHOD(removeAllInterstitialAds:(nonnull id)args
+                  withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject) {
+  [self.levelPlayAdObjectManager removeAllAds];
+  return resolve(nil);
+}
+
+RCT_EXPORT_METHOD(isInterstitialAdPlacementCapped:(nonnull id)args
+                  withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject) {
+  NSString *placementName = [args valueForKey:@"placementName"];
+  BOOL isCapped = [LPMInterstitialAd isPlacementCapped:placementName];
+  return resolve([NSNumber numberWithBool:isCapped]);
+}
+
+#pragma mark - LPMAdSize API ========================================================================
+RCT_EXPORT_METHOD(createAdaptiveAdSize:(NSNumber *) width
+                  withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject) {
+    if (width == nil) {
+        LPMAdSize *adSize = [LPMAdSize createAdaptiveAdSize];
+        return resolve([LevelPlayUtils getDictForAdSize: adSize]);
+    }
+    CGFloat widthFloat = [width floatValue];
+    LPMAdSize *adSize = [LPMAdSize createAdaptiveAdSizeWithWidth: widthFloat];
+    return resolve([LevelPlayUtils getDictForAdSize: adSize]);
+}
+
+
 #pragma mark - ISImpressionDataDelegate Functions ===================================================
 
 - (void)impressionDataDidSucceed:(ISImpressionData *)impressionData {
-    if(impressionData == nil){
-        [self sendEventWithEventName:ON_IMPRESSION_SUCCESS withArgs:nil];
-    } else {
-        NSMutableDictionary *args = [[NSMutableDictionary alloc] init];
-        if(impressionData.auction_id != nil){
-            args[@"auctionId"] = impressionData.auction_id;
-        }
-        if(impressionData.ad_unit != nil){
-            args[@"adUnit"] = impressionData.ad_unit;
-        }
-        if(impressionData.country != nil){
-            args[@"country"] = impressionData.country;
-        }
-        if(impressionData.ab != nil){
-            args[@"ab"] = impressionData.ab;
-        }
-        if(impressionData.segment_name != nil){
-            args[@"segmentName"] = impressionData.segment_name;
-        }
-        if(impressionData.placement != nil){
-            args[@"placement"] = impressionData.placement;
-        }
-        if(impressionData.ad_network != nil){
-            args[@"adNetwork"] = impressionData.ad_network;
-        }
-        if(impressionData.instance_name != nil){
-            args[@"instanceName"] = impressionData.instance_name;
-        }
-        if(impressionData.ad_unit != nil){
-            args[@"instanceId"] = impressionData.instance_id;
-        }
-        if(impressionData.revenue != nil){
-            args[@"revenue"] = impressionData.revenue;
-        }
-        if(impressionData.precision != nil){
-            args[@"precision"] = impressionData.precision;
-        }
-        if(impressionData.lifetime_revenue != nil){
-            args[@"lifetimeRevenue"] = impressionData.lifetime_revenue;
-        }
-        if(impressionData.encrypted_cpm != nil){
-            args[@"encryptedCPM"] = impressionData.encrypted_cpm;
-        }
-        [self sendEventWithEventName:ON_IMPRESSION_SUCCESS withArgs:args];
-    }
+    [self sendEventWithEventName:ON_IMPRESSION_SUCCESS withArgs:impressionData != nil ? [LevelPlayUtils getDictForImpressionData: impressionData] : [NSNull null]];
 }
 
 #pragma mark - ISConsentViewDelegate Functions =======================================================
@@ -945,28 +971,28 @@ RCT_EXPORT_METHOD(showConsentViewWithType:(nonnull NSString *)consentViewType
  */
 
 - (void)consentViewDidLoadSuccess:(NSString *)consentViewType {
-    NSDictionary *args = [self getDictWithConsentViewType:consentViewType];
-    [self sendEventWithEventName:@"consentViewDidLoadSuccess" withArgs:args];
+    NSDictionary *args = [LevelPlayUtils getDictWithConsentViewType:consentViewType];
+    [self sendEventWithEventName:CONSENT_VIEW_DID_LOAD_SUCCESS withArgs:args];
 }
 
 - (void)consentViewDidFailToLoadWithError:(NSError *)error consentViewType:(NSString *)consentViewType {
-    NSDictionary *args = [self getDictWithConsentViewType:consentViewType andError:error];
-    [self sendEventWithEventName:@"consentViewDidFailToLoad" withArgs:args];
+    NSDictionary *args = [LevelPlayUtils getDictWithIronSourceConsentViewError:consentViewType error:error];
+    [self sendEventWithEventName:CONSENT_VIEW_DID_FAIL_TO_LOAD withArgs:args];
 }
 
 - (void)consentViewDidShowSuccess:(NSString *)consentViewType {
-    NSDictionary *args = [self getDictWithConsentViewType:consentViewType];
-    [self sendEventWithEventName:@"consentViewDidShowSuccess" withArgs:args];
+    NSDictionary *args = [LevelPlayUtils getDictWithConsentViewType:consentViewType];
+    [self sendEventWithEventName:CONSENT_VIEW_DID_SHOW_SUCCESS withArgs:args];
 }
 
 - (void)consentViewDidFailToShowWithError:(NSError *)error consentViewType:(NSString *)consentViewType {
-    NSDictionary *args = [self getDictWithConsentViewType:consentViewType andError:error];
-    [self sendEventWithEventName:@"consentViewDidFailToShow" withArgs:args];
+    NSDictionary *args = [LevelPlayUtils getDictWithIronSourceConsentViewError:consentViewType error:error];
+    [self sendEventWithEventName:CONSENT_VIEW_DID_FAIL_TO_SHOW withArgs:args];
 }
 
 - (void)consentViewDidAccept:(NSString *)consentViewType {
-    NSDictionary *args = [self getDictWithConsentViewType:consentViewType];
-    [self sendEventWithEventName:@"consentViewDidAccept" withArgs:args];
+    NSDictionary *args = [LevelPlayUtils getDictWithConsentViewType:consentViewType];
+    [self sendEventWithEventName:CONSENT_VIEW_DID_ACCEPT withArgs:args];
 }
 
 - (void)consentViewDidDismiss:(NSString *)consentViewType {
@@ -982,7 +1008,7 @@ RCT_EXPORT_METHOD(showConsentViewWithType:(nonnull NSString *)consentViewType
 #pragma mark - RCTLevelPlayRVDelegate Functions ==================================================
 
 - (void)hasAvailableAdWithAdInfo:(nonnull ISAdInfo *)adInfo {
-    NSDictionary *args = [self getDictWithAdInfo:adInfo];
+    NSDictionary *args = [LevelPlayUtils getDictWithAdInfo:adInfo];
     [self sendEventWithEventName:LP_RV_ON_AD_AVAILABLE withArgs:args];
 }
 
@@ -992,8 +1018,8 @@ RCT_EXPORT_METHOD(showConsentViewWithType:(nonnull NSString *)consentViewType
 
 - (void)levelPlayRVDidReceiveRewardForPlacement:(nonnull ISPlacementInfo *)placementInfo withAdInfo:(nonnull ISAdInfo *)adInfo {
     NSMutableDictionary *args = [[NSMutableDictionary alloc] init];
-    NSDictionary *placmentDict = [self getDictWithPlacementInfo:placementInfo];
-    NSDictionary *adInfoDict = [self getDictWithAdInfo:adInfo];
+    NSDictionary *placmentDict = [LevelPlayUtils getDictWithPlacementInfo:placementInfo];
+    NSDictionary *adInfoDict = [LevelPlayUtils getDictWithAdInfo:adInfo];
     args[@"placement"] = placmentDict;
     args[@"adInfo"] = adInfoDict;
     [self sendEventWithEventName:LP_RV_ON_AD_REWARDED withArgs:args];
@@ -1002,27 +1028,27 @@ RCT_EXPORT_METHOD(showConsentViewWithType:(nonnull NSString *)consentViewType
 - (void)levelPlayRVDidFailToShowWithError:(nonnull NSError *)error
                                 andAdInfo:(nonnull ISAdInfo *)adInfo {
     NSMutableDictionary *args = [[NSMutableDictionary alloc] init];
-    NSDictionary *errorDict = [self getDictWithIronSourceError:error];
-    NSDictionary *adInfoDict = [self getDictWithAdInfo:adInfo];
+    NSDictionary *errorDict = [LevelPlayUtils getDictWithError:error];
+    NSDictionary *adInfoDict = [LevelPlayUtils getDictWithAdInfo:adInfo];
     args[@"error"] = errorDict;
     args[@"adInfo"] = adInfoDict;
     [self sendEventWithEventName:LP_RV_ON_AD_SHOW_FAILED withArgs:args];
 }
 
 - (void)levelPlayRVDidOpenWithAdInfo:(nonnull ISAdInfo *)adInfo {
-    NSDictionary *args = [self getDictWithAdInfo:adInfo];
+    NSDictionary *args = [LevelPlayUtils getDictWithAdInfo:adInfo];
     [self sendEventWithEventName:LP_RV_ON_AD_OPENED withArgs:args];
 }
 
 - (void)levelPlayRVDidCloseWithAdInfo:(nonnull ISAdInfo *)adInfo {
-    NSDictionary *args = [self getDictWithAdInfo:adInfo];
+    NSDictionary *args = [LevelPlayUtils getDictWithAdInfo:adInfo];
     [self sendEventWithEventName:LP_RV_ON_AD_CLOSED withArgs:args];
 }
 
 - (void)levelPlayRVDidClick:(nonnull ISPlacementInfo *)placementInfo withAdInfo:(nonnull ISAdInfo *)adInfo {
     NSMutableDictionary *args = [[NSMutableDictionary alloc] init];
-    NSDictionary *placmentDict = [self getDictWithPlacementInfo:placementInfo];
-    NSDictionary *adInfoDict = [self getDictWithAdInfo:adInfo];
+    NSDictionary *placmentDict = [LevelPlayUtils getDictWithPlacementInfo:placementInfo];
+    NSDictionary *adInfoDict = [LevelPlayUtils getDictWithAdInfo:adInfo];
     args[@"placement"] = placmentDict;
     args[@"adInfo"] = adInfoDict;
     [self sendEventWithEventName:LP_RV_ON_AD_CLICKED withArgs:args];
@@ -1030,55 +1056,55 @@ RCT_EXPORT_METHOD(showConsentViewWithType:(nonnull NSString *)consentViewType
 
 /// Manual RV
 - (void)rewardedVideoLevelPlayDidLoadWithAdInfo:(nonnull ISAdInfo *)adInfo {
-    NSDictionary *args = [self getDictWithAdInfo:adInfo];
+    NSDictionary *args = [LevelPlayUtils getDictWithAdInfo:adInfo];
     [self sendEventWithEventName:LP_MANUAL_RV_ON_AD_READY withArgs:args];
 }
 
 /// Manual RV
 - (void)rewardedVideoLevelPlayDidFailToLoadWithError:(nonnull NSError *)error {
-    NSDictionary *args = [self getDictWithIronSourceError:error];
+    NSDictionary *args = [LevelPlayUtils getDictWithError:error];
     [self sendEventWithEventName:LP_MANUAL_RV_ON_AD_LOAD_FAILED withArgs:args];
 }
 
 #pragma mark - RCTLevelPlayISDelegate Functions ==================================================
 - (void)levelPlayISDidLoadWithAdInfo:(nonnull ISAdInfo *)adInfo {
-    NSDictionary *args = [self getDictWithAdInfo:adInfo];
+    NSDictionary *args = [LevelPlayUtils getDictWithAdInfo:adInfo];
     [self sendEventWithEventName:LP_IS_ON_AD_READY withArgs:args];
 }
 
 - (void)levelPlayISDidFailToLoadWithError:(nonnull NSError *)error {
-    NSDictionary *args = [self getDictWithIronSourceError:error];
+    NSDictionary *args = [LevelPlayUtils getDictWithError:error];
     [self sendEventWithEventName:LP_IS_ON_AD_LOAD_FAILED withArgs:args];
 }
 
 - (void)levelPlayISDidOpenWithAdInfo:(nonnull ISAdInfo *)adInfo {
-    NSDictionary *args = [self getDictWithAdInfo:adInfo];
+    NSDictionary *args = [LevelPlayUtils getDictWithAdInfo:adInfo];
     [self sendEventWithEventName:LP_IS_ON_AD_OPENED withArgs:args];
 }
 
 
 - (void)levelPlayISDidCloseWithAdInfo:(nonnull ISAdInfo *)adInfo {
-    NSDictionary *args = [self getDictWithAdInfo:adInfo];
+    NSDictionary *args = [LevelPlayUtils getDictWithAdInfo:adInfo];
     [self sendEventWithEventName:LP_IS_ON_AD_CLOSED withArgs:args];
 }
 
 - (void)levelPlayISDidShowWithAdInfo:(nonnull ISAdInfo *)adInfo {
-    NSDictionary *args = [self getDictWithAdInfo:adInfo];
+    NSDictionary *args = [LevelPlayUtils getDictWithAdInfo:adInfo];
     [self sendEventWithEventName:LP_IS_ON_AD_SHOW_SUCCEEDED withArgs:args];
 }
 
 - (void)levelPlayISDidFailToShowWithError:(nonnull NSError *)error
                                 andAdInfo:(nonnull ISAdInfo *)adInfo {
     NSMutableDictionary *args = [[NSMutableDictionary alloc] init];
-    NSDictionary *errorDict = [self getDictWithIronSourceError:error];
-    NSDictionary *adInfoDict = [self getDictWithAdInfo:adInfo];
+    NSDictionary *errorDict = [LevelPlayUtils getDictWithError:error];
+    NSDictionary *adInfoDict = [LevelPlayUtils getDictWithAdInfo:adInfo];
     args[@"error"] = errorDict;
     args[@"adInfo"] = adInfoDict;
     [self sendEventWithEventName:LP_IS_ON_AD_SHOW_FAILED withArgs:args];
 }
 
 - (void)levelPlayISDidClickWithAdInfo:(nonnull ISAdInfo *)adInfo {
-    NSDictionary *args = [self getDictWithAdInfo:adInfo];
+    NSDictionary *args = [LevelPlayUtils getDictWithAdInfo:adInfo];
     [self sendEventWithEventName:LP_IS_ON_AD_CLICKED withArgs:args];
 }
 
@@ -1098,32 +1124,32 @@ RCT_EXPORT_METHOD(showConsentViewWithType:(nonnull NSString *)consentViewType
             [self.bannerViewController.view addSubview:self.bannerView];
         }
     });
-    NSDictionary *args = [self getDictWithAdInfo:adInfo];
+    NSDictionary *args = [LevelPlayUtils getDictWithAdInfo:adInfo];
     [self sendEventWithEventName:LP_BN_ON_AD_LOADED withArgs:args];
 }
 
 - (void)levelPlayBNDidFailToLoadWithError:(nonnull NSError *)error {
-    NSDictionary *args = [self getDictWithIronSourceError:error];
+    NSDictionary *args = [LevelPlayUtils getDictWithError:error];
     [self sendEventWithEventName:LP_BN_ON_AD_LOAD_FAILED withArgs:args];
 }
 
 - (void)levelPlayBNDidClickWithAdInfo:(nonnull ISAdInfo *)adInfo {
-    NSDictionary *args = [self getDictWithAdInfo:adInfo];
+    NSDictionary *args = [LevelPlayUtils getDictWithAdInfo:adInfo];
     [self sendEventWithEventName:LP_BN_ON_AD_CLICKED withArgs:args];
 }
 
 - (void)levelPlayBNDidPresentScreenWithAdInfo:(nonnull ISAdInfo *)adInfo {
-    NSDictionary *args = [self getDictWithAdInfo:adInfo];
+    NSDictionary *args = [LevelPlayUtils getDictWithAdInfo:adInfo];
     [self sendEventWithEventName:LP_BN_ON_AD_SCREEN_PRESENTED withArgs:args];
 }
 
 - (void)levelPlayBNDidDismissScreenWithAdInfo:(nonnull ISAdInfo *)adInfo {
-    NSDictionary *args = [self getDictWithAdInfo:adInfo];
+    NSDictionary *args = [LevelPlayUtils getDictWithAdInfo:adInfo];
     [self sendEventWithEventName:LP_BN_ON_AD_SCREEN_DISMISSED withArgs:args];
 }
 
 - (void)levelPlayBNDidLeaveApplicationWithAdInfo:(nonnull ISAdInfo *)adInfo {
-    NSDictionary *args = [self getDictWithAdInfo:adInfo];
+    NSDictionary *args = [LevelPlayUtils getDictWithAdInfo:adInfo];
     [self sendEventWithEventName:LP_BN_ON_AD_LEFT_APPLICATION withArgs:args];
 }
 
@@ -1137,96 +1163,9 @@ RCT_EXPORT_METHOD(showConsentViewWithType:(nonnull NSString *)consentViewType
     });
 }
 
-- (NSDictionary *)getDictWithPlacementInfo:(ISPlacementInfo *)placementInfo {
-    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
-    if(placementInfo.placementName != nil){
-        dict[@"placementName"] = placementInfo.placementName;
-    }
-    if(placementInfo.rewardName != nil){
-        dict[@"rewardName"] = placementInfo.rewardName;
-    }
-    if(placementInfo.rewardAmount != nil){
-        dict[@"rewardAmount"] = placementInfo.rewardAmount;
-    }
-    return dict;
-}
-
-- (NSDictionary *)getDictWithIronSourceError:(NSError *)error {
-    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
-    if(error != nil){
-        dict[@"errorCode"] = [NSNumber numberWithInteger: error.code];
-    }
-    if(error != nil && error.userInfo != nil){
-        dict[@"message"] = error.userInfo[NSLocalizedDescriptionKey];
-    }
-    return dict;
-}
-
-- (NSDictionary *)getDictWithAdInfo:(ISAdInfo *)adInfo {
-    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
-    if(adInfo.ad_unit != nil){
-        dict[@"adUnit"] = adInfo.ad_unit;
-    }
-    if(adInfo.auction_id != nil){
-        dict[@"auctionId"] = adInfo.auction_id;
-    }
-    if(adInfo.ad_network != nil){
-        dict[@"adNetwork"] = adInfo.ad_network;
-    }
-    if(adInfo.ab != nil){
-        dict[@"ab"] = adInfo.ab;
-    }
-    if(adInfo.country != nil){
-        dict[@"country"] = adInfo.country;
-    }
-    if(adInfo.instance_id != nil){
-        dict[@"instanceId"] = adInfo.instance_id;
-    }
-    if(adInfo.instance_name != nil){
-        dict[@"instanceName"] = adInfo.instance_name;
-    }
-    if(adInfo.segment_name != nil){
-        dict[@"segmentName"] = adInfo.segment_name;
-    }
-    if(adInfo.revenue != nil){
-        dict[@"revenue"] = adInfo.revenue;
-    }
-    if(adInfo.precision != nil){
-        dict[@"precision"] = adInfo.precision;
-    }
-    if(adInfo.encrypted_cpm != nil){
-        dict[@"encryptedCPM"] = adInfo.encrypted_cpm;
-    }
-
-    return dict;
-}
-
 /// must be called from UI Thread
 - (UIViewController *)getRootViewController {
     return [UIApplication sharedApplication].keyWindow.rootViewController;
-}
-
-/**
- ConsentView Delegate utils
- */
-- (NSMutableDictionary *)getDictWithConsentViewType:(NSString *)consentViewType {
-    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
-    dict[@"consentViewType"] = consentViewType;
-    return dict;
-}
-
-- (NSMutableDictionary *)getDictWithConsentViewType:(NSString *)consentViewType
-                                           andError:(NSError *)error {
-    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
-    dict[@"consentViewType"] = consentViewType;
-
-    if(error != nil){
-        dict[@"errorCode"] = [NSNumber numberWithInteger: error.code];
-    }
-    if(error != nil && error.userInfo != nil){
-        dict[@"message"] = error.userInfo[NSLocalizedDescriptionKey];
-    }
-    return dict;
 }
 
 #pragma mark - RCTEventEmitter Constants ========================================================
@@ -1273,7 +1212,20 @@ RCT_EXPORT_METHOD(showConsentViewWithType:(nonnull NSString *)consentViewType
         @"LP_BN_ON_AD_CLICKED" : LP_BN_ON_AD_CLICKED,
         @"LP_BN_ON_AD_SCREEN_PRESENTED" : LP_BN_ON_AD_SCREEN_PRESENTED,
         @"LP_BN_ON_AD_SCREEN_DISMISSED" : LP_BN_ON_AD_SCREEN_DISMISSED,
-        @"LP_BN_ON_AD_LEFT_APPLICATION" : LP_BN_ON_AD_LEFT_APPLICATION
+        @"LP_BN_ON_AD_LEFT_APPLICATION" : LP_BN_ON_AD_LEFT_APPLICATION,
+        
+        // LevelPlay Init
+        @"ON_INIT_FAILED": ON_INIT_FAILED,
+        @"ON_INIT_SUCCESS": ON_INIT_SUCCESS,
+        
+        // LevelPlay Interstitial Ad
+        @"ON_INTERSTITIAL_AD_LOADED": ON_INTERSTITIAL_AD_LOADED,
+        @"ON_INTERSTITIAL_AD_LOAD_FAILED": ON_INTERSTITIAL_AD_LOAD_FAILED,
+        @"ON_INTERSTITIAL_AD_INFO_CHANGED": ON_INTERSTITIAL_AD_INFO_CHANGED,
+        @"ON_INTERSTITIAL_AD_DISPLAYED": ON_INTERSTITIAL_AD_DISPLAYED,
+        @"ON_INTERSTITIAL_AD_DISPLAY_FAILED": ON_INTERSTITIAL_AD_DISPLAY_FAILED,
+        @"ON_INTERSTITIAL_AD_CLICKED": ON_INTERSTITIAL_AD_CLICKED,
+        @"ON_INTERSTITIAL_AD_CLOSED": ON_INTERSTITIAL_AD_CLOSED
     };
 }
 
@@ -1323,7 +1275,20 @@ RCT_EXPORT_METHOD(showConsentViewWithType:(nonnull NSString *)consentViewType
         LP_BN_ON_AD_CLICKED,
         LP_BN_ON_AD_SCREEN_PRESENTED,
         LP_BN_ON_AD_SCREEN_DISMISSED,
-        LP_BN_ON_AD_LEFT_APPLICATION
+        LP_BN_ON_AD_LEFT_APPLICATION,
+
+        // LevelPlay Init
+        ON_INIT_FAILED,
+        ON_INIT_SUCCESS,
+        
+        // LevelPlay Interstitial Ad
+        ON_INTERSTITIAL_AD_LOADED,
+        ON_INTERSTITIAL_AD_LOAD_FAILED,
+        ON_INTERSTITIAL_AD_INFO_CHANGED,
+        ON_INTERSTITIAL_AD_DISPLAYED,
+        ON_INTERSTITIAL_AD_DISPLAY_FAILED,
+        ON_INTERSTITIAL_AD_CLICKED,
+        ON_INTERSTITIAL_AD_CLOSED
     ];
 }
 

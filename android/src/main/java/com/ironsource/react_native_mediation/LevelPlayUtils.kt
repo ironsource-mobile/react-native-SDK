@@ -1,5 +1,7 @@
 package com.ironsource.react_native_mediation
 
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContext
@@ -13,20 +15,20 @@ class LevelPlayUtils {
     companion object {
 
       // DeviceEventManagerModule.RCTDeviceEventEmitter.emit(eventName, params)
-        // is used for emitting global events that can be handled anywhere in the
-        // application.
-        fun sendEvent(
-            reactApplicationContext: ReactApplicationContext,
-            eventName: String,
-            params: ReadableMap? = null
-        ) {
-            reactApplicationContext.currentActivity?.runOnUiThread {
-                Log.d(TAG, "name:$eventName, params: $params")
-                reactApplicationContext
-                    .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
-                    .emit(eventName, params)
-            } ?: Log.w(TAG, "Cannot send JS event - Activity is null")
-        }
+      // is used for emitting global events that can be handled anywhere in the
+      // application.
+      fun sendEvent(
+        reactApplicationContext: ReactApplicationContext,
+        eventName: String,
+        params: ReadableMap? = null
+      ) {
+        reactApplicationContext.currentActivity?.runOnUiThread {
+          Log.d(TAG, "name:$eventName, params: $params")
+          reactApplicationContext
+            .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+            .emit(eventName, params)
+        } ?: Log.w(TAG, "Cannot send JS event - Activity is null")
+      }
 
       // RCTEventEmitter.receiveEvent(id, eventName, params)
       // is used for emitting events that are specific to a
@@ -37,9 +39,11 @@ class LevelPlayUtils {
         eventName: String,
         map: WritableMap? = null
       ) {
-        reactContext
-          .getJSModule(RCTEventEmitter::class.java)
-          .receiveEvent(id, eventName, map)
+        Handler(Looper.getMainLooper()).post {
+          reactContext
+            .getJSModule(RCTEventEmitter::class.java)
+            .receiveEvent(id, eventName, map)
+        }
       }
 
         fun parseAdUnit(adUnit: String): IronSource.AD_UNIT? {

@@ -1,4 +1,7 @@
 import type { ImpressionData } from "../ImpressionData";
+/**
+ * Interface for handling ImpressionData events
+ */
 export interface ImpressionDataListener {
     /**
      * Invoked on impression data success

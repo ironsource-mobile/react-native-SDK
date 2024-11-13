@@ -1,6 +1,8 @@
 import type { ConsentViewError } from "../errors";
 
-// Interface for handling ConsentView events
+/**
+ * Interface for handling ConsentView events
+ */
 export interface ConsentViewListener {
   /**
    * iOS 14 ConsentView events API

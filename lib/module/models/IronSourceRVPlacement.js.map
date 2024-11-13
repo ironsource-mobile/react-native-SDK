@@ -1,1 +1,1 @@
-{"version":3,"names":["t","ironSourceRVPlacementCodec","type","placementName","string","rewardName","rewardAmount","number"],"sourceRoot":"../../../src","sources":["models/IronSourceRVPlacement.ts"],"mappings":"AAAA,OAAO,KAAKA,CAAC,MAAM,OAAO;;AAE1B;AACA;AACA;;AAEA,OAAO,MAAMC,0BAA0B,GAAGD,CAAC,CAACE,IAAI,CAAC;EAC/CC,aAAa,EAAEH,CAAC,CAACI,MAAM;EACvBC,UAAU,EAAEL,CAAC,CAACI,MAAM;EACpBE,YAAY,EAAEN,CAAC,CAACO;AAClB,CAAC,CAAC","ignoreList":[]}
+{"version":3,"names":[],"sourceRoot":"../../../src","sources":["models/IronSourceRVPlacement.ts"],"mappings":"","ignoreList":[]}
