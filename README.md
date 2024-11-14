@@ -447,10 +447,10 @@ yarn run ios
 ```
 
 ## Version history 
-You can find a summary of the ironSouce SDK version history [here](https://developers.is.com/ironsource-mobile/react-native/sdk-change-log/).
+You can find a summary of the ironSouce SDK version history [here](https://developers.is.com/ironsource-mobile/react-native/sdk-change-log/)
 
 ## Contact US 
-For any question please contact us [here](https://ironsrc.formtitan.com/knowledge-center#/). 
+For any question please contact us [here](https://ironsrc.formtitan.com/knowledge-center#/)
 
 ## License 
-https://developers.is.com/ironsource-mobile/general/ironsource-platform-online-terms-conditions/
+The license can be viewed [here](https://github.com/ironsource-mobile/react-native-SDK/blob/master/LICENSE)
