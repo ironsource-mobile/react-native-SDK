@@ -2,6 +2,8 @@ import type { IronSourceAdInfo } from "../IronSourceAdInfo";
 import type { LevelPlayRewardedVideoBaseListener } from "./LevelPlayRewardedVideoBaseListener";
 /**
  * Interface for handling LevelPlayRewardedVideo events
+ *
+ * @deprecated Use {@link LevelPlayRewardedAdListener} instead.
  */
 export interface LevelPlayRewardedVideoListener extends LevelPlayRewardedVideoBaseListener {
     /**

@@ -23,7 +23,6 @@ class LevelPlayUtils {
         params: ReadableMap? = null
       ) {
         reactApplicationContext.currentActivity?.runOnUiThread {
-          Log.d(TAG, "name:$eventName, params: $params")
           reactApplicationContext
             .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
             .emit(eventName, params)

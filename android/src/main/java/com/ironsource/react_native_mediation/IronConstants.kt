@@ -70,7 +70,17 @@ object IronConstants {
     const val ON_INTERSTITIAL_AD_CLICKED = "onInterstitialAdClicked"
     const val ON_INTERSTITIAL_AD_CLOSED = "onInterstitialAdClosed"
 
-    // Native Ad
+    // LevelPlay Rewarded Ad
+    const val ON_REWARDED_AD_LOADED = "onRewardedAdLoaded"
+    const val ON_REWARDED_AD_LOAD_FAILED = "onRewardedAdLoadFailed"
+    const val ON_REWARDED_AD_INFO_CHANGED = "onRewardedAdInfoChanged"
+    const val ON_REWARDED_AD_DISPLAYED = "onRewardedAdDisplayed"
+    const val ON_REWARDED_AD_DISPLAY_FAILED = "onRewardedAdDisplayFailed"
+    const val ON_REWARDED_AD_CLICKED = "onRewardedAdClicked"
+    const val ON_REWARDED_AD_CLOSED = "onRewardedAdClosed"
+    const val ON_REWARDED_AD_REWARDED = "onRewardedAdRewarded"
+
+    // Banner Ad
     const val ON_BANNER_AD_LOADED = "onBannerAdLoaded"
     const val ON_BANNER_AD_LOAD_FAILED = "onBannerAdLoadFailed"
     const val ON_BANNER_AD_DISPLAYED = "onBannerAdDisplayed"
@@ -136,5 +146,15 @@ object IronConstants {
         "ON_INTERSTITIAL_AD_DISPLAY_FAILED" to ON_INTERSTITIAL_AD_DISPLAY_FAILED,
         "ON_INTERSTITIAL_AD_CLICKED" to ON_INTERSTITIAL_AD_CLICKED,
         "ON_INTERSTITIAL_AD_CLOSED" to ON_INTERSTITIAL_AD_CLOSED,
+
+        // LevelPlay Rewarded Ad
+        "ON_REWARDED_AD_LOADED" to ON_REWARDED_AD_LOADED,
+        "ON_REWARDED_AD_LOAD_FAILED" to ON_REWARDED_AD_LOAD_FAILED,
+        "ON_REWARDED_AD_INFO_CHANGED" to ON_REWARDED_AD_INFO_CHANGED,
+        "ON_REWARDED_AD_DISPLAYED" to ON_REWARDED_AD_DISPLAYED,
+        "ON_REWARDED_AD_DISPLAY_FAILED" to ON_REWARDED_AD_DISPLAY_FAILED,
+        "ON_REWARDED_AD_CLICKED" to ON_REWARDED_AD_CLICKED,
+        "ON_REWARDED_AD_CLOSED" to ON_REWARDED_AD_CLOSED,
+        "ON_REWARDED_AD_REWARDED" to ON_REWARDED_AD_REWARDED,
     )
 }

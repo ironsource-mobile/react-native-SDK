@@ -56,16 +56,13 @@ rootProject.allprojects {
     repositories {
         mavenCentral()
         google()
-        maven {
-            url 'https://android-sdk.is.com/'
-        }
     }
 }
 
 dependencies {
     // noinspection GradleDynamicVersion
-    implementation 'com.facebook.react:react-android:0.72.9'
+    implementation 'com.facebook.react:react-android:72.9'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     // ironSource
-    implementation 'com.ironsource.sdk:mediationsdk:8.4.0'
+    implementation 'com.unity3d.ads-mediation:mediation-sdk:8.7.0'
 }

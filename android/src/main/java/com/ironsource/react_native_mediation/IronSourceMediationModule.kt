@@ -31,6 +31,7 @@ import com.unity3d.mediation.LevelPlayInitError
 import com.unity3d.mediation.LevelPlayInitListener
 import com.unity3d.mediation.LevelPlayInitRequest
 import com.unity3d.mediation.interstitial.LevelPlayInterstitialAd
+import com.unity3d.mediation.rewarded.LevelPlayRewardedAd
 import java.util.concurrent.Executors
 import kotlin.math.abs
 
@@ -635,40 +636,53 @@ class IronSourceMediationModule(reactContext: ReactApplicationContext) :
           try {
             // Create a container
             if (mBannerContainer == null) {
-              mBannerContainer = FrameLayout(this).apply {
-                fitsSystemWindows = true
-                setBackgroundColor(Color.TRANSPARENT)
-              }
-              mBannerContainer?.visibility = mBannerVisibility
-              this.addContentView(
-                mBannerContainer, FrameLayout.LayoutParams(
-                  FrameLayout.LayoutParams.MATCH_PARENT,
-                  FrameLayout.LayoutParams.MATCH_PARENT
+                // Create mBannerContainer only if it doesn't exist
+                mBannerContainer = FrameLayout(this).apply {
+                    fitsSystemWindows = true
+                    setBackgroundColor(Color.TRANSPARENT)
+                }
+
+                // Add the view to the activity/root layout
+                this.addContentView(
+                    mBannerContainer, FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams.MATCH_PARENT,
+                        FrameLayout.LayoutParams.WRAP_CONTENT // Wrap content to fit the banner
+                    )
                 )
-              )
             }
-            // Create banner if not exists yet
-            if (mBanner == null) {
-              mBanner = IronSource.createBanner(this, bannerSize)
-              // Banner layout params
-              val layoutParams = FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.WRAP_CONTENT,
-                bannerGravity
-              ).apply {
+
+            // Update the LayoutParams of mBannerContainer to reflect new gravity or offsets
+            (mBannerContainer?.layoutParams as? FrameLayout.LayoutParams)?.apply {
+                gravity = bannerGravity // TOP, CENTER, or BOTTOM
+                topMargin = 0           // Reset margins
+                bottomMargin = 0        // Reset margins
+
                 // vertical offset
                 if (verticalOffset > 0) {
                   topMargin = abs(verticalOffset)
                 } else if (verticalOffset < 0) {
                   bottomMargin = abs(verticalOffset)
                 }
-              }
+
+                // Reapply params to the container
+                mBannerContainer?.layoutParams = this
+            }
+
+            // Create banner if not exists yet
+            if (mBanner == null) {
+              mBanner = IronSource.createBanner(this, bannerSize)
+              // Banner layout params
+              val layoutParams = FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT)
               // Add Banner to the container
               mBannerContainer?.addView(mBanner, 0, layoutParams)
+              
               // Set listeners
               mBanner?.levelPlayBannerListener = mLevelPlayBNListener
             }
             mBanner?.visibility = mBannerVisibility
+
             // Load banner
             // if already loaded, console error would be shown by the iS SDK
             if (placementName != null) {
@@ -780,7 +794,7 @@ class IronSourceMediationModule(reactContext: ReactApplicationContext) :
   fun initLevelPlay(map: ReadableMap, promise: Promise) {
     currentActivity?.apply {
       val appKey = map.getString("appKey")!!
-      val userId = map.getString("userId")!!
+      val userId: String? = map.getString("userId")
       val legacyAdFormats = map.getArray("adFormats")!!.toArrayList().map {
         when (it) {
           "REWARDED" -> LevelPlay.AdFormat.REWARDED
@@ -790,10 +804,11 @@ class IronSourceMediationModule(reactContext: ReactApplicationContext) :
           else -> return@initLevelPlay promise.reject(E_ILLEGAL_ARGUMENT, "Unsupported ad format: $it")
         }
       }.toList()
-      val initRequest = LevelPlayInitRequest.Builder(appKey)
-        .withUserId(userId)
-        .withLegacyAdFormats(legacyAdFormats)
-        .build()
+      val requestBuilder = LevelPlayInitRequest.Builder(appKey)
+      requestBuilder.withLegacyAdFormats(legacyAdFormats)
+      if (userId != null)
+        requestBuilder.withUserId(userId)
+      val initRequest = requestBuilder.build()
       LevelPlay.init(this, initRequest, this@IronSourceMediationModule)
     }
     return promise.resolve(null)
@@ -823,28 +838,63 @@ class IronSourceMediationModule(reactContext: ReactApplicationContext) :
   }
 
   @ReactMethod
-  fun removeInterstitialAd(map: ReadableMap, promise: Promise) {
+  fun isInterstitialAdPlacementCapped(map: ReadableMap, promise: Promise) {
+    val placementName = map.getString("placementName")!!
+    return promise.resolve(LevelPlayInterstitialAd.isPlacementCapped(placementName))
+  }
+
+  @ReactMethod
+  fun removeAd(map: ReadableMap, promise: Promise) {
     val adObjectId = map.getInt("adObjectId")
     levelPlayAdObjectManager.removeAd(adObjectId)
     return promise.resolve(null)
   }
 
   @ReactMethod
-  fun removeAllInterstitialAds(map: ReadableMap, promise: Promise) {
+  fun removeAllAds(map: ReadableMap, promise: Promise) {
     levelPlayAdObjectManager.removeAllAds()
+    return promise.resolve(null)
+  }
+  /** LevelPlayAdSize API ==================================================================== **/
+  @ReactMethod
+  fun createAdaptiveAdSizeWithWidth(width: Int, promise: Promise) {
+    val size = LevelPlayAdSize.createAdaptiveAdSize(reactApplicationContext, width)
+    return promise.resolve(size.toReadableMap())
+  }
+
+  @ReactMethod
+  fun createAdaptiveAdSize(promise: Promise) {
+    val size = LevelPlayAdSize.createAdaptiveAdSize(reactApplicationContext)
+    return promise.resolve(size.toReadableMap())
+  }
+
+  /** LevelPlay Rewarded Ad ============================================================== **/
+  @ReactMethod
+  fun loadRewardedAd(map: ReadableMap, promise: Promise) {
+    val adObjectId = map.getInt("adObjectId")
+    val adUnitId = map.getString("adUnitId")!!
+    levelPlayAdObjectManager.loadRewardedAd(adObjectId, adUnitId)
     return promise.resolve(null)
   }
 
   @ReactMethod
-  fun isInterstitialAdPlacementCapped(map: ReadableMap, promise: Promise) {
-    val placementName = map.getString("placementName")!!
-    return promise.resolve(LevelPlayInterstitialAd.isPlacementCapped(placementName))
+  fun showRewardedAd(map: ReadableMap, promise: Promise) {
+    val adObjectId = map.getInt("adObjectId")
+    val placementName: String? = map.getString("placementName")
+    levelPlayAdObjectManager.showRewardedAd(adObjectId, placementName)
+    return promise.resolve(null)
   }
-  /** LevelPlayAdSize API ==================================================================== **/
+
   @ReactMethod
-  fun createAdaptiveAdSize(width: Int?, promise: Promise) {
-    val size = LevelPlayAdSize.createAdaptiveAdSize(reactApplicationContext, width)
-    return promise.resolve(size.toReadableMap())
+  fun isRewardedAdReady(map: ReadableMap, promise: Promise) {
+    val adObjectId = map.getInt("adObjectId")
+    return promise.resolve(levelPlayAdObjectManager.isRewardedAdReady(adObjectId))
+  }
+
+  @ReactMethod
+  fun isRewardedAdPlacementCapped(map: ReadableMap, promise: Promise) {
+    val placementName = map.getString("placementName")!!
+    return promise.resolve(LevelPlayRewardedAd.isPlacementCapped(placementName))
   }
 
   /** Event Emitter Constants ================================================================ **/

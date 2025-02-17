@@ -1,1 +1,1 @@
-{"version":3,"names":["AdFormat"],"sourceRoot":"../../../src","sources":["models/AdFormat.ts"],"mappings":"AAAA;AACA;AACA;AACA,WAAYA,QAAQ,0BAARA,QAAQ;EAARA,QAAQ;EAARA,QAAQ;EAARA,QAAQ;EAARA,QAAQ;EAAA,OAARA,QAAQ;AAAA","ignoreList":[]}
+{"version":3,"names":["AdFormat"],"sourceRoot":"../../../src","sources":["models/AdFormat.ts"],"mappings":"AAAA;AACA;AACA;AACA,WAAYA,QAAQ,0BAARA,QAAQ;EAChB;AACJ;AACA;AACA;EAJYA,QAAQ;EAOhB;AACJ;AACA;AACA;EAVYA,QAAQ;EAahB;AACJ;AACA;AACA;EAhBYA,QAAQ;EAmBhB;AACJ;AACA;AACA;EAtBYA,QAAQ;EAAA,OAARA,QAAQ;AAAA","ignoreList":[]}

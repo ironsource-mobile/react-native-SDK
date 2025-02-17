@@ -14,6 +14,9 @@
 - (void)loadInterstitialAd:(NSNumber *)adObjectId adUnitId:(NSString *)adUnitId eventEmitter:(RCTEventEmitter *)eventEmitter;
 - (void)showInterstitialAd:(NSNumber *)adObjectId placementName:(NSString *)placementName rootViewController:(UIViewController *_Nonnull)rootViewController;
 - (BOOL)isInterstitialAdReady:(NSNumber *)adObjectId;
+- (void)loadRewardedAd:(NSNumber *)adObjectId adUnitId:(NSString *)adUnitId eventEmitter:(RCTEventEmitter *)eventEmitter;
+- (void)showRewardedAd:(NSNumber *)adObjectId placementName:(NSString *)placementName rootViewController:(UIViewController *_Nonnull)rootViewController;
+- (BOOL)isRewardedAdReady:(NSNumber *)adObjectId;
 - (void)removeAd:(NSNumber *)adObjectId;
 - (void)removeAllAds;
 

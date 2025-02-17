@@ -1,7 +1,7 @@
 {
   "name": "ironsource-mediation",
-  "version": "3.0.0",
-  "description": "A ReactNative bridge plugin for ironSource SDK",
+  "version": "3.1.0",
+  "description": "IronSource ad mediation React-Native plugin. Monetize apps with rewarded video, interstitial, banner, and native ads.",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
   "types": "lib/typescript/src/index.d.ts",

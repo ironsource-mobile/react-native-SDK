@@ -1,6 +1,5 @@
 package com.ironsource.react_native_mediation
 
-import android.util.Log
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
@@ -27,7 +26,6 @@ class IronSourceConfigModule(reactContext: ReactApplicationContext) :
     reactNativeVersion: String,
     promise: Promise
   ) {
-    Log.d(TAG, "pluginType $pluginType, pluginVersion $pluginVersion")
     if (pluginType.isEmpty()) {
       return promise.reject(E_ILLEGAL_ARGUMENT, "pluginType must be provided.")
     }

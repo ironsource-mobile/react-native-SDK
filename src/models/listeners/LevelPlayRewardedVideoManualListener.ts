@@ -4,6 +4,8 @@ import type { LevelPlayRewardedVideoBaseListener } from "./LevelPlayRewardedVide
 
 /**
  * Interface for handling LevelPlayRewardedVideo manual events
+ * 
+ * @deprecated Use {@link LevelPlayRewardedAdListener} instead.
  */
 export interface LevelPlayRewardedVideoManualListener extends LevelPlayRewardedVideoBaseListener {
   /**

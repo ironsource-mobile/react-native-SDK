@@ -37,8 +37,8 @@
     if (_nativeAd == nil) {
         _nativeAd = [[[[LevelPlayNativeAdBuilder new]
                 withViewController:[LevelPlayUtils getRootViewController]]
-                withPlacementName:self.placement] // Replace with your placement or leave empty
-                withDelegate:self]    // We implement the delegate in step 2
+                withPlacementName:self.placement]
+                withDelegate:self]
                 .build;
     }
     [_nativeAd loadAd];

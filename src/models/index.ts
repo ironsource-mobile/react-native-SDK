@@ -15,3 +15,5 @@ export * from './LevelPlayAdInfo';
 export * from './LevelPlayAdError';
 export * from './LevelPlayInterstitialAd';
 export * from './LevelPlayAdSize';
+export * from './LevelPlayReward';
+export * from './LevelPlayRewardedAd';

@@ -1,1 +1,1 @@
-{"version":3,"file":"IronSourceRVPlacement.d.ts","sourceRoot":"","sources":["../../../../src/models/IronSourceRVPlacement.ts"],"names":[],"mappings":"AAAA;;GAEG;AACH,MAAM,MAAM,qBAAqB,GAAG;IAClC,aAAa,EAAE,MAAM,CAAC;IACtB,UAAU,EAAE,MAAM,CAAC;IACnB,YAAY,EAAE,MAAM,CAAC;CACtB,CAAA"}
+{"version":3,"file":"IronSourceRVPlacement.d.ts","sourceRoot":"","sources":["../../../../src/models/IronSourceRVPlacement.ts"],"names":[],"mappings":"AAAA;;;;GAIG;AACH,MAAM,MAAM,qBAAqB,GAAG;IAClC,aAAa,EAAE,MAAM,CAAC;IACtB,UAAU,EAAE,MAAM,CAAC;IACnB,YAAY,EAAE,MAAM,CAAC;CACtB,CAAA"}

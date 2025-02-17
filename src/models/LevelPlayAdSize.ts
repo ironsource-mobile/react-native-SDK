@@ -81,7 +81,9 @@ export class LevelPlayAdSize {
   static async createAdaptiveAdSize(
     width: number | null = null
   ): Promise<LevelPlayAdSize | null> {
-    let sizeMap = await IronSourceMediation.createAdaptiveAdSize(width)
+    const sizeMap = width != null
+            ? await IronSourceMediation.createAdaptiveAdSizeWithWidth(width)
+            : await IronSourceMediation.createAdaptiveAdSize();    
     return sizeMap != null ? LevelPlayAdSize.fromMap(sizeMap) : null
   }
 

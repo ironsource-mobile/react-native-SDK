@@ -231,4 +231,11 @@
     return rootViewController;
 }
 
++ (NSDictionary *)getDictForLevelPlayReward:(LPMReward *)reward {
+    return @{
+            @"name": reward.name,
+            @"amount": [NSNumber numberWithInteger: reward.amount],
+    };
+}
+
 @end

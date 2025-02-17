@@ -107,7 +107,6 @@ android {
 repositories {
     google()
     mavenCentral()
-    maven { url 'https://android-sdk.is.com/' }
 }
 
 dependencies {
@@ -122,7 +121,7 @@ dependencies {
     }
 
     // Required when using custom native ad implementation
-    implementation 'com.ironsource.sdk:mediationsdk:8.1.0'
+    implementation 'com.unity3d.ads-mediation:mediation-sdk:8.7.0'
 }
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)

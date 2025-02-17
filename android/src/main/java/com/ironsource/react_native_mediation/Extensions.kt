@@ -17,6 +17,7 @@ import com.unity3d.mediation.LevelPlayAdInfo
 import com.unity3d.mediation.LevelPlayAdSize
 import com.unity3d.mediation.LevelPlayConfiguration
 import com.unity3d.mediation.LevelPlayInitError
+import com.unity3d.mediation.rewarded.LevelPlayReward
 import java.io.ByteArrayOutputStream
 
 /** Bundle placement data into a readable map to send to the React Native layer. */
@@ -201,6 +202,16 @@ fun LevelPlayAdError.toReadableMap(): ReadableMap {
   map.putString("adUnitId", this.adUnitId)
   map.putInt("errorCode", this.getErrorCode())
   map.putString("errorMessage", this.getErrorMessage())
+  return map
+}
+
+/**
+ * Convert LevelPlayReward to readable map.
+ */
+fun LevelPlayReward.toReadableMap(): ReadableMap {
+  val map = Arguments.createMap()
+  map.putString("name", this.name)
+  map.putInt("amount", this.amount)
   return map
 }
 

@@ -922,21 +922,6 @@ RCT_EXPORT_METHOD(isInterstitialAdReady:(nonnull id)args
   return resolve([NSNumber numberWithBool: isAdReady]);
 }
 
-RCT_EXPORT_METHOD(removeInterstitialAd:(nonnull id)args
-                  withResolver:(RCTPromiseResolveBlock)resolve
-                  withRejecter:(RCTPromiseRejectBlock)reject) {
-  NSNumber *adObjectId = [args valueForKey:@"adObjectId"];
-  [self.levelPlayAdObjectManager removeAd:adObjectId];
-  return resolve(nil);
-}
-
-RCT_EXPORT_METHOD(removeAllInterstitialAds:(nonnull id)args
-                  withResolver:(RCTPromiseResolveBlock)resolve
-                  withRejecter:(RCTPromiseRejectBlock)reject) {
-  [self.levelPlayAdObjectManager removeAllAds];
-  return resolve(nil);
-}
-
 RCT_EXPORT_METHOD(isInterstitialAdPlacementCapped:(nonnull id)args
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject) {
@@ -945,19 +930,71 @@ RCT_EXPORT_METHOD(isInterstitialAdPlacementCapped:(nonnull id)args
   return resolve([NSNumber numberWithBool:isCapped]);
 }
 
-#pragma mark - LPMAdSize API ========================================================================
-RCT_EXPORT_METHOD(createAdaptiveAdSize:(NSNumber *) width
+RCT_EXPORT_METHOD(removeAd:(nonnull id)args
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject) {
-    if (width == nil) {
-        LPMAdSize *adSize = [LPMAdSize createAdaptiveAdSize];
-        return resolve([LevelPlayUtils getDictForAdSize: adSize]);
-    }
+  NSNumber *adObjectId = [args valueForKey:@"adObjectId"];
+  [self.levelPlayAdObjectManager removeAd:adObjectId];
+  return resolve(nil);
+}
+
+RCT_EXPORT_METHOD(removeAllAds:(nonnull id)args
+                  withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject) {
+  [self.levelPlayAdObjectManager removeAllAds];
+  return resolve(nil);
+}
+
+#pragma mark - LPMAdSize API ========================================================================
+RCT_EXPORT_METHOD(createAdaptiveAdSizeWithWidth:(nonnull NSNumber *) width
+                  withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject) {
     CGFloat widthFloat = [width floatValue];
     LPMAdSize *adSize = [LPMAdSize createAdaptiveAdSizeWithWidth: widthFloat];
     return resolve([LevelPlayUtils getDictForAdSize: adSize]);
 }
 
+RCT_EXPORT_METHOD(createAdaptiveAdSize:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject) {
+    LPMAdSize *adSize = [LPMAdSize createAdaptiveAdSize];
+    return resolve([LevelPlayUtils getDictForAdSize: adSize]);
+}
+
+
+#pragma mark - LevelPlay Rewarded Ad API ===================================================================
+RCT_EXPORT_METHOD(loadRewardedAd:(nonnull id)args
+                  withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject) {
+  NSNumber *adObjectId = [args valueForKey:@"adObjectId"];
+  NSString *adUnitId = [args valueForKey:@"adUnitId"];
+  [self.levelPlayAdObjectManager loadRewardedAd:adObjectId adUnitId:adUnitId eventEmitter:self];
+  return resolve(nil);
+}
+
+RCT_EXPORT_METHOD(showRewardedAd:(nonnull id)args
+                  withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject) {
+  NSNumber *adObjectId = [args valueForKey:@"adObjectId"];
+  NSString *placementName = [args valueForKey:@"placementName"] ?: [NSNull null];
+  [self.levelPlayAdObjectManager showRewardedAd:adObjectId placementName:placementName rootViewController:[LevelPlayUtils getRootViewController]];
+  return resolve(nil);
+}
+
+RCT_EXPORT_METHOD(isRewardedAdReady:(nonnull id)args
+                  withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject) {
+  NSNumber *adObjectId = [args valueForKey:@"adObjectId"];
+  BOOL isAdReady = [self.levelPlayAdObjectManager isRewardedAdReady:adObjectId];
+  return resolve([NSNumber numberWithBool: isAdReady]);
+}
+
+RCT_EXPORT_METHOD(isRewardedAdPlacementCapped:(nonnull id)args
+                  withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject) {
+  NSString *placementName = [args valueForKey:@"placementName"];
+  BOOL isCapped = [LPMRewardedAd isPlacementCapped:placementName];
+  return resolve([NSNumber numberWithBool:isCapped]);
+}
 
 #pragma mark - ISImpressionDataDelegate Functions ===================================================
 
@@ -1225,7 +1262,17 @@ RCT_EXPORT_METHOD(createAdaptiveAdSize:(NSNumber *) width
         @"ON_INTERSTITIAL_AD_DISPLAYED": ON_INTERSTITIAL_AD_DISPLAYED,
         @"ON_INTERSTITIAL_AD_DISPLAY_FAILED": ON_INTERSTITIAL_AD_DISPLAY_FAILED,
         @"ON_INTERSTITIAL_AD_CLICKED": ON_INTERSTITIAL_AD_CLICKED,
-        @"ON_INTERSTITIAL_AD_CLOSED": ON_INTERSTITIAL_AD_CLOSED
+        @"ON_INTERSTITIAL_AD_CLOSED": ON_INTERSTITIAL_AD_CLOSED,
+        
+        // LevelPlay Rewarded Ad
+        @"ON_REWARDED_AD_LOADED": ON_REWARDED_AD_LOADED,
+        @"ON_REWARDED_AD_LOAD_FAILED": ON_REWARDED_AD_LOAD_FAILED,
+        @"ON_REWARDED_AD_INFO_CHANGED": ON_REWARDED_AD_INFO_CHANGED,
+        @"ON_REWARDED_AD_DISPLAYED": ON_REWARDED_AD_DISPLAYED,
+        @"ON_REWARDED_AD_DISPLAY_FAILED": ON_REWARDED_AD_DISPLAY_FAILED,
+        @"ON_REWARDED_AD_CLICKED": ON_REWARDED_AD_CLICKED,
+        @"ON_REWARDED_AD_CLOSED": ON_REWARDED_AD_CLOSED,
+        @"ON_REWARDED_AD_REWARDED": ON_REWARDED_AD_REWARDED,
     };
 }
 
@@ -1288,7 +1335,17 @@ RCT_EXPORT_METHOD(createAdaptiveAdSize:(NSNumber *) width
         ON_INTERSTITIAL_AD_DISPLAYED,
         ON_INTERSTITIAL_AD_DISPLAY_FAILED,
         ON_INTERSTITIAL_AD_CLICKED,
-        ON_INTERSTITIAL_AD_CLOSED
+        ON_INTERSTITIAL_AD_CLOSED,
+
+        // LevelPlay Interstitial Ad
+        ON_REWARDED_AD_LOADED,
+        ON_REWARDED_AD_LOAD_FAILED,
+        ON_REWARDED_AD_INFO_CHANGED,
+        ON_REWARDED_AD_DISPLAYED,
+        ON_REWARDED_AD_DISPLAY_FAILED,
+        ON_REWARDED_AD_CLICKED,
+        ON_REWARDED_AD_CLOSED,
+        ON_REWARDED_AD_REWARDED
     ];
 }
 

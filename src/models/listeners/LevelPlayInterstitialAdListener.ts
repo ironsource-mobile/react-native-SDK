@@ -10,7 +10,7 @@ export interface LevelPlayInterstitialAdListener {
      * [adInfo] includes information about the loaded ad
      * 
      * Android: onAdLoaded
-     *     iOS: didLoad
+     *     iOS: didLoadAdWithAdInfo
      */
     onAdLoaded: (adInfo: LevelPlayAdInfo) => void;
     /**
@@ -18,7 +18,7 @@ export interface LevelPlayInterstitialAdListener {
      * [error] includes information about the error 
      * 
      * Android: onAdLoadFailed
-     *     iOS: didFailToLoadWithError
+     *     iOS: didFailToLoadAdWithAdUnitId
      */
     onAdLoadFailed: (error: LevelPlayAdError) => void;
     /**
@@ -47,7 +47,7 @@ export interface LevelPlayInterstitialAdListener {
      */    
     onAdDisplayFailed?: (error: LevelPlayAdError, adInfo: LevelPlayAdInfo) => void; 
     /**
-     * Invoked when end user clicks on the banner ad.
+     * Invoked when end user clicks on the interstitial ad.
      * [adInfo] includes information about the loaded ad
      * 
      * Android: onAdClicked

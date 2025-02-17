@@ -3,7 +3,7 @@ import type {IronSourceError} from "../errors";
 
 /**
  * Interface for handling LevelPlayBanner events
- * @deprecated This method will be removed in future versions. Please use LevelPlayBannerAdViewListenr with LevelPlayBannerAdView instead.
+ * @deprecated Use {@link LevelPlayBannerAdViewListener} instead.
  */
 export interface LevelPlayBannerListener {
     /**

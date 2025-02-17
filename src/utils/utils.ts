@@ -1,4 +1,4 @@
-import { LevelPlayAdSize, type ConsentViewError, type ImpressionData, type IronSourceAdInfo, type IronSourceError, type IronSourceRVPlacement, type LevelPlayAdError, type LevelPlayAdInfo, type LevelPlayConfiguration, type LevelPlayInitError } from "../models";
+import { LevelPlayAdSize, type ConsentViewError, type ImpressionData, type IronSourceAdInfo, type IronSourceError, type IronSourceRVPlacement, type LevelPlayAdError, type LevelPlayAdInfo, type LevelPlayConfiguration, type LevelPlayInitError, type LevelPlayReward } from "../models";
 
 export const toNumberOrNull = (value: any): number | null => {
     // Convert value to number if it is not null or undefined and is a finite number
@@ -101,3 +101,10 @@ export const levelPlayConfigurationFromMap = (data: any): LevelPlayConfiguration
       isAdQualityEnabled: data.isAdQualityEnabled,
   };
 }
+
+export const levelPlayRewardFromMap = (data: any): LevelPlayReward => {
+  return {
+    name: data.name,
+    amount: Number(data.amount)
+  };
+};

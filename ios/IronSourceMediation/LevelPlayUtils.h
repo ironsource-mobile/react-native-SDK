@@ -21,6 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSDictionary *)getDictForAdSize:(LPMAdSize *)adSize;
 + (NSDictionary *)getDictForImpressionData:(ISImpressionData *)impressionData;
 + (UIViewController *)getRootViewController;
++ (NSDictionary *)getDictForLevelPlayReward:(LPMReward *)reward;
 
 @end
 

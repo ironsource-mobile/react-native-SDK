@@ -3,6 +3,7 @@ import type {IronSourceError} from "../errors";
 
 /**
  * Interface for handling LevelPlayInterstitial events
+ * @deprecated Use {@link LevelPlayInterstitialAdListener} instead.
  */
 export interface LevelPlayInterstitialListener {
     /**

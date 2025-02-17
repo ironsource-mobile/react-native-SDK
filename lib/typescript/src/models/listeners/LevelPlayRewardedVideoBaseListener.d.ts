@@ -3,6 +3,8 @@ import type { IronSourceRVPlacement } from "../IronSourceRVPlacement";
 import type { IronSourceError } from "../errors";
 /**
  * Interface for handling LevelPlayRewardedVideo base events
+ *
+ * @deprecated Use {@link LevelPlayRewardedAdListener} instead.
  */
 export interface LevelPlayRewardedVideoBaseListener {
     /**

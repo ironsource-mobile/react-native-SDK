@@ -120,22 +120,21 @@ Note:
 
 - Only one listener can be registered. When `setListener` is called, the listener previously registered to the event will be removed.
 
-#### LevelPlayRewardedVideoListener
+#### LevelPlayRewardedAdListener
 ```typescript
-import { IronSource } from 'ironsource-mediation'
-
 function SomeComponent() {
   useEffect(() => {
-    const listener: LevelPlayRewardedVideoListener = {
-      onAdAvailable: (adInfo: IronSourceAdInfo) => {},
-      onAdUnavailable: () => {},
-      onAdOpened: (adInfo: IronSourceAdInfo) => {},
-      onAdClosed: (adInfo: IronSourceAdInfo) => {},
-      onAdRewarded: (placement: IronSourceRVPlacement, adInfo: IronSourceAdInfo) => {},
-      onAdShowFailed: (error: IronSourceError, adInfo: IronSourceAdInfo) => {},
-      onAdClicked: (placement: IronSourceRVPlacement, adInfo: IronSourceAdInfo) => {},
-    };
-    IronSource.setLevelPlayRewardedVideoListener(listener);
+    const listener: LevelPlayRewardedAdListener = {
+      onAdLoaded: (adInfo: LevelPlayAdInfo) => {},
+      onAdLoadFailed: (error: LevelPlayAdError) => {},
+      onAdInfoChanged: (adInfo: LevelPlayAdInfo) => {},
+      onAdDisplayed: (adInfo: LevelPlayAdInfo) => {},
+      onAdDisplayFailed: (error: LevelPlayAdError, adInfo: LevelPlayAdInfo) => {},
+      onAdClicked: (adInfo: LevelPlayAdInfo) => {},
+      onAdClosed: (adInfo: LevelPlayAdInfo) => {},
+      onAdRewarded: (reward: LevelPlayReward, adInfo: LevelPlayAdInfo) => {}
+    }
+    // Use listener ...
   }, [])
 
   // return some view
@@ -205,9 +204,12 @@ function SomeComponent() {
 ### Initialize the plugin
 
 ```typescript
-async function initLevelPlay() {
-  let initRequest: LevelPlayInitRequest = LevelPlayInitRequest.builder(APP_KEY)
+async function init() {
+  const appKey = "[YOUR_APP_KEY]"
+  const userId = "[YOUR_USER_ID]"
+  let initRequest: LevelPlayInitRequest = LevelPlayInitRequest.builder(appKey)
       .withLegacyAdFormats([AdFormat.BANNER, AdFormat.INTERSTITIAL, AdFormat.REWARDED, AdFormat.NATIVE_AD])
+      .withUserId(userId)
       .build();
     const initListener: LevelPlayInitListener = {
       onInitFailed: (error: LevelPlayInitError) => {},
@@ -221,36 +223,49 @@ async function initLevelPlay() {
 
 #### LevelPlayRewardedVideo
 ```typescript
-const showRewardedVideo = async () => {
-  if (await IronSource.isRewardedVideoAvailable()) {
-    IronSource.showRewardedVideo();
+const SomeComponent: React.FC = () => {
+  const [rewardedAd, setRewardedAd] = useState<LevelPlayRewardedAd>(new LevelPlayRewardedAd('YOUR_AD_UNIT_ID'));
+  const listener: LevelPlayRewardedAdListener = {
+    // Implement listener methods...
   }
-}
+
+  useEffect(() => {
+    rewardedAd.setListener(listener);
+  }, [rewardedAd]);
+
+  const loadAd = async () => {
+    await rewardedAd.loadAd();
+  };
+
+  const showAd = async () => {
+    if (await rewardedAd.isAdReady()) {
+      await rewardedAd.showAd('YOUR_PLACEMENT');
+    }
+  };
+
+  /// Rest of component, return some view ...
 ```
 
 #### LevelPlayInterstitial
 
 ```typescript
 const SomeComponent: React.FC = () => {
-  const [interstitialAd, setInterstitialAd] = useState<LevelPlayInterstitialAd | null>()
+  const [interstitialAd, setInterstitialAd] = useState<LevelPlayInterstitialAd>(new LevelPlayInterstitialAd('YOUR_AD_UNIT_ID'))
+  const listener: LevelPlayInterstitialAdListener = {
+    // Implement listener methods...
+  }
 
   useEffect(() => {
-    const levelPlayInterstitialAd = new LevelPlayInterstitialAd([YOUR_AD_UNIT]);
-    levelPlayInterstitialAd.setListener([YOUR_LISTENER]);
-    setInterstitialAd(levelPlayInterstitialAd);
-  }, []);
+    interstitialAd.setListener(listener);
+  }, [interstitialAd]);
 
   const loadAd = async () => {
-    try {
-      await interstitialAd?.loadAd();
-    } catch (error) {
-      console.error('Failed to load ad:', error);
-    }
+    await interstitialAd.loadAd();
   };
 
   const showAd = async () => {
-    if (await interstitialAd?.isAdReady()) {
-        await interstitialAd!.showAd([YOUR_PLACEMENT]);
+    if (await interstitialAd.isAdReady()) {
+      await interstitialAd.showAd('YOUR_PLACEMENT');
     }
   };
 
@@ -263,45 +278,30 @@ const SomeComponent: React.FC = () => {
 const SomeComponent: React.FC = () => {
   // State to manage the reference to the banner ad view
   const bannerAdViewRef = useRef<LevelPlayBannerAdViewMethods>(null);
+  const adSize = LevelPlayAdSize.BANNER
+  const adUnitId = 'YOUR_AD_UNIT_ID'
+  const placement = 'YOUR_PLACEMENT'
+
+  // LevelPlay Banner Ad View listener
+  const listener: LevelPlayBannerAdViewListener = {
+    // Implement listener methods...
+  }
 
   // Load ad
   const loadAd = useCallback(() => {
     bannerAdViewRef.current?.loadAd();
   }, []);
 
-  const destroyAdAndCreateNew = useCallback(() => {
-    bannerAdViewRef.current?.destroy();
-    setAdKey((prevKey) => prevKey + 1);
-  }, []);
-
-  const pauseAutoRefresh = useCallback(() => {
-    bannerAdViewRef.current?.pauseAutoRefresh();
-  }, []);
-
-  const resumeAutoRefresh = useCallback(() => {
-    bannerAdViewRef.current?.resumeAutoRefresh();
-  }, []);
-
-  return (
+return (
     <View>
-      <Text style={[styles.h2, styles.alignCenter]}>
-        Banner Ad View
-      </Text>
-      <View style={styles.horizontalSpaceBetween}>
-        <HighlightButton buttonText={'Load Ad'} onPress={loadAd} />
-        <HighlightButton buttonText={'Destroy Ad'} onPress={destroyAdAndCreateNew} />
-      </View>
-      <View style={styles.horizontalSpaceBetween}>
-        <HighlightButton buttonText={'Pause Auto Refresh'} onPress={pauseAutoRefresh} />
-        <HighlightButton buttonText={'Resume Auto Refresh'} onPress={resumeAutoRefresh} />
-      </View>
       <LevelPlayBannerAdView 
         ref={bannerAdViewRef}
-        adUnitId={[YOUR_AD_UNIT]}
-        adSize={[YOUR_LEVEL_PLAY_AD_SIZE]}
-        placementName={[YOUR_PLACEMENT]}
-        listener={[YOUR_LISTENER]}
-        style={{width: adSize.width, height: adSize.height, alignSelf: 'center'}} // Use the values from the LevelPlayAdSize instance
+        adUnitId={adUnitId}
+        adSize={adSize}
+        placementName={placement}
+        listener={listener}
+        style={{width: adSize.width, height: adSize.height, alignSelf: 'center'}}
+        onLayout={(_) => loadAd()}
       />
     </View>
   );
@@ -312,37 +312,38 @@ const SomeComponent: React.FC = () => {
 ```typescript
 export const LevelPlayNativeAdSection = () => {
   const [nativeAd, setNativeAd] = useState<LevelPlayNativeAd | null>()
-  const [adKey, setAdKey] = useState<number>(0);
 
   // LevelPlay NativeAd listener
   const listener: LevelPlayNativeAdListener = {
-    onAdLoaded: (nativeAd: LevelPlayNativeAd, adInfo: IronSourceAdInfo) => {
-      setNativeAd(nativeAd);
-    },
-    onAdLoadFailed: (nativeAd: LevelPlayNativeAd, error: IronSourceError) => {},
-    onAdClicked: (nativeAd: LevelPlayNativeAd, adInfo: IronSourceAdInfo) => {},
-    onAdImpression: (nativeAd: LevelPlayNativeAd, adInfo: IronSourceAdInfo) => {},
+    // Implement listener methods...
   };
 
   useEffect(() => {
-    createNativeAd();
-  }, []);
-
-  // Initialize native ad object
-  const createNativeAd = useCallback(() => {
-    const levelPlayNativeAd = LevelPlayNativeAd.builder()
+     const levelPlayNativeAd = LevelPlayNativeAd.builder()
       .withPlacement('DefaultNativeAd') // Your placement name string
       .withListener(listener) // Your level play native ad listener
       .build();
     setNativeAd(levelPlayNativeAd);
-  }, [])
+  }, []);
 
   // Load native ad
   const loadAd = useCallback(() => {
     nativeAd?.loadAd();
   }, [nativeAd]);
 
-  // Rest of the class
+   return (
+    <View>
+      {nativeAd && 
+        <LevelPlayNativeAdView
+            nativeAd={nativeAd} 
+            templateType={LevelPlayTemplateType.Medium} 
+            style={{ width: 350, height: 300, alignSelf: 'center' }}
+            onLayout={(_) => loadAd()}
+          />
+        }
+    </View>
+  );
+}
 ```
 
 Refer to the [example app](./example) for the more detailed implementation sample.
@@ -352,35 +353,7 @@ Note:
 - Make sure to read the official documents at [ironSource Knowledge Center](https://developers.ironsrc.com/ironsource-mobile/android/android-sdk/) for proper usage.
 - Some config functions must be called before `IronSource.init`.
 - LevelPlayBannerListener is deprecated - Please use LevelPlayBannerAdViewListener with LevelPlayBannerAdView instead.
-
-### Manual Load RV
-
-- On ironSource Mediation, Rewarded Video Load is automatically requested upon `init`
-- To enable Rewarded Video Manual Load, call `IronSource.setLevelPlayRewardedManualVideo([YOUR_LISTENER])` <ins>before init</ins>
-- Set the manual load rewarded video event listeners before calling `IronSource.loadRewardedVideo()`
-
-```typescript
-const listener: LevelPlayRewardedVideoManualListener = {
-  onAdOpened: (adInfo: IronSourceAdInfo) => {},
-  onAdClosed: (adInfo: IronSourceAdInfo) => {},
-  onAdRewarded: (placement: IronSourceRVPlacement, adInfo: IronSourceAdInfo) => {},
-  onAdShowFailed: (error: IronSourceError, adInfo: IronSourceAdInfo) => {},
-  onAdClicked: (placement: IronSourceRVPlacement, adInfo: IronSourceAdInfo) => {},
-  onAdReady: (adInfo: IronSourceAdInfo) => {},
-  onAdLoadFailed: () => {},
-};
-IronSource.setLevelPlayRewardedVideoManualListener(listener);
-```
-
-```typescript
-const loadRewardedVideo = async () => {
-  try {
-    await IronSource.loadRewardedVideo()
-  } catch (e) {
-    console.error(e)
-  }
-}
-```
+- LevelPlayInterstitialListener is deprecated - Please use LevelPlayInterstitialAdListener with LevelPlayInterstitialAd instead.
 
 ## Functions Not Supported
 
@@ -447,10 +420,10 @@ yarn run ios
 ```
 
 ## Version history 
-You can find a summary of the ironSouce SDK version history [here](https://developers.is.com/ironsource-mobile/react-native/sdk-change-log/)
+You can find a summary of the ironSouce SDK version history [here](https://developers.is.com/ironsource-mobile/react-native/sdk-change-log/).
 
 ## Contact US 
-For any question please contact us [here](https://ironsrc.formtitan.com/knowledge-center#/)
+For any question please contact us [here](https://ironsrc.formtitan.com/knowledge-center#/). 
 
 ## License 
 The license can be viewed [here](https://github.com/ironsource-mobile/react-native-SDK/blob/master/LICENSE)
