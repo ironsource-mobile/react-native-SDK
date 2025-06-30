@@ -4,5 +4,5 @@
 
 @interface LevelPlayInterstitialAdDelegate : NSObject <LPMInterstitialAdDelegate>
 
-- (instancetype)initWithAdObjectId:(int)adObjectId eventEmitter:(RCTEventEmitter *)eventEmitter;
+- (instancetype)initWithAdId:(NSString *)adId eventEmitter:(RCTEventEmitter *)eventEmitter;
 @end

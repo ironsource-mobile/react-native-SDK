@@ -29,38 +29,54 @@
   {
     _bridge = bridge;
   }
-  
+
   return self;
 }
 
 // MARK: Banner Ad View Methods
+// Add initializeBanner method (similar to Android)
+- (void)initializeBanner {
+  // Create a new banner view
+  self.bannerAdView = [[LPMBannerAdView alloc] initWithAdUnitId:self.adUnitId];
+  LPMAdSize *bannerSize = [self getLevelPlayAdSize:self.adSize];
+  if (bannerSize == nil) return;
+
+  [self.bannerAdView setAdSize:bannerSize];
+  if (self.placementName != nil && ![self.placementName isEqualToString:@""]) {
+    [self.bannerAdView setPlacementName:self.placementName];
+  }
+  [self.bannerAdView setDelegate:self];
+
+  // Add the banner view to the view hierarchy
+  [self addBannerViewWithSize:bannerSize];
+
+  // Access adId property if available
+  if ([self.bannerAdView respondsToSelector:@selector(adId)]) {
+    self.adId = [self.bannerAdView adId];
+
+    // Send event with adId to React Native
+    if (self.adId != nil && self.onAdIdGeneratedEvent) {  // Add the null check!
+      NSDictionary *args = @{
+        @"adId": self.adId
+      };
+      self.onAdIdGeneratedEvent(args);
+    }
+  }
+}
 
 /**
  * Loads the native ad and informs the Flutter side upon completion.
  */
 - (void)loadAd {
-    // If the banner ad view is not initialized, create a new one
-    if (self.bannerAdView == nil) {
-      self.bannerAdView = [[LPMBannerAdView alloc] initWithAdUnitId: self.adUnitId];
-      LPMAdSize *bannerSize = [self getLevelPlayAdSize:self.adSize];
-      if (bannerSize == nil) return;
-
-      [self.bannerAdView setAdSize:bannerSize];
-      if (self.placementName != nil) {
-        [self.bannerAdView setPlacementName: self.placementName];
-      }
-      [self.bannerAdView setDelegate:self];
-
-      // Add the banner view to the view hierarchy with the proper constraints
-      [self addBannerViewWithSize:bannerSize];
-    }
-  [self.bannerAdView loadAdWithViewController: [LevelPlayUtils getRootViewController]];
+  // If the banner ad view is destroyed or not initialized, create a new one
+  if (self.bannerAdView != nil) {
+    [self.bannerAdView loadAdWithViewController: [LevelPlayUtils getRootViewController]];
+  }
 }
 
 - (void)destroy {
   if (self.bannerAdView != nil) {
     [self.bannerAdView destroy];
-    self.bannerAdView = nil;
   }
 }
 
@@ -77,19 +93,29 @@
 }
 
 #pragma mark - Setters for React Props
-- (void)setAdUnitId:(NSString *)adUnitId
-{
-  _adUnitId = [adUnitId copy];
-}
 
-- (void)setAdSize:(NSDictionary *)adSize
+- (void)setCreationParams:(NSDictionary *)creationParams
 {
-  _adSize = [adSize copy];
-}
+  _creationParams = creationParams;
 
-- (void)setPlacementName:(NSString *)placementName
-{
-  _placementName = [placementName copy];
+  // Extract parameters from creationParams
+  if (creationParams) {
+    // Set properties on the view
+    if (creationParams[@"adUnitId"]) {
+      self.adUnitId = creationParams[@"adUnitId"];
+    }
+
+    if (creationParams[@"placementName"]) {
+      self.placementName = creationParams[@"placementName"];
+    }
+
+    if (creationParams[@"adSize"]) {
+      self.adSize = creationParams[@"adSize"];
+    }
+
+    // Initialize banner after setting all properties
+    [self initializeBanner];
+  }
 }
 
 - (LPMAdSize *)getLevelPlayAdSize:(NSDictionary *)adSizeDict {
@@ -123,10 +149,10 @@
 
 - (void)addBannerViewWithSize:(LPMAdSize *)bannerSize {
     self.bannerAdView.translatesAutoresizingMaskIntoConstraints = NO;
-    
+
     // Add the banner view to the view hierarchy
     [self addSubview:self.bannerAdView];
-    
+
     [NSLayoutConstraint activateConstraints:@[
         [self.bannerAdView.bottomAnchor constraintEqualToAnchor:self.safeAreaLayoutGuide.bottomAnchor],
         [self.bannerAdView.centerXAnchor constraintEqualToAnchor:self.centerXAnchor],

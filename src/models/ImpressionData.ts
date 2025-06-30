@@ -3,7 +3,7 @@ import type { AdFormat } from "./AdFormat";
 /**
  * ARM ImpressionData
  * @see https://developers.is.com/ironsource-mobile/general/ad-revenue-measurement-postbacks/#step-2
- * 
+ *
  * Represents the data collected for an ad impression.
  */
 export type ImpressionData = {
@@ -13,13 +13,13 @@ export type ImpressionData = {
   auctionId: string | null;
 
   /**
-   * @deprecated This parameter will be removed in native SDK version 9.0.0.
+   * @deprecated This parameter will be removed in React native SDK version 4.0.0.
    * Please use [adFormat] instead.
-   * 
+   *
    * The ad unit type (e.g., banner, interstitial) that displayed the ad.
    */
   adUnit: string | null;
-  
+
   /**
    * The name of the ad unit.
    */
@@ -95,4 +95,6 @@ export type ImpressionData = {
    * The conversion value attributed to this impression, used for SKAdNetwork.
    */
   conversionValue: number | null; // Double
+
+  creativeId: string | null;
 }

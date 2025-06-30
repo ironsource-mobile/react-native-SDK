@@ -1,6 +1,6 @@
 {
   "name": "ironsource-mediation-example",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -17,6 +17,8 @@
     "graphql": "^16.5.0"
   },
   "dependencies": {
+    "@react-native-community/cli-platform-android": "^11.3.10",
+    "android": "^0.0.8",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "^0.73.8",
@@ -25,7 +27,8 @@
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "@babel/preset-env": "^7.20.0",
-    "@babel/runtime": "^7.20.0",
+    "@babel/runtime": "^7.27.1",
+    "@react-native-community/cli": "^18.0.0",
     "@react-native/babel-preset": "0.74.84",
     "@react-native/eslint-config": "0.73.2",
     "@react-native/metro-config": "0.74.84",

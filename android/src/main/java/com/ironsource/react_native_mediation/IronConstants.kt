@@ -80,7 +80,7 @@ object IronConstants {
     const val ON_REWARDED_AD_CLOSED = "onRewardedAdClosed"
     const val ON_REWARDED_AD_REWARDED = "onRewardedAdRewarded"
 
-    // Banner Ad
+    //LevelPlay Banner Ad
     const val ON_BANNER_AD_LOADED = "onBannerAdLoaded"
     const val ON_BANNER_AD_LOAD_FAILED = "onBannerAdLoadFailed"
     const val ON_BANNER_AD_DISPLAYED = "onBannerAdDisplayed"
@@ -89,6 +89,7 @@ object IronConstants {
     const val ON_BANNER_AD_COLLAPSED = "onBannerAdCollapsed"
     const val ON_BANNER_AD_EXPANDED = "onBannerAdExpanded"
     const val ON_BANNER_AD_LEFT_APPLICATION = "onBannerAdLeftApplication"
+    const val ON_BANNER_AD_GENERATED_ADID = "onBannerAdIdGeneratedEvent"
 
     // For JS Event Constants mapping
     fun getEventConstants(): MutableMap<String, Any> = hashMapOf(

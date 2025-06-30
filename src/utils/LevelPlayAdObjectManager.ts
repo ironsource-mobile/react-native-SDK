@@ -5,15 +5,15 @@ import { levelPlayAdInfoFromMap, levelPlayAdErrorFromMap, levelPlayRewardFromMap
 
 const { IronSourceMediation } = NativeModules;
 const eventEmitter = new NativeEventEmitter(IronSourceMediation)
-const { 
-    ON_INTERSTITIAL_AD_LOADED, 
+const {
+    ON_INTERSTITIAL_AD_LOADED,
     ON_INTERSTITIAL_AD_LOAD_FAILED,
     ON_INTERSTITIAL_AD_INFO_CHANGED,
     ON_INTERSTITIAL_AD_DISPLAYED,
     ON_INTERSTITIAL_AD_DISPLAY_FAILED,
     ON_INTERSTITIAL_AD_CLICKED,
     ON_INTERSTITIAL_AD_CLOSED,
-    ON_REWARDED_AD_LOADED, 
+    ON_REWARDED_AD_LOADED,
     ON_REWARDED_AD_LOAD_FAILED,
     ON_REWARDED_AD_INFO_CHANGED,
     ON_REWARDED_AD_DISPLAYED,
@@ -28,18 +28,16 @@ const {
  */
 export class LevelPlayAdObjectManager {
     private static instance: LevelPlayAdObjectManager;
-    private interstitialAdsMap: Map<number, LevelPlayInterstitialAd>;
-    private rewardedAdsMap: Map<number, LevelPlayRewardedAd>;
-    private adObjectId: number;
+    private interstitialAdsMap: Map<string, LevelPlayInterstitialAd>;
+    private rewardedAdsMap: Map<string, LevelPlayRewardedAd>;
 
     private constructor() {
-        this.interstitialAdsMap = new Map<number, LevelPlayInterstitialAd>();
-        this.rewardedAdsMap = new Map<number, LevelPlayRewardedAd>();
-        this.adObjectId = 0;
+        this.interstitialAdsMap = new Map<string, LevelPlayInterstitialAd>();
+        this.rewardedAdsMap = new Map<string, LevelPlayRewardedAd>();
         this.handleInterstitialMethodCalls();
         this.handleRewardedMethodCalls();
     }
-    
+
     // Public static method to provide access to the singleton instance
     public static getInstance(): LevelPlayAdObjectManager {
         if (!LevelPlayAdObjectManager.instance) {
@@ -58,76 +56,92 @@ export class LevelPlayAdObjectManager {
         eventEmitter.removeAllListeners(ON_INTERSTITIAL_AD_DISPLAY_FAILED)
         eventEmitter.removeAllListeners(ON_INTERSTITIAL_AD_CLICKED)
         eventEmitter.removeAllListeners(ON_INTERSTITIAL_AD_CLOSED)
-        
+
         eventEmitter.addListener(ON_INTERSTITIAL_AD_LOADED, (data: any) => {
-            const adObjectId = Number(data.adObjectId);
+            const adId = String(data.adId);
             const adInfo = levelPlayAdInfoFromMap(data.adInfo);
-            const listener = this.interstitialAdsMap.get(adObjectId)?.getListener();
+            const listener = this.interstitialAdsMap.get(adId)?.getListener();
             listener?.onAdLoaded(adInfo);
         })
 
         eventEmitter.addListener(ON_INTERSTITIAL_AD_LOAD_FAILED, (data: any) => {
-            const adObjectId = Number(data.adObjectId);
+            const adId = String(data.adId);
             const error = levelPlayAdErrorFromMap(data.error);
-            const listener = this.interstitialAdsMap.get(adObjectId)?.getListener();
+            const listener = this.interstitialAdsMap.get(adId)?.getListener();
             listener?.onAdLoadFailed(error);
 
         })
-                
+
         eventEmitter.addListener(ON_INTERSTITIAL_AD_INFO_CHANGED, (data: any) => {
-            const adObjectId = Number(data.adObjectId);
+            const adId = String(data.adId);
             const adInfo = levelPlayAdInfoFromMap(data.adInfo);
-            const listener = this.interstitialAdsMap.get(adObjectId)?.getListener();
+            const listener = this.interstitialAdsMap.get(adId)?.getListener();
             listener?.onAdInfoChanged?.(adInfo);
         })
 
         eventEmitter.addListener(ON_INTERSTITIAL_AD_DISPLAYED, (data: any) => {
-            const adObjectId = Number(data.adObjectId);
+            const adId = String(data.adId);
             const adInfo = levelPlayAdInfoFromMap(data.adInfo);
-            const listener = this.interstitialAdsMap.get(adObjectId)?.getListener();
+            const listener = this.interstitialAdsMap.get(adId)?.getListener();
             listener?.onAdDisplayed?.(adInfo);
         })
 
         eventEmitter.addListener(ON_INTERSTITIAL_AD_DISPLAY_FAILED, (data: any) => {
-            const adObjectId = Number(data.adObjectId);
+            const adId = String(data.adId);
             const error = levelPlayAdErrorFromMap(data.error);
             const adInfo = levelPlayAdInfoFromMap(data.adInfo);
-            const listener = this.interstitialAdsMap.get(adObjectId)?.getListener();
+            const listener = this.interstitialAdsMap.get(adId)?.getListener();
             listener?.onAdDisplayFailed?.(error, adInfo);
         })
 
         eventEmitter.addListener(ON_INTERSTITIAL_AD_CLICKED, (data: any) => {
-            const adObjectId = Number(data.adObjectId);
+            const adId = String(data.adId);
             const adInfo = levelPlayAdInfoFromMap(data.adInfo);
-            const listener = this.interstitialAdsMap.get(adObjectId)?.getListener();
+            const listener = this.interstitialAdsMap.get(adId)?.getListener();
             listener?.onAdClicked?.(adInfo);
         })
 
         eventEmitter.addListener(ON_INTERSTITIAL_AD_CLOSED, (data: any) => {
-            const adObjectId = Number(data.adObjectId);
+            const adId = String(data.adId);
             const adInfo = levelPlayAdInfoFromMap(data.adInfo);
-            const listener = this.interstitialAdsMap.get(adObjectId)?.getListener();
+            const listener = this.interstitialAdsMap.get(adId)?.getListener();
             listener?.onAdClosed?.(adInfo);
         })
     }
 
+    async createInterstitialAd(interstitialAd: LevelPlayInterstitialAd): Promise<string> {
+        // Call native module to create the ad and get back an adId string
+        const adId = await IronSourceMediation.createInterstitialAd({
+            adUnitId: interstitialAd.adUnitId
+        });
+        // Store the ad instance in the map if it's not already present
+        if (!this.interstitialAdsMap.has(adId)) {
+            // Assign the returned ID to the ad object
+            interstitialAd.adId = adId;
+            // Add the ad to the map using its ID as key for future reference
+            this.interstitialAdsMap.set(adId, interstitialAd);
+        }
+
+        return interstitialAd.adId;
+}
+
     async loadInterstitialAd(interstitialAd: LevelPlayInterstitialAd): Promise<void> {
-        let adObjectId = interstitialAd.adObjectId;
-        let adUnitId = interstitialAd.adUnitId;
-        if (!this.interstitialAdsMap.has(adObjectId)) {
-            this.interstitialAdsMap.set(adObjectId, interstitialAd);
-        }
-        await IronSourceMediation.loadInterstitialAd({ adObjectId: adObjectId, adUnitId: adUnitId })
+            // If adId is empty or undefined, create the ad first to get an adId
+            const adId = !interstitialAd.adId ?
+                await this.createInterstitialAd(interstitialAd) : interstitialAd.adId;
+
+            // Call native module to load the ad using its adId
+            await IronSourceMediation.loadInterstitialAd({ adId: adId });
     }
 
-    async showInterstitialAd(adObjectId: number, placementName: string): Promise<void> {
-        if (this.interstitialAdsMap.has(adObjectId)) {
-            await IronSourceMediation.showInterstitialAd({ adObjectId: adObjectId, placementName: placementName })
+    async showInterstitialAd(adId: string, placementName: string): Promise<void> {
+        if (this.interstitialAdsMap.has(adId)) {
+            await IronSourceMediation.showInterstitialAd({ adId: adId, placementName: placementName })
         }
     }
 
-    async isInterstitialAdReady(adObjectId: number): Promise<boolean> {
-        return await IronSourceMediation.isInterstitialAdReady({ adObjectId: adObjectId })
+    async isInterstitialAdReady(adId: string): Promise<boolean> {
+        return await IronSourceMediation.isInterstitialAdReady({ adId: adId })
     }
 
     // Rewarded Ad
@@ -143,101 +157,116 @@ export class LevelPlayAdObjectManager {
         eventEmitter.removeAllListeners(ON_REWARDED_AD_REWARDED)
 
         eventEmitter.addListener(ON_REWARDED_AD_LOADED, (data: any) => {
-            const adObjectId = Number(data.adObjectId);
+            const adId = String(data.adId);
             const adInfo = levelPlayAdInfoFromMap(data.adInfo);
-            const listener = this.rewardedAdsMap.get(adObjectId)?.getListener();
+            const listener = this.rewardedAdsMap.get(adId)?.getListener();
             listener?.onAdLoaded(adInfo);
         })
 
         eventEmitter.addListener(ON_REWARDED_AD_LOAD_FAILED, (data: any) => {
-            const adObjectId = Number(data.adObjectId);
+            const adId = String(data.adId);
             const error = levelPlayAdErrorFromMap(data.error);
-            const listener = this.rewardedAdsMap.get(adObjectId)?.getListener();
+            const listener = this.rewardedAdsMap.get(adId)?.getListener();
             listener?.onAdLoadFailed(error);
 
         })
-                
+
         eventEmitter.addListener(ON_REWARDED_AD_INFO_CHANGED, (data: any) => {
-            const adObjectId = Number(data.adObjectId);
+            const adId = String(data.adId);
             const adInfo = levelPlayAdInfoFromMap(data.adInfo);
-            const listener = this.rewardedAdsMap.get(adObjectId)?.getListener();
+            const listener = this.rewardedAdsMap.get(adId)?.getListener();
             listener?.onAdInfoChanged?.(adInfo);
         })
 
         eventEmitter.addListener(ON_REWARDED_AD_DISPLAYED, (data: any) => {
-            const adObjectId = Number(data.adObjectId);
+            const adId = String(data.adId);
             const adInfo = levelPlayAdInfoFromMap(data.adInfo);
-            const listener = this.rewardedAdsMap.get(adObjectId)?.getListener();
+            const listener = this.rewardedAdsMap.get(adId)?.getListener();
             listener?.onAdDisplayed?.(adInfo);
         })
 
         eventEmitter.addListener(ON_REWARDED_AD_DISPLAY_FAILED, (data: any) => {
-            const adObjectId = Number(data.adObjectId);
+            const adId = String(data.adId);
             const error = levelPlayAdErrorFromMap(data.error);
             const adInfo = levelPlayAdInfoFromMap(data.adInfo);
-            const listener = this.rewardedAdsMap.get(adObjectId)?.getListener();
+            const listener = this.rewardedAdsMap.get(adId)?.getListener();
             listener?.onAdDisplayFailed?.(error, adInfo);
         })
 
         eventEmitter.addListener(ON_REWARDED_AD_CLICKED, (data: any) => {
-            const adObjectId = Number(data.adObjectId);
+            const adId = String(data.adId);
             const adInfo = levelPlayAdInfoFromMap(data.adInfo);
-            const listener = this.rewardedAdsMap.get(adObjectId)?.getListener();
+            const listener = this.rewardedAdsMap.get(adId)?.getListener();
             listener?.onAdClicked?.(adInfo);
         })
 
         eventEmitter.addListener(ON_REWARDED_AD_CLOSED, (data: any) => {
-            const adObjectId = Number(data.adObjectId);
+            const adId = String(data.adId);
             const adInfo = levelPlayAdInfoFromMap(data.adInfo);
-            const listener = this.rewardedAdsMap.get(adObjectId)?.getListener();
+            const listener = this.rewardedAdsMap.get(adId)?.getListener();
             listener?.onAdClosed?.(adInfo);
         })
 
         eventEmitter.addListener(ON_REWARDED_AD_REWARDED, (data: any) => {
-            const adObjectId = Number(data.adObjectId);
+            const adId = String(data.adId);
             const reward = levelPlayRewardFromMap(data.reward);
             const adInfo = levelPlayAdInfoFromMap(data.adInfo);
-            const listener = this.rewardedAdsMap.get(adObjectId)?.getListener();
+            const listener = this.rewardedAdsMap.get(adId)?.getListener();
             listener?.onAdRewarded?.(reward, adInfo);
         })
     }
 
+        async createRewardedAd(rewardedAd: LevelPlayRewardedAd): Promise<string> {
+        // Call native module to create the ad and get back an adId string
+        const adId = await IronSourceMediation.createRewardedAd({
+            adUnitId: rewardedAd.adUnitId
+        });
+        // Store the ad instance in the map if it's not already present
+        if (!this.rewardedAdsMap.has(adId)) {
+            // Assign the returned ID to the ad object
+            rewardedAd.adId = adId;
+            // Add the ad to the map using its ID as key for future reference
+            this.rewardedAdsMap.set(adId, rewardedAd);
+        }
+        return rewardedAd.adId;
+}
+
     async loadRewardedAd(rewardedAd: LevelPlayRewardedAd): Promise<void> {
-        let adObjectId = rewardedAd.adObjectId;
-        let adUnitId = rewardedAd.adUnitId;
-        if (!this.rewardedAdsMap.has(adObjectId)) {
-            this.rewardedAdsMap.set(adObjectId, rewardedAd);
+            // If adId is empty or undefined, create the ad first to get an adId
+            const adId = !rewardedAd.adId ?
+                await this.createRewardedAd(rewardedAd) : rewardedAd.adId;
+
+            // Call native module to load the ad using its adId
+            await IronSourceMediation.loadRewardedAd({ adId: adId });
+    }
+
+    async showRewardedAd(adId: string, placementName: string): Promise<void> {
+        if (this.rewardedAdsMap.has(adId)) {
+            await IronSourceMediation.showRewardedAd({ adId: adId, placementName: placementName })
         }
-        await IronSourceMediation.loadRewardedAd({ adObjectId: adObjectId, adUnitId: adUnitId })
     }
 
-    async showRewardedAd(adObjectId: number, placementName: string): Promise<void> {
-        if (this.rewardedAdsMap.has(adObjectId)) {
-            await IronSourceMediation.showRewardedAd({ adObjectId: adObjectId, placementName: placementName })
-        }
+    async isRewardedAdReady(adId: string): Promise<boolean> {
+        return await IronSourceMediation.isRewardedAdReady({ adId: adId })
     }
 
-    async isRewardedAdReady(adObjectId: number): Promise<boolean> {
-        return await IronSourceMediation.isRewardedAdReady({ adObjectId: adObjectId })
-    }
+    // // Shared Methods
 
-    // Shared Methods
-
-    async removeAd(adObjectId: number) {
+    async removeAd(adId: string) {
         let wasRemoved = false;
 
-        if (this.interstitialAdsMap && this.interstitialAdsMap.has(adObjectId)) {
-            this.interstitialAdsMap.delete(adObjectId);
+        if (this.interstitialAdsMap && this.interstitialAdsMap.has(adId)) {
+            this.interstitialAdsMap.delete(adId);
             wasRemoved = true;
         }
 
-        if (this.rewardedAdsMap && this.rewardedAdsMap.has(adObjectId)) {
-            this.rewardedAdsMap.delete(adObjectId);
+        if (this.rewardedAdsMap && this.rewardedAdsMap.has(adId)) {
+            this.rewardedAdsMap.delete(adId);
             wasRemoved = true;
         }
 
         if (wasRemoved) {
-            await IronSourceMediation.removeAd({ adObjectId: adObjectId })
+            await IronSourceMediation.removeAd({ adId: adId })
         }
     }
 
@@ -245,9 +274,5 @@ export class LevelPlayAdObjectManager {
         this.interstitialAdsMap.clear();
         this.rewardedAdsMap.clear();
         await IronSourceMediation.removAllAds();
-    }
-
-    generateAdObjectId(): number {
-        return this.adObjectId++;
     }
 }

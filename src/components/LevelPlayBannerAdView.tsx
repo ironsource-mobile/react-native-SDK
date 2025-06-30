@@ -1,5 +1,5 @@
 import React, { forwardRef, useImperativeHandle } from 'react'
-import { useCallback, useRef } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import {
   findNodeHandle,
   Platform,
@@ -8,16 +8,30 @@ import {
   type NativeMethods,
   type ViewProps,
 } from 'react-native'
-import { type LevelPlayAdError, type LevelPlayAdInfo, LevelPlayAdSize, type LevelPlayBannerAdViewListener } from '../models'
+import {
+  type LevelPlayAdError,
+  type LevelPlayAdInfo,
+  LevelPlayAdSize,
+  type LevelPlayBannerAdViewListener,
+} from '../models'
+import { levelPlayAdInfoFromMap } from '../utils/utils'
 
 // Object represents native component
 const LevelPlayBannerAdComponent = requireNativeComponent<
-  LevelPlayBannerAdViewProps & ViewProps & LevelPlayBannerAdViewNativeEvents
+  LevelPlayBannerAdViewCreationParams & ViewProps & LevelPlayBannerAdViewNativeEvents
 >('levelPlayBannerAdView')
 
 // Defining the type of the LevelPlayBannerAdView React component
 export type LevelPlayBannerAdViewType =
-  React.Component<LevelPlayBannerAdViewProps> & NativeMethods
+  React.Component<LevelPlayBannerAdViewCreationParams> & NativeMethods
+
+export type LevelPlayBannerAdViewCreationParams = {
+  creationParams: {
+    adUnitId: string
+    adSize: LevelPlayAdSize
+    placementName: string | null
+  }
+}
 
 // Defining the banner ad view methods to be exposed
 export interface LevelPlayBannerAdViewMethods {
@@ -25,6 +39,7 @@ export interface LevelPlayBannerAdViewMethods {
   destroy: () => void
   pauseAutoRefresh: () => void
   resumeAutoRefresh: () => void
+  getAdId: () => string 
 }
 
 // Props interface for the LevelPlayBannerAdView compoenent
@@ -49,6 +64,7 @@ export type LevelPlayBannerAdViewNativeEvents = {
   onAdLeftApplicationEvent(event: {
     nativeEvent: { adInfo: LevelPlayAdInfo }
   }): void
+  onAdIdGeneratedEvent(event: { nativeEvent: { adId: string } }): void
 }
 
 /**
@@ -63,6 +79,9 @@ export const LevelPlayBannerAdView = forwardRef<
 
   // A local reference to the bannerAdView
   const bannerAdViewRef = useRef<LevelPlayBannerAdViewType | null>(null)
+
+  // State to store the adId received from native
+  const [internalAdId, setInternalAdId] = useState<string>('')
 
   // Save the bannerAdViewRef element
   const saveElement = useCallback(
@@ -130,14 +149,15 @@ export const LevelPlayBannerAdView = forwardRef<
       destroy,
       resumeAutoRefresh,
       pauseAutoRefresh,
+      getAdId : () => internalAdId,
     }),
-    [loadAd, destroy, resumeAutoRefresh, pauseAutoRefresh]
+    [loadAd, destroy, resumeAutoRefresh, pauseAutoRefresh, internalAdId]
   )
 
   // Handle the banner ad events:
   const onAdLoadedEvent = useCallback(
     (event: { nativeEvent: { adInfo: LevelPlayAdInfo } }) => {
-      listener?.onAdLoaded(event.nativeEvent.adInfo)
+      listener?.onAdLoaded(levelPlayAdInfoFromMap(event.nativeEvent.adInfo))
     },
     [listener]
   )
@@ -151,7 +171,7 @@ export const LevelPlayBannerAdView = forwardRef<
 
   const onAdDisplayedEvent = useCallback(
     (event: { nativeEvent: { adInfo: LevelPlayAdInfo } }) => {
-      listener?.onAdDisplayed?.(event.nativeEvent.adInfo)
+      listener?.onAdDisplayed?.(levelPlayAdInfoFromMap(event.nativeEvent.adInfo))
     },
     [listener]
   )
@@ -161,7 +181,7 @@ export const LevelPlayBannerAdView = forwardRef<
       nativeEvent: { adInfo: LevelPlayAdInfo; error: LevelPlayAdError }
     }) => {
       listener?.onAdDisplayFailed?.(
-        event.nativeEvent.adInfo,
+        levelPlayAdInfoFromMap(event.nativeEvent.adInfo),
         event.nativeEvent.error
       )
     },
@@ -170,39 +190,49 @@ export const LevelPlayBannerAdView = forwardRef<
 
   const onAdClickedEvent = useCallback(
     (event: { nativeEvent: { adInfo: LevelPlayAdInfo } }) => {
-      listener?.onAdClicked?.(event.nativeEvent.adInfo)
+      listener?.onAdClicked?.(levelPlayAdInfoFromMap(event.nativeEvent.adInfo))
     },
     [listener]
   )
 
   const onAdExpandedEvent = useCallback(
     (event: { nativeEvent: { adInfo: LevelPlayAdInfo } }) => {
-      listener?.onAdExpanded?.(event.nativeEvent.adInfo)
+      listener?.onAdExpanded?.(levelPlayAdInfoFromMap(event.nativeEvent.adInfo))
     },
     [listener]
   )
 
   const onAdCollapsedEvent = useCallback(
     (event: { nativeEvent: { adInfo: LevelPlayAdInfo } }) => {
-      listener?.onAdCollapsed?.(event.nativeEvent.adInfo)
+      listener?.onAdCollapsed?.(levelPlayAdInfoFromMap(event.nativeEvent.adInfo))
     },
     [listener]
   )
 
   const onAdLeftApplicationEvent = useCallback(
     (event: { nativeEvent: { adInfo: LevelPlayAdInfo } }) => {
-      listener?.onAdLeftApplication?.(event.nativeEvent.adInfo)
+      listener?.onAdLeftApplication?.(levelPlayAdInfoFromMap(event.nativeEvent.adInfo))
     },
     [listener]
+  )
+
+    // Handle the new event
+  const onAdIdGeneratedEvent = useCallback(
+    (event: { nativeEvent: { adId: string } }) => {
+      const adId = event.nativeEvent.adId
+        setInternalAdId(adId) // Update the internal state with the new ad ID
+    },
+    [] 
   )
 
   return (
     <LevelPlayBannerAdComponent
       ref={saveElement}
-      adUnitId={adUnitId}
-      adSize={adSize}
-      listener={listener}
-      placementName={placementName}
+      creationParams={{
+        adUnitId: adUnitId,
+        adSize: adSize,
+        placementName: placementName ?? ''
+      }}
       {...otherProps}
       onAdLoadedEvent={onAdLoadedEvent}
       onAdLoadFailedEvent={onAdLoadFailedEvent}
@@ -212,6 +242,7 @@ export const LevelPlayBannerAdView = forwardRef<
       onAdExpandedEvent={onAdExpandedEvent}
       onAdCollapsedEvent={onAdCollapsedEvent}
       onAdLeftApplicationEvent={onAdLeftApplicationEvent}
+      onAdIdGeneratedEvent={onAdIdGeneratedEvent} 
     />
   )
 })

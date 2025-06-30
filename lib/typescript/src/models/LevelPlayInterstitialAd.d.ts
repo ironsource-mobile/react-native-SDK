@@ -4,7 +4,7 @@ import type { LevelPlayInterstitialAdListener } from './listeners/LevelPlayInter
  */
 export declare class LevelPlayInterstitialAd {
     adUnitId: string;
-    adObjectId: number;
+    adId: string;
     listener: LevelPlayInterstitialAdListener | null | undefined;
     constructor(adUnitId: string);
     setListener(listener: LevelPlayInterstitialAdListener): void;

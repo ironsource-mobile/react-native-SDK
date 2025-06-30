@@ -1,3 +1,9 @@
+#ifdef __cplusplus
+extern "C" {
+  void __cxa_increment_exception_refcount(void*) {}
+}
+#endif
+
 #import "AppDelegate.h"
 
 #import <React/RCTBundleURLProvider.h>

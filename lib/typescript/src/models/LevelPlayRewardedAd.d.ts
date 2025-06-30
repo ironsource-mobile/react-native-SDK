@@ -4,7 +4,7 @@ import type { LevelPlayRewardedAdListener } from './listeners/LevelPlayRewardedA
  */
 export declare class LevelPlayRewardedAd {
     adUnitId: string;
-    adObjectId: number;
+    adId: string;
     listener: LevelPlayRewardedAdListener | null | undefined;
     constructor(adUnitId: string);
     setListener(listener: LevelPlayRewardedAdListener): void;

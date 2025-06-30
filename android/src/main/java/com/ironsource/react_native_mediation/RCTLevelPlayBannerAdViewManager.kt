@@ -15,6 +15,7 @@ import com.ironsource.react_native_mediation.IronConstants.ON_BANNER_AD_EXPANDED
 import com.ironsource.react_native_mediation.IronConstants.ON_BANNER_AD_LEFT_APPLICATION
 import com.ironsource.react_native_mediation.IronConstants.ON_BANNER_AD_LOADED
 import com.ironsource.react_native_mediation.IronConstants.ON_BANNER_AD_LOAD_FAILED
+import com.ironsource.react_native_mediation.IronConstants.ON_BANNER_AD_GENERATED_ADID
 import com.unity3d.mediation.LevelPlayAdSize
 
 class RCTLevelPlayBannerAdViewManager(
@@ -58,6 +59,7 @@ class RCTLevelPlayBannerAdViewManager(
       ON_BANNER_AD_COLLAPSED to mapOf("registrationName" to "onAdCollapsedEvent"),
       ON_BANNER_AD_EXPANDED to mapOf("registrationName" to "onAdExpandedEvent"),
       ON_BANNER_AD_LEFT_APPLICATION to mapOf("registrationName" to "onAdLeftApplicationEvent"),
+      ON_BANNER_AD_GENERATED_ADID to mapOf("registrationName" to "onAdIdGeneratedEvent"),
     )
   }
 
@@ -70,23 +72,17 @@ class RCTLevelPlayBannerAdViewManager(
     )
   }
 
-  @ReactProp(name = "adUnitId")
-  fun setAdUnitId(view: RCTLevelPlayBannerAdView, value: String) {
-    view.adUnitId = value
+  @ReactProp (name = "creationParams")
+  fun setCreationParams(view: RCTLevelPlayBannerAdView, value: ReadableMap) {
+    view.placement = value.getString("placement") ?: ""
+    view.adUnitId = value.getString("adUnitId") ?: ""
+    view.adSize = getLevelPlayAdSize(reactApplicationContext, value.getMap("adSize"))
+
+    view.initializeBanner()
   }
 
-  @ReactProp(name = "adSize")
-  fun setAdSize(view: RCTLevelPlayBannerAdView, value: ReadableMap) {
-    view.adSize = getLevelPlayAdSize(reactApplicationContext, value)
-  }
-
-  @ReactProp(name = "placementName")
-  fun setPlacementName(view: RCTLevelPlayBannerAdView, value: String) {
-    view.placement = value
-  }
-
-  private fun getLevelPlayAdSize(context: Context?, adSizeMap: ReadableMap): LevelPlayAdSize? {
-    if (context == null) return null
+  private fun getLevelPlayAdSize(context: Context?, adSizeMap: ReadableMap?): LevelPlayAdSize? {
+    if (context == null || adSizeMap == null) return null
 
     val width = adSizeMap.getInt("width")
     val height = adSizeMap.getInt("height")

@@ -49,6 +49,7 @@ export const impressionDataFromMap = (data: any): ImpressionData => {
     precision: data.precision,
     lifetimeRevenue: toNumberOrNull(data.lifetimeRevenue),
     encryptedCPM: data.encryptedCPM,
+    creativeId: data.creativeId,
     conversionValue: toNumberOrNull(data.conversionValue),
   };
 }
@@ -89,6 +90,7 @@ export const levelPlayAdErrorFromMap = (data: any): LevelPlayAdError => {
 
 export const levelPlayAdInfoFromMap = (data: any): LevelPlayAdInfo => {
   return {
+    adId: data.adId,
     adUnitId: data.adUnitId,
     adFormat: data.adFormat,
     impressionData: data.impressionData !== null ? impressionDataFromMap(data.impressionData) : null,

@@ -16,9 +16,7 @@
 RCT_EXPORT_MODULE(levelPlayBannerAdView)
 
 // Map React Native properties to the view's properties
-RCT_EXPORT_VIEW_PROPERTY(adUnitId, NSString)
-RCT_EXPORT_VIEW_PROPERTY(adSize, NSDictionary)
-RCT_EXPORT_VIEW_PROPERTY(placementName, NSString)
+RCT_EXPORT_VIEW_PROPERTY(creationParams, NSDictionary)
 
 // Event Callbacks
 RCT_EXPORT_VIEW_PROPERTY(onAdLoadedEvent, RCTDirectEventBlock)
@@ -29,6 +27,7 @@ RCT_EXPORT_VIEW_PROPERTY(onAdClickedEvent, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onAdCollapsedEvent, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onAdExpandedEvent, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onAdLeftApplicationEvent, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onAdIdGeneratedEvent, RCTDirectEventBlock)
 
 + (BOOL)requiresMainQueueSetup {
     // Determine whether the module needs to be initialized on the main thread.

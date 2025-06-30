@@ -677,7 +677,7 @@ class IronSourceMediationModule(reactContext: ReactApplicationContext) :
                 FrameLayout.LayoutParams.WRAP_CONTENT)
               // Add Banner to the container
               mBannerContainer?.addView(mBanner, 0, layoutParams)
-              
+
               // Set listeners
               mBanner?.levelPlayBannerListener = mLevelPlayBNListener
             }
@@ -816,25 +816,36 @@ class IronSourceMediationModule(reactContext: ReactApplicationContext) :
 
   /** LevelPlay Interstitial Ad ============================================================== **/
   @ReactMethod
-  fun loadInterstitialAd(map: ReadableMap, promise: Promise) {
-    val adObjectId = map.getInt("adObjectId")
+  fun createInterstitialAd(map: ReadableMap, promise: Promise) {
     val adUnitId = map.getString("adUnitId")!!
-    levelPlayAdObjectManager.loadInterstitialAd(adObjectId, adUnitId)
+    // Create interstitial ad through the manager and get its unique adId
+    val adId = levelPlayAdObjectManager.createInterstitialAd(adUnitId)
+    // Return the adId
+    return promise.resolve(adId)
+  }
+  @ReactMethod
+  fun loadInterstitialAd(map: ReadableMap, promise: Promise) {
+    val adId = map.getString("adId")
+    if (adId != null) {
+      levelPlayAdObjectManager.loadInterstitialAd(adId)
+    }
     return promise.resolve(null)
   }
 
   @ReactMethod
   fun showInterstitialAd(map: ReadableMap, promise: Promise) {
-    val adObjectId = map.getInt("adObjectId")
+    val adId = map.getString("adId")
     val placementName: String? = map.getString("placementName")
-    levelPlayAdObjectManager.showInterstitialAd(adObjectId, placementName)
+    if (adId != null) {
+      levelPlayAdObjectManager.showInterstitialAd(adId, placementName)
+    }
     return promise.resolve(null)
   }
 
   @ReactMethod
   fun isInterstitialAdReady(map: ReadableMap, promise: Promise) {
-    val adObjectId = map.getInt("adObjectId")
-    return promise.resolve(levelPlayAdObjectManager.isInterstitialAdReady(adObjectId))
+    val adId = map.getString("adId")
+    return promise.resolve(adId?.let { levelPlayAdObjectManager.isInterstitialAdReady(it) })
   }
 
   @ReactMethod
@@ -845,8 +856,10 @@ class IronSourceMediationModule(reactContext: ReactApplicationContext) :
 
   @ReactMethod
   fun removeAd(map: ReadableMap, promise: Promise) {
-    val adObjectId = map.getInt("adObjectId")
-    levelPlayAdObjectManager.removeAd(adObjectId)
+    val adId = map.getString("adId")
+    if (adId != null) {
+      levelPlayAdObjectManager.removeAd(adId)
+    }
     return promise.resolve(null)
   }
 
@@ -870,25 +883,37 @@ class IronSourceMediationModule(reactContext: ReactApplicationContext) :
 
   /** LevelPlay Rewarded Ad ============================================================== **/
   @ReactMethod
-  fun loadRewardedAd(map: ReadableMap, promise: Promise) {
-    val adObjectId = map.getInt("adObjectId")
+  fun createRewardedAd(map: ReadableMap, promise: Promise) {
     val adUnitId = map.getString("adUnitId")!!
-    levelPlayAdObjectManager.loadRewardedAd(adObjectId, adUnitId)
+    // Create interstitial ad through the manager and get its unique adId
+    val adId = levelPlayAdObjectManager.createRewardedAd(adUnitId)
+    // Return the adId
+    return promise.resolve(adId)
+  }
+
+  @ReactMethod
+  fun loadRewardedAd(map: ReadableMap, promise: Promise) {
+    val adId = map.getString("adId")
+    if (adId != null) {
+      levelPlayAdObjectManager.loadRewardedAd(adId)
+    }
     return promise.resolve(null)
   }
 
   @ReactMethod
   fun showRewardedAd(map: ReadableMap, promise: Promise) {
-    val adObjectId = map.getInt("adObjectId")
+    val adId = map.getString("adId")
     val placementName: String? = map.getString("placementName")
-    levelPlayAdObjectManager.showRewardedAd(adObjectId, placementName)
+    if (adId != null) {
+      levelPlayAdObjectManager.showRewardedAd(adId, placementName)
+    }
     return promise.resolve(null)
   }
 
   @ReactMethod
   fun isRewardedAdReady(map: ReadableMap, promise: Promise) {
-    val adObjectId = map.getInt("adObjectId")
-    return promise.resolve(levelPlayAdObjectManager.isRewardedAdReady(adObjectId))
+    val adId = map.getString("adId")
+    return promise.resolve(adId?.let { levelPlayAdObjectManager.isRewardedAdReady(it) })
   }
 
   @ReactMethod

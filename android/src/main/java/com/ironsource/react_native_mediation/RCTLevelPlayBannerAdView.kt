@@ -19,7 +19,7 @@ class RCTLevelPlayBannerAdView(private val context: Context) : FrameLayout(conte
   var placement: String = ""
   private var levelPlayBanner: LevelPlayBannerAdView? = null
 
-  private fun initializeBanner() {
+  fun initializeBanner() {
     levelPlayBanner = LevelPlayBannerAdView(context, adUnitId)
     if (adSize != null)
       levelPlayBanner!!.setAdSize(adSize!!)
@@ -42,6 +42,11 @@ class RCTLevelPlayBannerAdView(private val context: Context) : FrameLayout(conte
         Choreographer.getInstance().postFrameCallback(this)
       }
     })
+
+    // send the adId to the react-native side
+    val map = Arguments.createMap()
+    map.putString("adId", levelPlayBanner!!.adId)
+    sendEventToParticularUI(reactContext, id, IronConstants.ON_BANNER_AD_GENERATED_ADID, map)
   }
 
   /**
@@ -56,15 +61,11 @@ class RCTLevelPlayBannerAdView(private val context: Context) : FrameLayout(conte
   }
 
   fun loadAd() {
-    if (levelPlayBanner == null) {
-      initializeBanner()
-    }
-    levelPlayBanner!!.loadAd()
+    levelPlayBanner?.loadAd()
   }
 
   fun destroy() {
     levelPlayBanner?.destroy()
-    levelPlayBanner = null
   }
 
   fun resumeAutoRefresh() {

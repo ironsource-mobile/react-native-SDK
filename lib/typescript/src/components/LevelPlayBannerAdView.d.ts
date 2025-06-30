@@ -1,12 +1,20 @@
 import React from 'react';
 import { type NativeMethods, type ViewProps } from 'react-native';
 import { type LevelPlayAdError, type LevelPlayAdInfo, LevelPlayAdSize, type LevelPlayBannerAdViewListener } from '../models';
-export type LevelPlayBannerAdViewType = React.Component<LevelPlayBannerAdViewProps> & NativeMethods;
+export type LevelPlayBannerAdViewType = React.Component<LevelPlayBannerAdViewCreationParams> & NativeMethods;
+export type LevelPlayBannerAdViewCreationParams = {
+    creationParams: {
+        adUnitId: string;
+        adSize: LevelPlayAdSize;
+        placementName: string | null;
+    };
+};
 export interface LevelPlayBannerAdViewMethods {
     loadAd: () => void;
     destroy: () => void;
     pauseAutoRefresh: () => void;
     resumeAutoRefresh: () => void;
+    getAdId: () => string;
 }
 export interface LevelPlayBannerAdViewProps extends ViewProps {
     adUnitId: string;
@@ -54,6 +62,11 @@ export type LevelPlayBannerAdViewNativeEvents = {
     onAdLeftApplicationEvent(event: {
         nativeEvent: {
             adInfo: LevelPlayAdInfo;
+        };
+    }): void;
+    onAdIdGeneratedEvent(event: {
+        nativeEvent: {
+            adId: string;
         };
     }): void;
 };

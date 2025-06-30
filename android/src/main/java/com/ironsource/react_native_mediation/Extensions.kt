@@ -78,6 +78,7 @@ fun ImpressionData.toReadableMap(): ReadableMap {
     this.precision?.let { map.putString("precision", it) }
     this.lifetimeRevenue?.let { map.putDouble("lifetimeRevenue", it) }
     this.encryptedCPM?.let { map.putString("encryptedCPM", it) }
+    this.creativeId?.let { map.putString("creativeId", it) }
     return map
 }
 
@@ -156,6 +157,7 @@ fun LevelPlayConfiguration.toReadableMap(): ReadableMap {
  */
 fun LevelPlayAdInfo.toReadableMap(): ReadableMap {
   val map = Arguments.createMap()
+  map.putString("adId", this.getAdId())
   map.putString("adUnitId", this.getAdUnitId())
   map.putString("adFormat", this.getAdFormat())
 
@@ -174,6 +176,7 @@ fun LevelPlayAdInfo.toReadableMap(): ReadableMap {
   impressionData.putDouble("revenue", this.getRevenue())
   impressionData.putString("precision", this.getPrecision())
   impressionData.putString("encryptedCPM", this.getEncryptedCPM())
+  impressionData.putString("creativeId", this.getCreativeId())
   map.putMap("impressionData", impressionData)
 
   map.putMap("adSize", this.getAdSize().toReadableMap())

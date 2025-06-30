@@ -64,5 +64,5 @@ dependencies {
     implementation 'com.facebook.react:react-android:72.9'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     // ironSource
-    implementation 'com.unity3d.ads-mediation:mediation-sdk:8.7.0'
+    implementation 'com.unity3d.ads-mediation:mediation-sdk:8.9.1'
 }

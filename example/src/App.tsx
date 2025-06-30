@@ -43,6 +43,36 @@ import {
   type LevelPlayReward,
 } from 'ironsource-mediation'
 
+// --- Constants and Helpers ---
+const APP_USER_ID = '[YOUR_UNIQUE_APP_USER_ID]'; // Make sure to replace this
+const TAG = 'LevelPlayReactNativeDemo';
+
+// App Keys
+const APP_KEY_ANDROID = '85460dcd';
+const APP_KEY_IOS = '8545d445';
+
+// Rewarded video ad unit IDs
+const REWARDED_AD_UNIT_ID_ANDROID = '76yy3nay3ceui2a3';
+const REWARDED_AD_UNIT_ID_IOS = 'qwouvdrkuwivay5q';
+
+// Interstitial ad unit IDs
+const INTERSTITIAL_AD_UNIT_ID_ANDROID = 'aeyqi3vqlv6o8sh9';
+const INTERSTITIAL_AD_UNIT_ID_IOS = 'wmgt0712uuux8ju4';
+
+// Banner ad unit IDs
+const BANNER_AD_UNIT_ID_ANDROID = 'thnfvcsog13bhn08';
+const BANNER_AD_UNIT_ID_IOS = 'iep3rxsyp9na3rw8';
+
+
+// Helper methods to get platform-specific appkeys and ad unit IDs.
+const getAppKey = () => Platform.select({ android: APP_KEY_ANDROID, ios: APP_KEY_IOS, default: '' });
+const getRewardedAdUnitId = () => Platform.select({ android: REWARDED_AD_UNIT_ID_ANDROID, ios: REWARDED_AD_UNIT_ID_IOS, default: '' });
+const getInterstitialAdUnitId = () => Platform.select({ android: INTERSTITIAL_AD_UNIT_ID_ANDROID, ios: INTERSTITIAL_AD_UNIT_ID_IOS, default: '' });
+const getBannerAdUnitId = () => Platform.select({ android: BANNER_AD_UNIT_ID_ANDROID, ios: BANNER_AD_UNIT_ID_IOS, default: '' });
+
+
+// --- End Constants and Helpers ---
+
 /**
  * ARM ImpressionDataListener event
  * The ARM SDK Postbacks flag must be enabled to receive data
@@ -51,7 +81,7 @@ import {
 function setImpressionDataListener() {
   const impressionListener: ImpressionDataListener = {
     onImpressionSuccess: (data?: ImpressionData) => {
-      console.log('ImpressionData: ', data)
+      logMethodName('ImpressionData', 'onImpressionSuccess:', data)
     },
   }
 
@@ -66,11 +96,11 @@ async function checkATT() {
   if (Platform.OS !== 'ios') return
 
   let currentStatus = await ATTrackingManager.getTrackingAuthorizationStatus()
-  console.log('ATTStatus: ', currentStatus)
+  logMethodName('getTrackingAuthorizationStatus', 'ATTStatus:', currentStatus)
 
   if (currentStatus === ATTStatus.NotDetermined) {
     currentStatus = await ATTrackingManager.requestTrackingAuthorization()
-    console.log('ATTStatus returned: ', currentStatus)
+    logMethodName('requestTrackingAuthorizationATTStatus', 'ATTStatus returned:', currentStatus)
   }
 }
 
@@ -88,72 +118,60 @@ async function init() {
     // Set adapters and network SDKs to debug
     await IronSource.setAdaptersDebug(true)
 
-    // This should be enabled to detect network condition errors
-    await IronSource.shouldTrackNetworkState(true)
-
-    // Device Identifier
-    const advertiserId = await IronSource.getAdvertiserId()
-    console.log(`AdvertiserID: ${advertiserId}`)
-
-    // Do not use advertiserId for this.
-    // Use an application user id.
-    await IronSource.setUserId('userID')
-
     // Request ATT for iOS
     if (Platform.OS === 'ios') {
       await checkATT()
     }
-
-    let initRequest: LevelPlayInitRequest = LevelPlayInitRequest.builder(
-      Platform.OS === 'android' ? '85460dcd' : '8545d445'
-    )
+    // Initialize the LevelPlay SDK
+    let initRequest: LevelPlayInitRequest = LevelPlayInitRequest.builder(getAppKey())
       .withLegacyAdFormats([AdFormat.NATIVE_AD])
-      .withUserId('userID')
+      .withUserId(APP_USER_ID)
       .build()
     const initListener: LevelPlayInitListener = {
       onInitFailed: (error: LevelPlayInitError) => {
-        console.log('onInitFailed ', error)
+        logMethodName('InitListener', 'onInitFailed:', error)
       },
       onInitSuccess: (configuration: LevelPlayConfiguration) => {
-        console.log('onInitSuccess ', configuration)
+        logMethodName('InitListener', 'onInitSuccess:', configuration)
       },
     }
     await LevelPlay.init(initRequest, initListener)
   } catch (e) {
-    console.error(e)
+    logMethodName('LevelPlayInit', 'Error during initialization:', e)
   }
 }
 
 export default function App() {
   const adSize = LevelPlayAdSize.BANNER
-  const bannerAdViewRef = useRef<LevelPlayBannerAdViewMethods>(null)
+  const bannerAdRef = useRef<LevelPlayBannerAdViewMethods>(null)
+  const [bannerKey, setBannerKey] = useState<number>(0)
   const listener: LevelPlayBannerAdViewListener = {
     onAdLoaded: (adInfo: LevelPlayAdInfo) => {
-      console.log('Banner Ad View - onAdLoaded: ', adInfo)
+      logMethodName('Banner Ad', 'onAdLoaded:', adInfo)
     },
     onAdLoadFailed: (error: LevelPlayAdError) => {
-      console.error('Banner Ad View - onAdLoadFailed: ', error)
+      logMethodName('Banner Ad', 'onAdLoadFailed:', error)
     },
     onAdDisplayed: (adInfo: LevelPlayAdInfo) => {
-      console.log('Banner Ad View - onAdDisplayed: ', adInfo)
+      logMethodName('Banner Ad', 'onAdDisplayed:', adInfo)
     },
     onAdDisplayFailed: (adInfo: LevelPlayAdInfo, error: LevelPlayAdError) => {
-      console.error('Banner Ad View - onAdDisplayFailed: ', {
+      logMethodName('Banner Ad', 'onAdDisplayFailed:', {
         adInfo,
         error,
       })
     },
     onAdClicked: (adInfo: LevelPlayAdInfo) => {
-      console.log('Banner Ad View - onAdClicked: ', adInfo)
+      logMethodName('Banner Ad', 'onAdClicked:', adInfo)
     },
     onAdExpanded: (adInfo: LevelPlayAdInfo) => {
-      console.log('Banner Ad View - onAdExpanded: ', adInfo)
+      logMethodName('Banner Ad', 'onAdExpanded:', adInfo)
     },
     onAdCollapsed: (adInfo: LevelPlayAdInfo) => {
-      console.log('Banner Ad View - onAdCollapsed: ', adInfo)
+      logMethodName('Banner Ad', 'onAdCollapsed:', adInfo)
     },
     onAdLeftApplication: (adInfo: LevelPlayAdInfo) => {
-      console.log('Banner Ad View - onAdLeftApplication: ', adInfo)
+      logMethodName('Banner Ad', 'onAdLeftApplication:', adInfo)
     },
   }
 
@@ -176,11 +194,12 @@ export default function App() {
   }, [])
 
   const loadBannerAd = useCallback(() => {
-    bannerAdViewRef.current?.loadAd()
+    bannerAdRef.current?.loadAd()
   }, [])
 
   const destroyBannerAd = useCallback(() => {
-    bannerAdViewRef.current?.destroy()
+    bannerAdRef.current?.destroy()
+    setBannerKey(prevKey => prevKey + 1)
   }, [])
 
   return (
@@ -200,18 +219,19 @@ export default function App() {
           </View>
           <LevelPlayRewardedAdSection />
           <LevelPlayInterstitialAdSection />
-          <LevelPlayBannerAdViewSection
+          <LevelPlayBannerAdSection
             onLoadBanner={loadBannerAd}
             onDestroyBanner={destroyBannerAd}
           />
-          <LevelPlayNativeAdViewSection />
+          <LevelPlayNativeAdSection />
         </View>
 
         {/* Position banner on bottom of the screen */}
         <LevelPlayBannerAdView
-          ref={bannerAdViewRef}
+          key = {bannerKey}
+          ref={bannerAdRef}
           adUnitId={
-            Platform.OS === 'android' ? 'thnfvcsog13bhn08' : 'iep3rxsyp9na3rw8'
+            getBannerAdUnitId()
           }
           adSize={adSize}
           placementName="DefaultBanner"
@@ -225,44 +245,44 @@ export default function App() {
 
 const LevelPlayRewardedAdSection: React.FC = () => {
   const [rewardedAd] = useState<LevelPlayRewardedAd>(
-    new LevelPlayRewardedAd(
-      Platform.OS === 'android' ? '76yy3nay3ceui2a3' : 'qwouvdrkuwivay5q'
-    )
+    new LevelPlayRewardedAd(getRewardedAdUnitId())
   )
   const [isRewardedAvailable, setIsRewardedAvailable] = useState<boolean>(false)
   const listener: LevelPlayRewardedAdListener = {
     onAdLoaded: (adInfo: LevelPlayAdInfo) => {
-      console.log('Rewarded Ad - onAdLoaded:', adInfo)
+      logMethodName('Rewarded Ad', 'onAdLoaded:', adInfo)
       setIsRewardedAvailable(true)
     },
     onAdLoadFailed: (error: LevelPlayAdError) => {
-      console.error('Rewarded Ad - onAdLoadFailed:', error)
+      logMethodName('Rewarded Ad', 'onAdLoadFailed:', error)
       setIsRewardedAvailable(false)
     },
     onAdInfoChanged: (adInfo: LevelPlayAdInfo) => {
-      console.log('Rewarded Ad - onAdInfoChanged:', adInfo)
+      logMethodName('Rewarded Ad', 'onAdInfoChanged:', adInfo)
     },
     onAdDisplayed: (adInfo: LevelPlayAdInfo) => {
-      console.log('Rewarded Ad - onAdDisplayed:', adInfo)
+      logMethodName('Rewarded Ad', 'onAdDisplayed:', adInfo)
     },
     onAdDisplayFailed: (error: LevelPlayAdError, adInfo: LevelPlayAdInfo) => {
-      console.error('Rewarded Ad - onAdDisplayFailed:', {
+      logMethodName('Rewarded Ad', 'onAdDisplayFailed:', {
         error,
         adInfo,
       })
     },
     onAdClicked: (adInfo: LevelPlayAdInfo) => {
-      console.log('Rewarded Ad - onAdClicked:', adInfo)
+      logMethodName('Rewarded Ad', 'onAdClicked:', adInfo)
     },
     onAdClosed: (adInfo: LevelPlayAdInfo) => {
-      console.log('Rewarded Ad - onAdClosed:', adInfo)
+      logMethodName('Rewarded Ad', 'onAdClosed:', adInfo)
       setIsRewardedAvailable(false)
     },
     onAdRewarded: (reward: LevelPlayReward, adInfo: LevelPlayAdInfo) => {
-      console.log('Rewarded Ad - onAdRewarded:', {
+      logMethodName('Rewarded Ad', 'onAdRewarded:', {
         reward,
         adInfo,
       })
+      // Handle the reward here, e.g., update user balance or give in-game items
+      // Example: console.log(`User rewarded with ${reward.amount} ${reward.name}`);
     },
   }
 
@@ -297,38 +317,36 @@ const LevelPlayRewardedAdSection: React.FC = () => {
 
 const LevelPlayInterstitialAdSection: React.FC = () => {
   const [interstitialAd] = useState<LevelPlayInterstitialAd>(
-    new LevelPlayInterstitialAd(
-      Platform.OS == 'android' ? 'aeyqi3vqlv6o8sh9' : 'wmgt0712uuux8ju4'
-    )
+    new LevelPlayInterstitialAd(getInterstitialAdUnitId())
   )
   const [isInterstitialAvailable, setIsInterstitialAvailable] =
     useState<boolean>(false)
   const listener: LevelPlayInterstitialAdListener = {
     onAdLoaded: (adInfo: LevelPlayAdInfo) => {
-      console.log('Interstitial Ad - onAdLoaded:', adInfo)
+      logMethodName('Interstitial Ad', 'onAdLoaded:', adInfo)
       setIsInterstitialAvailable(true)
     },
     onAdLoadFailed: (error: LevelPlayAdError) => {
-      console.error('Interstitial Ad - onAdLoadFailed:', error)
+      logMethodName('Interstitial Ad', 'onAdLoadFailed:', error)
       setIsInterstitialAvailable(false)
     },
     onAdInfoChanged: (adInfo: LevelPlayAdInfo) => {
-      console.log('Interstitial Ad - onAdInfoChanged:', adInfo)
+      logMethodName('Interstitial Ad', 'onAdInfoChanged:', adInfo)
     },
     onAdDisplayed: (adInfo: LevelPlayAdInfo) => {
-      console.log('Interstitial Ad - onAdDisplayed:', adInfo)
+      logMethodName('Interstitial Ad', 'onAdDisplayed:', adInfo)
     },
     onAdDisplayFailed: (error: LevelPlayAdError, adInfo: LevelPlayAdInfo) => {
-      console.error('Interstitial Ad - onAdDisplayFailed:', {
+      logMethodName('Interstitial Ad', 'onAdDisplayFailed:', {
         error,
         adInfo,
       })
     },
     onAdClicked: (adInfo: LevelPlayAdInfo) => {
-      console.log('Interstitial Ad - onAdClicked:', adInfo)
+      logMethodName('Interstitial Ad', 'onAdClicked:', adInfo)
     },
     onAdClosed: (adInfo: LevelPlayAdInfo) => {
-      console.log('Interstitial Ad - onAdClosed:', adInfo)
+      logMethodName('Interstitial Ad', 'onAdClosed:', adInfo)
       setIsInterstitialAvailable(false)
     },
   }
@@ -362,17 +380,17 @@ const LevelPlayInterstitialAdSection: React.FC = () => {
   )
 }
 
-interface LevelPlayBannerAdViewSectionProps {
+interface LevelPlayBannerAdSectionProps {
   onLoadBanner: () => void
   onDestroyBanner: () => void
 }
 
-const LevelPlayBannerAdViewSection: React.FC<
-  LevelPlayBannerAdViewSectionProps
+const LevelPlayBannerAdSection: React.FC<
+  LevelPlayBannerAdSectionProps
 > = ({ onLoadBanner, onDestroyBanner }) => {
   return (
     <View>
-      <Text style={[styles.title]}>Banner Ad View</Text>
+      <Text style={[styles.title]}>Banner Ad</Text>
       <View style={styles.horizontalSpaceBetween}>
         <HighlightButton buttonText={'Load Banner'} onPress={onLoadBanner} />
         <HighlightButton
@@ -384,26 +402,38 @@ const LevelPlayBannerAdViewSection: React.FC<
   )
 }
 
-const LevelPlayNativeAdViewSection = () => {
+const LevelPlayNativeAdSection = () => {
   const [nativeAd, setNativeAd] = useState<LevelPlayNativeAd | null>()
   const [isAdLoaded, setIsAdLoaded] = useState<boolean>(false)
-  const [adViewKey, setAdViewKey] = useState<number>(0); // Key for refreshing the component
+  const [nativeAdKey, setnativeAdKey] = useState<number>(0); // Key for refreshing the component
 
-  const createNewNativeAd = useCallback(() => {
+  const createNewNativeAd = useCallback(() => { 
     const listener: LevelPlayNativeAdListener = {
       onAdLoaded: (nativeAd: LevelPlayNativeAd, adInfo: IronSourceAdInfo) => {
-        console.log('Native Ad View - onAdLoaded: ', { nativeAd, adInfo });
+      logMethodName('Native Ad', 'onAdLoaded:', {
+        adInfo,
+        nativeAd: nativeAd.placement,
+      })
         setNativeAd(nativeAd);
         setIsAdLoaded(true);
       },
       onAdLoadFailed: (nativeAd: LevelPlayNativeAd, error: IronSourceError) => {
-        console.error('Native Ad View - onAdLoadFailed:', { nativeAd, error });
+        logMethodName('Native Ad', 'onAdLoadFailed:', {
+          error,
+          nativeAd: nativeAd.placement,
+        });
       },
       onAdClicked: (nativeAd: LevelPlayNativeAd, adInfo: IronSourceAdInfo) => {
-        console.log('Native Ad View - onAdClicked: ', { nativeAd, adInfo });
+      logMethodName('Native Ad', 'onAdClicked:', {
+        adInfo,
+        nativeAd: nativeAd.placement,
+      })
       },
       onAdImpression: (nativeAd: LevelPlayNativeAd, adInfo: IronSourceAdInfo) => {
-        console.log('Native Ad View - onAdImpression: ', { nativeAd, adInfo });
+      logMethodName('Native Ad', 'onAdImpression:', {
+        adInfo,
+        nativeAd: nativeAd.placement,
+      })
       },
     };
 
@@ -411,7 +441,7 @@ const LevelPlayNativeAdViewSection = () => {
       .withPlacement('DefaultNativeAd') // Your placement name string
       .withListener(listener) // Your LevelPlayNativeAd listener
       .build();
-      
+
     // Set the newly created native ad instance
     setNativeAd(levelPlayNativeAd);
   }, []);
@@ -429,16 +459,16 @@ const LevelPlayNativeAdViewSection = () => {
 
   // Destroy native
   const destroyAd = useCallback(() => {
-    nativeAd?.destroyAd(); 
+    nativeAd?.destroyAd();
 
     setIsAdLoaded(false); // Reset the `isAdLoaded` state
     createNewNativeAd(); // Create a new ad instance
-    setAdViewKey(prevKey => prevKey + 1); // Increment the key to force remount of the view component
+    setnativeAdKey(prevKey => prevKey + 1); // Increment the key to force remount of the view component
   }, [nativeAd])
 
   return (
     <View>
-      <Text style={[styles.title]}>Native Ad View</Text>
+      <Text style={[styles.title]}>Native Ad</Text>
       <View style={styles.horizontalSpaceBetween}>
         <HighlightButton buttonText={'Load Native Ad'} onPress={loadAd} />
         <HighlightButton buttonText={'Destroy Native Ad'} onPress={destroyAd} />
@@ -446,7 +476,7 @@ const LevelPlayNativeAdViewSection = () => {
       {nativeAd && (
         // Initialize native ad view widget with native ad
         <LevelPlayNativeAdView
-        key={adViewKey}
+        key={nativeAdKey}
           nativeAd={nativeAd} // Native ad object
           templateType={LevelPlayTemplateType.Medium} // Built-in native ad template(not required when implementing custom template)
           style={[styles.nativeAd, { display: isAdLoaded ? 'flex' : 'none' }]} // Ad styling
@@ -454,6 +484,25 @@ const LevelPlayNativeAdViewSection = () => {
       )}
     </View>
   )
+}
+
+// Utils
+/**
+ * Log utility function to print ad format, method name and additional data.
+ * @param {string} adFormat The ad format (e.g., "Banner", "Interstitial").
+ * @param {string} methodName The name of the method being logged.
+ * @param {any} [data] Additional data to log (can be any type, optional).
+ */
+export function logMethodName(
+  adFormat: string,
+  methodName: string, 
+  data?: any         // data is optional and can be any type
+): void {
+  if (data !== undefined) {
+    console.log(`${TAG}: ${adFormat} - ${methodName}`, data);
+  } else {
+    console.log(`${TAG}: ${adFormat} - ${methodName}`);
+  }
 }
 
 const disabledColors = {

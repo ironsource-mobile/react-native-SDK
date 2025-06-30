@@ -10,12 +10,11 @@ const levelPlayObjectManager = LevelPlayAdObjectManager.getInstance()
  */
 export class LevelPlayInterstitialAd {
   adUnitId: string
-  adObjectId: number
+  adId: string = ''
   listener: LevelPlayInterstitialAdListener | null | undefined
 
   constructor(adUnitId: string) {
     this.adUnitId = adUnitId
-    this.adObjectId = levelPlayObjectManager.generateAdObjectId()
   }
 
   setListener(listener: LevelPlayInterstitialAdListener): void {
@@ -51,7 +50,7 @@ export class LevelPlayInterstitialAd {
    * @returns A promise that resolves when the ad is shown.
    */
   async showAd(placementName: string | null = ''): Promise<void> {
-    await levelPlayObjectManager.showInterstitialAd(this.adObjectId, placementName ?? '')
+    await levelPlayObjectManager.showInterstitialAd(this.adId, placementName ?? '')
   }
 
   /**
@@ -59,7 +58,7 @@ export class LevelPlayInterstitialAd {
    * @returns A promise that resolves to a boolean indicating whether the ad is ready.
    */
   async isAdReady(): Promise<boolean> {
-    return await levelPlayObjectManager.isInterstitialAdReady(this.adObjectId)
+    return await levelPlayObjectManager.isInterstitialAdReady(this.adId)
   }
 
   /**
@@ -67,6 +66,6 @@ export class LevelPlayInterstitialAd {
    * @returns A promise that resolves when the ad is removed.
    */
   async remove(): Promise<void> {
-    await levelPlayObjectManager.removeAd(this.adObjectId)
+    await levelPlayObjectManager.removeAd(this.adId)
   }
 }

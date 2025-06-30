@@ -48,6 +48,7 @@ type IronSourceNativeModuleType = {
   /**
    * Android: getAdvertiserId
    *     iOS: advertiserId
+   *     @deprecated This API will be removed in version 4.0.0.
    */
   getAdvertiserId(): Promise<string | null>
 
@@ -60,6 +61,7 @@ type IronSourceNativeModuleType = {
   /**
    * Android: shouldTrackNetworkState
    *     iOS: shouldTrackReachability
+   *@deprecated This API will be removed in version 4.0.0.
    */
   shouldTrackNetworkState(isEnabled: boolean): Promise<void>
 
@@ -121,6 +123,7 @@ type IronSourceNativeModuleType = {
   /**
    * Android: setClientSideCallbacks
    *     iOS: setUseClientSideCallbacks
+   *     @deprecated This API will be removed in version 4.0.0.
    *
    * This must be called before init.
    * OW client side automatic result polling
@@ -135,6 +138,7 @@ type IronSourceNativeModuleType = {
    *     iOS: setUserId
    *
    * When an empty string was passed as userId, SDK falls back to default.
+   * @deprecated This API will be removed in version 4.0.0.
    */
   setUserId(userId: string): Promise<void>
 
@@ -144,8 +148,13 @@ type IronSourceNativeModuleType = {
    *
    * Use init to init with all ad units.
    * Use initWithAdUnits to init with only specific ad units.
+   @deprecated This API will be removed in version 4.0.0.
    */
   init(appKey: string): Promise<void>
+  /**
+   * 
+  @deprecated This API will be removed in version 4.0.0.  
+   */
   initWithAdUnits(appKey: string, adUnits: Array<AdUnit>): Promise<void>
 
   /** Rewarded Video API ===============================================================**/
@@ -153,7 +162,7 @@ type IronSourceNativeModuleType = {
   /**
    * Android: showRewardedVideo
    *     iOS: showRewardedVideoWithViewController
-   * 
+   *
    * @deprecated Use the alternate API {@link LevelPlayRewardedAd#showAd()} instead.
    */
   showRewardedVideo(): Promise<void>
@@ -166,7 +175,7 @@ type IronSourceNativeModuleType = {
   /**
    * Android: isRewardedVideoAvailable
    *     iOS: hasRewardedVideo
-   * 
+   *
    * @deprecated Use the alternate API {@link LevelPlayRewardedAd#isAdReady()} instead.
    */
   isRewardedVideoAvailable(): Promise<boolean>
@@ -177,8 +186,8 @@ type IronSourceNativeModuleType = {
    *
    * Must be called after init success, otherwise returns null.
    * This defaults back to DefaultPlacement if none matched.
-   * 
-   * @deprecated This method will be removed in future versions. 
+   *
+   * @deprecated This method will be removed in future versions.
    */
   getRewardedVideoPlacementInfo(
     placementName: string
@@ -189,7 +198,7 @@ type IronSourceNativeModuleType = {
    *     iOS: isRewardedVideoCappedForPlacement
    *
    * If none matches with the name, returns false.
-   * 
+   *
    * @deprecated Use the alternate API {@link LevelPlayRewardedAd#isPlacementCapped(placementName)} instead.
    */
   isRewardedVideoPlacementCapped(placementName: string): Promise<boolean>
@@ -199,7 +208,7 @@ type IronSourceNativeModuleType = {
    *     iOS: setRewardedVideoServerParameters
    *
    * Must be called before showRewardedVideo
-   * 
+   *
    * @deprecated This method will be removed in future versions.
    */
   setRewardedVideoServerParams(params: { [key: string]: string }): Promise<void>
@@ -207,7 +216,7 @@ type IronSourceNativeModuleType = {
   /**
    * Android: clearRewardedVideoServerParameters
    *     iOS: clearRewardedVideoServerParameters
-   * 
+   *
    * @deprecated This method will be removed in future versions.
    */
   clearRewardedVideoServerParams(): Promise<void>
@@ -216,7 +225,7 @@ type IronSourceNativeModuleType = {
    * For Manual Load RV mode
    * Android: loadRewardedVideo
    *     iOS: loadRewardedVideo
-   * 
+   *
    * @deprecated Use the alternate API {@link LevelPlayRewardedAd#loadAd()} instead.
    */
   loadRewardedVideo(): Promise<void>
@@ -225,7 +234,7 @@ type IronSourceNativeModuleType = {
    * Must be called before init.
    * Android: setLevelPlayRewardedVideoManual
    *     iOS: setLevelPlayRewardedVideoManual
-   * 
+   *
    * @deprecated Use the alternate API {@link LevelPlayRewardedAd#setListener(LevelPlayRewardedAdListener)} instead.
    */
   setLevelPlayRewardedVideoManual(): Promise<void>
@@ -235,7 +244,7 @@ type IronSourceNativeModuleType = {
   /**
    * Android: loadInterstitial
    *     iOS: loadInterstitial
-   * 
+   *
    * @deprecated Use the alternate API {@link LevelPlayInterstitialAd#loadAd()} instead.
    */
   loadInterstitial(): Promise<void>
@@ -243,7 +252,7 @@ type IronSourceNativeModuleType = {
   /**
    * Android: showInterstitial
    *     iOS: showInterstitialWithViewController
-   * 
+   *
    * @deprecated Use the alternate API {@link LevelPlayInterstitialAd#showAd()} instead.
    */
   showInterstitial(): Promise<void>
@@ -255,7 +264,7 @@ type IronSourceNativeModuleType = {
   /**
    * Android: isInterstitialReady
    *     iOS: hasInterstitial
-   * 
+   *
    * @deprecated Use the alternate API {@link LevelPlayInterstitialAd#isAdReady()} instead.
    */
   isInterstitialReady(): Promise<boolean>
@@ -263,7 +272,7 @@ type IronSourceNativeModuleType = {
   /**
    * Android: isInterstitialPlacementCapped
    *     iOS: isInterstitialCappedForPlacement
-   * 
+   *
    * @deprecated Use the alternate API {@link LevelPlayInterstitialAd#isPlacementCapped(placementName)} instead.
    */
   isInterstitialPlacementCapped(placementName: string): Promise<boolean>
@@ -275,7 +284,7 @@ type IronSourceNativeModuleType = {
    *     iOS: loadBannerWithViewController
    *
    * It falls back to BANNER in the case of invalid sizeDescriptions.
-   * 
+   *
    * @deprecated Use the alternate API {@link LevelPlayBannerAdView#loadAd()} instead.
    */
   loadBanner(options: IronSourceBannerOptions): Promise<void>
@@ -283,7 +292,7 @@ type IronSourceNativeModuleType = {
   /**
    * Android: destroyBanner
    *     iOS: destroyBanner
-   * 
+   *
    * @deprecated Use the alternate API {@link LevelPlayBannerAdView#destroy()} instead.
    */
   destroyBanner(): Promise<void>
@@ -293,7 +302,7 @@ type IronSourceNativeModuleType = {
    *     iOS: n/a
    *
    * This simply changes the visibility of the hidden banner view.
-   * 
+   *
    * @deprecated This method will be removed in future versions.
    */
   displayBanner(): Promise<void>
@@ -303,7 +312,7 @@ type IronSourceNativeModuleType = {
    *     iOS: n/a
    * This simply changes the visibility of the banner view.
    * Reloading does not take place while it's hidden.
-   * 
+   *
    * @deprecated This method will be removed in future versions.
    */
   hideBanner(): Promise<void>
@@ -311,7 +320,7 @@ type IronSourceNativeModuleType = {
   /**
    * Android: isBannerPlacementCapped
    *     iOS: isBannerCappedForPlacement
-   * 
+   *
    * @deprecated Capping is no longer supported for Banners.
    */
   isBannerPlacementCapped(placementName: string): Promise<boolean>
@@ -319,7 +328,7 @@ type IronSourceNativeModuleType = {
   /**
    * Android: getMaximalAdaptiveHeight
    *     iOS: getMaximalAdaptiveHeight
-   * 
+   *
    * @deprecated This method will be removed in future versions.
    */
   getMaximalAdaptiveHeight(width: number): Promise<number>
@@ -331,6 +340,7 @@ type IronSourceNativeModuleType = {
    *     iOS: getConversionValue
    *
    * Returns undefined for Android
+   * @deprecated This method will be removed in 4.0.0 version.
    */
   getConversionValue(): Promise<number | undefined>
 
@@ -341,6 +351,7 @@ type IronSourceNativeModuleType = {
    *
    * use "pre" for all your consentViewType
    * https://developers.is.com/ironsource-mobile/ios/permission-popup-ios/#step-1
+   * @deprecated This method will be removed in 4.0.0 version.
    */
   loadConsentViewWithType(consentViewType: string): Promise<void>
 
@@ -350,12 +361,14 @@ type IronSourceNativeModuleType = {
    *
    * use "pre" for all your consentViewType
    * https://developers.is.com/ironsource-mobile/ios/permission-popup-ios/#step-1
+   * @deprecated This method will be removed in 4.0.0 version.
    */
   showConsentViewWithType(consentViewType: string): Promise<void>
 }
 
 /**
  * These are needed since ReactNative NativeModules does not support function overload or optional arguments.
+ * @deprecated This method will be removed in 4.0.0 version.
  */
 type InitFunction = (appKey: string, adUnits?: Array<AdUnit>) => Promise<void>
 type ShowFunction = (placementName?: string) => Promise<void>
@@ -363,19 +376,20 @@ type IronSourceProxyType = {
   /**
    * Android: init
    *     iOS: initWithAppKey
+   * @deprecated This method will be removed in 4.0.0 version.
    */
   init: InitFunction
   /**
    * Android: showRewardedVideo
    *     iOS: showRewardedVideoWithViewController
-   * 
+   *
    * @deprecated Use the alternate API {@link LevelPlayRewardedAd#showAd()} instead.
    */
   showRewardedVideo: ShowFunction
   /**
    * Android: showInterstitial
    *     iOS: showInterstitialWithViewController
-   * 
+   *
    * @deprecated Use the alternate API {@link LevelPlayInterstitiald#showAd()} instead.
    */
   showInterstitial: ShowFunction
@@ -387,34 +401,42 @@ type UtilFunctions = {
 }
 
 type LevelPlayListeners = {
+      /**
+   * Sets the setInitializationListener to handle initialization events.
+   * @deprecated This Listener will be removed in 4.0.0 version.
+   */
   setInitializationListener: (listener: InitializationListener) => void
   setImpressionDataListener: (listener: ImpressionDataListener) => void
+    /**
+   * Sets the setConsentViewListener to handle consent view events.
+   * @deprecated This Listener will be removed in 4.0.0 version.
+   */
   setConsentViewListener: (listener: ConsentViewListener) => void
   /**
    * Sets the setLevelPlayBannerListener to handle banner ad events.
    * @param listener The setLevelPlayBannerListener object containing event handlers.
-   * 
+   *
    * @deprecated Use the alternate API LevelPlayBannerAdView with LevelPlayBannerAdViewListener instead.
    */
   setLevelPlayBannerListener: (listener: LevelPlayBannerListener) => void
   /**
    * Sets the setLevelPlayInterstitialListener to handle interstitial ad events.
    * @param listener The setLevelPlayInterstitialListener object containing event handlers.
-   * 
+   *
    * @deprecated Use the alternate API {@link LevelPlayInterstitialAd#setListener(LevelPlayInterstitialAdListener)} instead.
    */
   setLevelPlayInterstitialListener: (listener: LevelPlayInterstitialListener) => void
   /**
    * Sets the setLevelPlayRewardedVideoListener to handle rewarded video ad events.
    * @param listener The setLevelPlayRewardedVideoListener object containing event handlers.
-   * 
+   *
    * @deprecated Use the alternate API {@link LevelPlayRewardedAd#setListener(LevelPlayRewardedAdListener)} instead.
    */
   setLevelPlayRewardedVideoListener: (listener: LevelPlayRewardedVideoListener) => void
     /**
    * Sets the setLevelPlayRewardedVideoManualListener to handle rewarded video ad events.
    * @param listener The setLevelPlayRewardedVideoManualListener object containing event handlers.
-   * 
+   *
    * @deprecated Use the alternate API {@link LevelPlayRewardedAd#setListener(LevelPlayRewardedAdListener)} instead.
    */
   setLevelPlayRewardedVideoManualListener: (listener: LevelPlayRewardedVideoManualListener) => void
@@ -466,7 +488,9 @@ const IronSourceNativeModule: IronSourceNativeModuleType = IronSourceMediation
 /**
  * Proxy Functions
  */
-
+/**
+* @deprecated This method will be removed in 4.0.0 version.
+*/
 const init: InitFunction = async (
   appKey: string,
   adUnits?: Array<AdUnit>
@@ -599,6 +623,7 @@ const setImpressionDataListener = (listener: ImpressionDataListener) => {
 /**
  * Sets the consentViewListener to handle consent view events.
  * @param listener The consentViewListener object containing event handlers.
+ * @deprecated This method will be removed in 4.0.0 version.
  */
 const setConsentViewListener = (listener: ConsentViewListener) => {
   if (Platform.OS !== 'ios') {
@@ -668,7 +693,7 @@ const setConsentViewListener = (listener: ConsentViewListener) => {
 /**
  * Sets the setLevelPlayBannerListener to handle banner ad events.
  * @param listener The setLevelPlayBannerListener object containing event handlers.
- * 
+ *
  * @deprecated This method will be removed in future versions. Please use LevelPlayBannerAdView with LevelPlayBannerAdViewListenr instead.
  */
 const setLevelPlayBannerListener = (listener: LevelPlayBannerListener) => {
@@ -725,7 +750,7 @@ const setLevelPlayBannerListener = (listener: LevelPlayBannerListener) => {
 /**
  * Sets the LevelPlayInterstitialListener to handle interstitial ad events.
  * @param listener The LevelPlayInterstitialListener object containing event handlers.
- * 
+ *
  * @deprecated Use the alternate API {@link LevelPlayInterstitialAd#setListener(LevelPlayInterstitialAdListener)} instead.
  */
 const setLevelPlayInterstitialListener = (
@@ -788,7 +813,7 @@ const setLevelPlayInterstitialListener = (
 /**
  * Sets the LevelPlayRewardedVideoListener to handle rewarded video ad events.
  * @param listener The LevelPlayRewardedVideoListener object containing event handlers.
- * 
+ *
  * @deprecated Use the alternate API {@link LevelPlayRewardedAd#setListener(LevelPlayRewardedAdListener)} instead.
  */
 const setLevelPlayRewardedVideoListener = (
@@ -851,7 +876,7 @@ const setLevelPlayRewardedVideoListener = (
 /**
  * Sets the LevelPlayRewardedVideoManualListener to handle rewarded video ad events.
  * @param listener The LevelPlayRewardedVideoManualListener object containing event handlers.
- * 
+ *
  * @deprecated Use the alternate API {@link LevelPlayRewardedAd#setListener(LevelPlayRewardedAdListener)} instead.
  */
 const setLevelPlayRewardedVideoManualListener = async (

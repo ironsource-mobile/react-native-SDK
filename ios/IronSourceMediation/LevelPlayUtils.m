@@ -145,6 +145,7 @@
  */
 + (NSDictionary *)getDictForLevelPlayAdInfo:(LPMAdInfo *)adInfo {
     return @{
+            @"adId": adInfo.adId, // (nonnull)
             @"adUnitId": adInfo.adUnitId, // (nonnull)
             @"adFormat": adInfo.adFormat, // (nonnull)
             @"impressionData": @{
@@ -162,7 +163,8 @@
                     @"revenue": @([adInfo.revenue doubleValue]), // (nonnull)
                     @"precision": adInfo.precision, // (nonnull)
                     @"encryptedCPM": adInfo.encryptedCPM,  // (nonnull)
-                    @"conversionValue": adInfo.conversionValue ? @([adInfo.conversionValue doubleValue]) : [NSNull null], // (nullable)
+                    @"conversionValue": adInfo.conversionValue ? @([adInfo.conversionValue doubleValue]) : [NSNull null],
+                    @"creativeId": adInfo.creativeId ?: [NSNull null],// (nullable)
             },
             @"adSize": [self getDictForAdSize:adInfo.adSize]
     };
@@ -214,6 +216,7 @@
             @"lifetimeRevenue": impressionData.lifetime_revenue ? @([impressionData.lifetime_revenue doubleValue]) : [NSNull null],
             @"encryptedCPM": impressionData.encrypted_cpm ?: [NSNull null],
             @"conversionValue": impressionData.conversion_value ? @([impressionData.conversion_value doubleValue]) : [NSNull null],
+            @"creativeId": impressionData.creative_id ?: [NSNull null],
     };
 }
 

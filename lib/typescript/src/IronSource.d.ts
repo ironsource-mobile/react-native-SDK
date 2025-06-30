@@ -13,6 +13,7 @@ type IronSourceNativeModuleType = {
     /**
      * Android: getAdvertiserId
      *     iOS: advertiserId
+     *     @deprecated This API will be removed in version 4.0.0.
      */
     getAdvertiserId(): Promise<string | null>;
     /**
@@ -23,6 +24,7 @@ type IronSourceNativeModuleType = {
     /**
      * Android: shouldTrackNetworkState
      *     iOS: shouldTrackReachability
+     *@deprecated This API will be removed in version 4.0.0.
      */
     shouldTrackNetworkState(isEnabled: boolean): Promise<void>;
     /**
@@ -71,6 +73,7 @@ type IronSourceNativeModuleType = {
     /**
      * Android: setClientSideCallbacks
      *     iOS: setUseClientSideCallbacks
+     *     @deprecated This API will be removed in version 4.0.0.
      *
      * This must be called before init.
      * OW client side automatic result polling
@@ -83,6 +86,7 @@ type IronSourceNativeModuleType = {
      *     iOS: setUserId
      *
      * When an empty string was passed as userId, SDK falls back to default.
+     * @deprecated This API will be removed in version 4.0.0.
      */
     setUserId(userId: string): Promise<void>;
     /**
@@ -91,8 +95,13 @@ type IronSourceNativeModuleType = {
      *
      * Use init to init with all ad units.
      * Use initWithAdUnits to init with only specific ad units.
+     @deprecated This API will be removed in version 4.0.0.
      */
     init(appKey: string): Promise<void>;
+    /**
+     *
+    @deprecated This API will be removed in version 4.0.0.
+     */
     initWithAdUnits(appKey: string, adUnits: Array<AdUnit>): Promise<void>;
     /** Rewarded Video API ===============================================================**/
     /**
@@ -254,6 +263,7 @@ type IronSourceNativeModuleType = {
      *     iOS: getConversionValue
      *
      * Returns undefined for Android
+     * @deprecated This method will be removed in 4.0.0 version.
      */
     getConversionValue(): Promise<number | undefined>;
     /** iOS ConsentView API ============================================================**/
@@ -263,6 +273,7 @@ type IronSourceNativeModuleType = {
      *
      * use "pre" for all your consentViewType
      * https://developers.is.com/ironsource-mobile/ios/permission-popup-ios/#step-1
+     * @deprecated This method will be removed in 4.0.0 version.
      */
     loadConsentViewWithType(consentViewType: string): Promise<void>;
     /**
@@ -271,11 +282,13 @@ type IronSourceNativeModuleType = {
      *
      * use "pre" for all your consentViewType
      * https://developers.is.com/ironsource-mobile/ios/permission-popup-ios/#step-1
+     * @deprecated This method will be removed in 4.0.0 version.
      */
     showConsentViewWithType(consentViewType: string): Promise<void>;
 };
 /**
  * These are needed since ReactNative NativeModules does not support function overload or optional arguments.
+ * @deprecated This method will be removed in 4.0.0 version.
  */
 type InitFunction = (appKey: string, adUnits?: Array<AdUnit>) => Promise<void>;
 type ShowFunction = (placementName?: string) => Promise<void>;
@@ -283,6 +296,7 @@ type IronSourceProxyType = {
     /**
      * Android: init
      *     iOS: initWithAppKey
+     * @deprecated This method will be removed in 4.0.0 version.
      */
     init: InitFunction;
     /**
@@ -305,8 +319,16 @@ type UtilFunctions = {
     getNativeSDKVersion: () => string;
 };
 type LevelPlayListeners = {
+    /**
+ * Sets the setInitializationListener to handle initialization events.
+ * @deprecated This Listener will be removed in 4.0.0 version.
+ */
     setInitializationListener: (listener: InitializationListener) => void;
     setImpressionDataListener: (listener: ImpressionDataListener) => void;
+    /**
+   * Sets the setConsentViewListener to handle consent view events.
+   * @deprecated This Listener will be removed in 4.0.0 version.
+   */
     setConsentViewListener: (listener: ConsentViewListener) => void;
     /**
      * Sets the setLevelPlayBannerListener to handle banner ad events.

@@ -1,6 +1,6 @@
 {
   "name": "ironsource-mediation",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "description": "IronSource ad mediation React-Native plugin. Monetize apps with rewarded video, interstitial, banner, and native ads.",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -44,7 +44,9 @@
     "ios",
     "android",
     "ironSource",
-    "iron-source"
+    "iron-source",
+    "level-play",
+    "LevelPlay"
   ],
   "repository": "https://github.com/ironsource-mobile/react-native-SDK",
   "author": "ironSource",

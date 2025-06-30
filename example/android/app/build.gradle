@@ -121,7 +121,7 @@ dependencies {
     }
 
     // Required when using custom native ad implementation
-    implementation 'com.unity3d.ads-mediation:mediation-sdk:8.7.0'
+    implementation 'com.unity3d.ads-mediation:mediation-sdk:8.9.1'
 }
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)

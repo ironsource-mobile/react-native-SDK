@@ -11,7 +11,7 @@ export type ImpressionData = {
      */
     auctionId: string | null;
     /**
-     * @deprecated This parameter will be removed in native SDK version 9.0.0.
+     * @deprecated This parameter will be removed in React native SDK version 4.0.0.
      * Please use [adFormat] instead.
      *
      * The ad unit type (e.g., banner, interstitial) that displayed the ad.
@@ -78,5 +78,6 @@ export type ImpressionData = {
      * The conversion value attributed to this impression, used for SKAdNetwork.
      */
     conversionValue: number | null;
+    creativeId: string | null;
 };
 //# sourceMappingURL=ImpressionData.d.ts.map

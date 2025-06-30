@@ -71,7 +71,7 @@ RCT_EXPORT_MODULE()
                                                      name:UIDeviceOrientationDidChangeNotification
                                                    object:nil];
         self.shouldHideBanner = NO;
-      
+
       // LevelPlay Object Manager registry
       self.levelPlayAdObjectManager = [[LevelPlayAdObjectManager alloc] init];
     }
@@ -896,29 +896,37 @@ RCT_EXPORT_METHOD(initLevelPlay:(nonnull id)args
 }
 
 #pragma mark - LevelPlay Interstitial Ad API ===================================================================
+RCT_EXPORT_METHOD(createInterstitialAd:(nonnull NSDictionary *)args
+                  withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject)
+{
+    NSString *adUnitId = args[@"adUnitId"];
+    NSString *adId = [self.levelPlayAdObjectManager createInterstitialAd:adUnitId eventEmitter:self];
+    resolve(adId);
+}
 RCT_EXPORT_METHOD(loadInterstitialAd:(nonnull id)args
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject) {
-  NSNumber *adObjectId = [args valueForKey:@"adObjectId"];
+  NSString *adId = [args valueForKey:@"adId"];
   NSString *adUnitId = [args valueForKey:@"adUnitId"];
-  [self.levelPlayAdObjectManager loadInterstitialAd:adObjectId adUnitId:adUnitId eventEmitter:self];
+  [self.levelPlayAdObjectManager loadInterstitialAd:adId adUnitId:adUnitId eventEmitter:self];
   return resolve(nil);
 }
 
 RCT_EXPORT_METHOD(showInterstitialAd:(nonnull id)args
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject) {
-  NSNumber *adObjectId = [args valueForKey:@"adObjectId"];
+  NSString *adId = [args valueForKey:@"adId"];
   NSString *placementName = [args valueForKey:@"placementName"] ?: [NSNull null];
-  [self.levelPlayAdObjectManager showInterstitialAd:adObjectId placementName:placementName rootViewController:[LevelPlayUtils getRootViewController]];
+  [self.levelPlayAdObjectManager showInterstitialAd:adId placementName:placementName rootViewController:[LevelPlayUtils getRootViewController]];
   return resolve(nil);
 }
 
 RCT_EXPORT_METHOD(isInterstitialAdReady:(nonnull id)args
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject) {
-  NSNumber *adObjectId = [args valueForKey:@"adObjectId"];
-  BOOL isAdReady = [self.levelPlayAdObjectManager isInterstitialAdReady:adObjectId];
+  NSString *adId = [args valueForKey:@"adId"];
+  BOOL isAdReady = [self.levelPlayAdObjectManager isInterstitialAdReady:adId];
   return resolve([NSNumber numberWithBool: isAdReady]);
 }
 
@@ -933,8 +941,8 @@ RCT_EXPORT_METHOD(isInterstitialAdPlacementCapped:(nonnull id)args
 RCT_EXPORT_METHOD(removeAd:(nonnull id)args
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject) {
-  NSNumber *adObjectId = [args valueForKey:@"adObjectId"];
-  [self.levelPlayAdObjectManager removeAd:adObjectId];
+  NSString *adId = [args valueForKey:@"adId"];
+  [self.levelPlayAdObjectManager removeAd:adId];
   return resolve(nil);
 }
 
@@ -962,29 +970,36 @@ RCT_EXPORT_METHOD(createAdaptiveAdSize:(RCTPromiseResolveBlock)resolve
 
 
 #pragma mark - LevelPlay Rewarded Ad API ===================================================================
+RCT_EXPORT_METHOD(createRewardedAd:(nonnull NSDictionary *)args
+                  withResolver:(RCTPromiseResolveBlock)resolve
+                  withRejecter:(RCTPromiseRejectBlock)reject)
+{
+    NSString *adUnitId = args[@"adUnitId"];
+    NSString *adId = [self.levelPlayAdObjectManager createRewardedAd:adUnitId eventEmitter:self];
+    resolve(adId);
+}
 RCT_EXPORT_METHOD(loadRewardedAd:(nonnull id)args
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject) {
-  NSNumber *adObjectId = [args valueForKey:@"adObjectId"];
+  NSString *adId = [args valueForKey:@"adId"];
   NSString *adUnitId = [args valueForKey:@"adUnitId"];
-  [self.levelPlayAdObjectManager loadRewardedAd:adObjectId adUnitId:adUnitId eventEmitter:self];
+  [self.levelPlayAdObjectManager loadRewardedAd:adId adUnitId:adUnitId eventEmitter:self];
   return resolve(nil);
 }
-
 RCT_EXPORT_METHOD(showRewardedAd:(nonnull id)args
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject) {
-  NSNumber *adObjectId = [args valueForKey:@"adObjectId"];
+  NSString *adId = [args valueForKey:@"adId"];
   NSString *placementName = [args valueForKey:@"placementName"] ?: [NSNull null];
-  [self.levelPlayAdObjectManager showRewardedAd:adObjectId placementName:placementName rootViewController:[LevelPlayUtils getRootViewController]];
+  [self.levelPlayAdObjectManager showRewardedAd:adId placementName:placementName rootViewController:[LevelPlayUtils getRootViewController]];
   return resolve(nil);
 }
 
 RCT_EXPORT_METHOD(isRewardedAdReady:(nonnull id)args
                   withResolver:(RCTPromiseResolveBlock)resolve
                   withRejecter:(RCTPromiseRejectBlock)reject) {
-  NSNumber *adObjectId = [args valueForKey:@"adObjectId"];
-  BOOL isAdReady = [self.levelPlayAdObjectManager isRewardedAdReady:adObjectId];
+  NSString *adId = [args valueForKey:@"adId"];
+  BOOL isAdReady = [self.levelPlayAdObjectManager isRewardedAdReady:adId];
   return resolve([NSNumber numberWithBool: isAdReady]);
 }
 
@@ -1250,11 +1265,11 @@ RCT_EXPORT_METHOD(isRewardedAdPlacementCapped:(nonnull id)args
         @"LP_BN_ON_AD_SCREEN_PRESENTED" : LP_BN_ON_AD_SCREEN_PRESENTED,
         @"LP_BN_ON_AD_SCREEN_DISMISSED" : LP_BN_ON_AD_SCREEN_DISMISSED,
         @"LP_BN_ON_AD_LEFT_APPLICATION" : LP_BN_ON_AD_LEFT_APPLICATION,
-        
+
         // LevelPlay Init
         @"ON_INIT_FAILED": ON_INIT_FAILED,
         @"ON_INIT_SUCCESS": ON_INIT_SUCCESS,
-        
+
         // LevelPlay Interstitial Ad
         @"ON_INTERSTITIAL_AD_LOADED": ON_INTERSTITIAL_AD_LOADED,
         @"ON_INTERSTITIAL_AD_LOAD_FAILED": ON_INTERSTITIAL_AD_LOAD_FAILED,
@@ -1263,7 +1278,7 @@ RCT_EXPORT_METHOD(isRewardedAdPlacementCapped:(nonnull id)args
         @"ON_INTERSTITIAL_AD_DISPLAY_FAILED": ON_INTERSTITIAL_AD_DISPLAY_FAILED,
         @"ON_INTERSTITIAL_AD_CLICKED": ON_INTERSTITIAL_AD_CLICKED,
         @"ON_INTERSTITIAL_AD_CLOSED": ON_INTERSTITIAL_AD_CLOSED,
-        
+
         // LevelPlay Rewarded Ad
         @"ON_REWARDED_AD_LOADED": ON_REWARDED_AD_LOADED,
         @"ON_REWARDED_AD_LOAD_FAILED": ON_REWARDED_AD_LOAD_FAILED,
@@ -1327,7 +1342,7 @@ RCT_EXPORT_METHOD(isRewardedAdPlacementCapped:(nonnull id)args
         // LevelPlay Init
         ON_INIT_FAILED,
         ON_INIT_SUCCESS,
-        
+
         // LevelPlay Interstitial Ad
         ON_INTERSTITIAL_AD_LOADED,
         ON_INTERSTITIAL_AD_LOAD_FAILED,

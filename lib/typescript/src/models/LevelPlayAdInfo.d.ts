@@ -5,6 +5,10 @@ import type { LevelPlayAdSize } from './LevelPlayAdSize';
  */
 export type LevelPlayAdInfo = {
     /**
+     * The unique identifier of the ad object.
+     */
+    adId: string;
+    /**
      * The unique identifier of the ad unit.
      */
     adUnitId: string;

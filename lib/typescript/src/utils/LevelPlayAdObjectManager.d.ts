@@ -7,19 +7,19 @@ export declare class LevelPlayAdObjectManager {
     private static instance;
     private interstitialAdsMap;
     private rewardedAdsMap;
-    private adObjectId;
     private constructor();
     static getInstance(): LevelPlayAdObjectManager;
     private handleInterstitialMethodCalls;
+    createInterstitialAd(interstitialAd: LevelPlayInterstitialAd): Promise<string>;
     loadInterstitialAd(interstitialAd: LevelPlayInterstitialAd): Promise<void>;
-    showInterstitialAd(adObjectId: number, placementName: string): Promise<void>;
-    isInterstitialAdReady(adObjectId: number): Promise<boolean>;
+    showInterstitialAd(adId: string, placementName: string): Promise<void>;
+    isInterstitialAdReady(adId: string): Promise<boolean>;
     private handleRewardedMethodCalls;
+    createRewardedAd(rewardedAd: LevelPlayRewardedAd): Promise<string>;
     loadRewardedAd(rewardedAd: LevelPlayRewardedAd): Promise<void>;
-    showRewardedAd(adObjectId: number, placementName: string): Promise<void>;
-    isRewardedAdReady(adObjectId: number): Promise<boolean>;
-    removeAd(adObjectId: number): Promise<void>;
+    showRewardedAd(adId: string, placementName: string): Promise<void>;
+    isRewardedAdReady(adId: string): Promise<boolean>;
+    removeAd(adId: string): Promise<void>;
     removeAllAds(): Promise<void>;
-    generateAdObjectId(): number;
 }
 //# sourceMappingURL=LevelPlayAdObjectManager.d.ts.map

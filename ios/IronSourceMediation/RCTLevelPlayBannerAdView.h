@@ -15,8 +15,10 @@
 @interface RCTLevelPlayBannerAdView : UIView
 
 @property (nonatomic, weak) RCTBridge *bridge;
+@property (nonatomic, copy, nullable) NSString *adId;
 @property (nonatomic, copy, nullable) NSString *adUnitId;
 @property (nonatomic, copy, nullable) NSDictionary *adSize;
+@property (nonatomic, copy, nullable) NSDictionary *creationParams;
 @property (nonatomic, copy, nullable) NSString *placementName;
 @property (nonatomic, strong, nullable) LPMBannerAdView *bannerAdView;
 @property (nonatomic, copy, nullable) RCTDirectEventBlock onAdLoadedEvent;
@@ -27,8 +29,10 @@
 @property (nonatomic, copy, nullable) RCTDirectEventBlock onAdCollapsedEvent;
 @property (nonatomic, copy, nullable) RCTDirectEventBlock onAdExpandedEvent;
 @property (nonatomic, copy, nullable) RCTDirectEventBlock onAdLeftApplicationEvent;
+@property (nonatomic, copy,nullable) RCTDirectEventBlock onAdIdGeneratedEvent;
 
 - (instancetype)initWithBridge:(RCTBridge *)bridge;
+- (void)initializeBanner;
 - (void)loadAd;
 - (void)destroy;
 - (void)pauseAutoRefresh;

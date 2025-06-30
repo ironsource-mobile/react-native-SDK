@@ -10,12 +10,11 @@ const levelPlayObjectManager = LevelPlayAdObjectManager.getInstance()
  */
 export class LevelPlayRewardedAd {
   adUnitId: string
-  adObjectId: number
+  adId: string = ''
   listener: LevelPlayRewardedAdListener | null | undefined
 
   constructor(adUnitId: string) {
     this.adUnitId = adUnitId
-    this.adObjectId = levelPlayObjectManager.generateAdObjectId()
   }
 
   setListener(listener: LevelPlayRewardedAdListener): void {
@@ -51,7 +50,7 @@ export class LevelPlayRewardedAd {
    * @returns A promise that resolves when the ad is shown.
    */
   async showAd(placementName: string | null = ''): Promise<void> {
-    await levelPlayObjectManager.showRewardedAd(this.adObjectId, placementName ?? '')
+    await levelPlayObjectManager.showRewardedAd(this.adId, placementName ?? '')
   }
 
   /**
@@ -59,14 +58,14 @@ export class LevelPlayRewardedAd {
    * @returns A promise that resolves to a boolean indicating whether the ad is ready.
    */
   async isAdReady(): Promise<boolean> {
-    return await levelPlayObjectManager.isRewardedAdReady(this.adObjectId)
+    return await levelPlayObjectManager.isRewardedAdReady(this.adId)
   }
 
   /**
    * Removes the rewarded ad.
    * @returns A promise that resolves when the ad is removed.
    */
-  async remove(): Promise<void> {
-    await levelPlayObjectManager.removeAd(this.adObjectId)
+   async remove(): Promise<void> {
+     await levelPlayObjectManager.removeAd(this.adId)
   }
 }

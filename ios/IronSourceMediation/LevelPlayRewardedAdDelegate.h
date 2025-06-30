@@ -4,5 +4,5 @@
 
 @interface LevelPlayRewardedAdDelegate : NSObject <LPMRewardedAdDelegate>
 
-- (instancetype)initWithAdObjectId:(int)adObjectId eventEmitter:(RCTEventEmitter *)eventEmitter;
+- (instancetype)initWithAdId:(NSString *)adId eventEmitter:(RCTEventEmitter *)eventEmitter;
 @end

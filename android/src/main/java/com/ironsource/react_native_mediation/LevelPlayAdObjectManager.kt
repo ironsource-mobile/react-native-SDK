@@ -32,73 +32,70 @@ import com.unity3d.mediation.rewarded.LevelPlayRewardedAdListener
 class LevelPlayAdObjectManager(
   private val reactApplicationContext: ReactApplicationContext
 ) {
-  private val interstitialAdsMap = hashMapOf<Int, LevelPlayInterstitialAd>()
-  private val rewardedAdsMap = hashMapOf<Int, LevelPlayRewardedAd>()
+  private val interstitialAdsMap = hashMapOf<String, LevelPlayInterstitialAd>()
+  private val rewardedAdsMap = hashMapOf<String, LevelPlayRewardedAd>()
 
   // Interstitial Ad Methods
-  fun loadInterstitialAd(adObjectId: Int, adUnitId: String) {
-    // Check if an interstitial ad already exists for this adObjectId
-    val existingAd = interstitialAdsMap[adObjectId]
-
-    if (existingAd != null) {
-      // Ad exists, load the existing ad
-      existingAd.loadAd()
-      return
-    }
-
-    // Ad doesn't exist, create a new one
+  fun createInterstitialAd(adUnitId: String): String {
+    // Create the interstitial ad
     val interstitialAd = LevelPlayInterstitialAd(adUnitId)
-    interstitialAd.setListener(createInterstitialAdListener(adObjectId))
-
-    // Store the new ad instance in the map and load it
-    interstitialAdsMap[adObjectId] = interstitialAd
-    interstitialAd.loadAd()
+    // Set the listener for the interstitial ad
+    interstitialAd.setListener(createInterstitialAdListener(interstitialAd.adId))
+    // Store the interstitial ad in the map
+    interstitialAdsMap[interstitialAd.adId] = interstitialAd
+    // Return the unique adId for the created ad object
+    return interstitialAd.adId
   }
 
-  fun showInterstitialAd(adObjectId: Int, placementName: String?) {
+  fun loadInterstitialAd(adId: String) {
+    // Retrieve the interstitial ad from the map and load it if found
+    interstitialAdsMap[adId]?.loadAd()
+  }
+
+  fun showInterstitialAd(adId: String, placementName: String?) {
+
     reactApplicationContext.currentActivity?.let { activity ->
-      interstitialAdsMap[adObjectId]?.showAd(activity, placementName)
+      interstitialAdsMap[adId]?.showAd(activity, placementName)
     }
   }
 
-
-  fun isInterstitialAdReady(adObjectId: Int): Boolean {
-    return interstitialAdsMap[adObjectId]?.isAdReady() ?: false
+  fun isInterstitialAdReady(adId: String): Boolean {
+    return interstitialAdsMap[adId]?.isAdReady() ?: false
   }
 
-  private fun createInterstitialAdListener(adObjectId: Int): LevelPlayInterstitialAdListener {
+  private fun createInterstitialAdListener(adId: String): LevelPlayInterstitialAdListener {
     return object : LevelPlayInterstitialAdListener {
       override fun onAdLoaded(adInfo: LevelPlayAdInfo) {
         val args = Arguments.createMap()
-        args.putInt("adObjectId", adObjectId)
+        args.putString("adId", adId)
         args.putMap("adInfo", adInfo.toReadableMap())
         sendEvent(reactApplicationContext, ON_INTERSTITIAL_AD_LOADED, args)
       }
 
       override fun onAdLoadFailed(error: LevelPlayAdError) {
         val args = Arguments.createMap()
-        args.putInt("adObjectId", adObjectId)
+        args.putString("adId", adId)
         args.putMap("error", error.toReadableMap())
         sendEvent(reactApplicationContext, ON_INTERSTITIAL_AD_LOAD_FAILED, args)
       }
 
       override fun onAdInfoChanged(adInfo: LevelPlayAdInfo) {
         val args = Arguments.createMap()
-        args.putInt("adObjectId", adObjectId)
+        args.putString("adId", adId)
         args.putMap("adInfo", adInfo.toReadableMap())
         sendEvent(reactApplicationContext, ON_INTERSTITIAL_AD_INFO_CHANGED, args)
       }
 
       override fun onAdDisplayed(adInfo: LevelPlayAdInfo) {
         val args = Arguments.createMap()
-        args.putInt("adObjectId", adObjectId)
+        args.putString("adId", adId)
         args.putMap("adInfo", adInfo.toReadableMap())
         sendEvent(reactApplicationContext, ON_INTERSTITIAL_AD_DISPLAYED, args)
       }
 
       override fun onAdDisplayFailed(error: LevelPlayAdError, adInfo: LevelPlayAdInfo) {
         val args = Arguments.createMap()
-        args.putInt("adObjectId", adObjectId)
+        args.putString("adId", adId)
         args.putMap("error", error.toReadableMap())
         args.putMap("adInfo", adInfo.toReadableMap())
         sendEvent(reactApplicationContext, ON_INTERSTITIAL_AD_DISPLAY_FAILED, args)
@@ -106,14 +103,14 @@ class LevelPlayAdObjectManager(
 
       override fun onAdClicked(adInfo: LevelPlayAdInfo) {
         val args = Arguments.createMap()
-        args.putInt("adObjectId", adObjectId)
+        args.putString("adId", adId)
         args.putMap("adInfo", adInfo.toReadableMap())
         sendEvent(reactApplicationContext, ON_INTERSTITIAL_AD_CLICKED, args)
       }
 
       override fun onAdClosed(adInfo: LevelPlayAdInfo) {
         val args = Arguments.createMap()
-        args.putInt("adObjectId", adObjectId)
+        args.putString("adId", adId)
         args.putMap("adInfo", adInfo.toReadableMap())
         sendEvent(reactApplicationContext, ON_INTERSTITIAL_AD_CLOSED, args)
       }
@@ -121,69 +118,66 @@ class LevelPlayAdObjectManager(
   }
 
   // Rewarded Ad Methods
-  fun loadRewardedAd(adObjectId: Int, adUnitId: String) {
-    // Check if an rewarded ad already exists for this adObjectId
-    val existingAd = rewardedAdsMap[adObjectId]
-
-    if (existingAd != null) {
-      // Ad exists, load the existing ad
-      existingAd.loadAd()
-      return
-    }
-
-    // Ad doesn't exist, create a new one
+  fun createRewardedAd(adUnitId: String): String {
+    // Create the rewarded ad
     val rewardedAd = LevelPlayRewardedAd(adUnitId)
-    rewardedAd.setListener(createRewardedAdListener(adObjectId))
-
-    // Store the new ad instance in the map and load it
-    rewardedAdsMap[adObjectId] = rewardedAd
-    rewardedAd.loadAd()
+    // Set the listener for the rewarded ad
+    rewardedAd.setListener(createRewardedAdListener(rewardedAd.adId))
+    // Store the rewarded ad in the map
+    rewardedAdsMap[rewardedAd.adId] = rewardedAd
+    // Return the unique adId for the created ad object
+    return rewardedAd.adId
   }
 
-  fun showRewardedAd(adObjectId: Int, placementName: String?) {
+  fun loadRewardedAd(adId: String) {
+    // Retrieve the rewarded ad from the map and load it if found
+    rewardedAdsMap[adId]?.loadAd()
+  }
+
+  fun showRewardedAd(adId: String, placementName: String?) {
     reactApplicationContext.currentActivity?.let { activity ->
-      rewardedAdsMap[adObjectId]?.showAd(activity, placementName)
+      rewardedAdsMap[adId]?.showAd(activity, placementName)
     }
   }
 
 
-  fun isRewardedAdReady(adObjectId: Int): Boolean {
-    return rewardedAdsMap[adObjectId]?.isAdReady() ?: false
+  fun isRewardedAdReady(adId: String): Boolean {
+    return rewardedAdsMap[adId]?.isAdReady() ?: false
   }
 
-  private fun createRewardedAdListener(adObjectId: Int): LevelPlayRewardedAdListener {
+  private fun createRewardedAdListener(adId: String): LevelPlayRewardedAdListener {
     return object : LevelPlayRewardedAdListener {
       override fun onAdLoaded(adInfo: LevelPlayAdInfo) {
         val args = Arguments.createMap()
-        args.putInt("adObjectId", adObjectId)
+        args.putString("adId",adId)
         args.putMap("adInfo", adInfo.toReadableMap())
         sendEvent(reactApplicationContext, ON_REWARDED_AD_LOADED, args)
       }
 
       override fun onAdLoadFailed(error: LevelPlayAdError) {
         val args = Arguments.createMap()
-        args.putInt("adObjectId", adObjectId)
+        args.putString("adId",adId)
         args.putMap("error", error.toReadableMap())
         sendEvent(reactApplicationContext, ON_REWARDED_AD_LOAD_FAILED, args)
       }
 
       override fun onAdInfoChanged(adInfo: LevelPlayAdInfo) {
         val args = Arguments.createMap()
-        args.putInt("adObjectId", adObjectId)
+        args.putString("adId",adId)
         args.putMap("adInfo", adInfo.toReadableMap())
         sendEvent(reactApplicationContext, ON_REWARDED_AD_INFO_CHANGED, args)
       }
 
       override fun onAdDisplayed(adInfo: LevelPlayAdInfo) {
         val args = Arguments.createMap()
-        args.putInt("adObjectId", adObjectId)
+        args.putString("adId",adId)
         args.putMap("adInfo", adInfo.toReadableMap())
         sendEvent(reactApplicationContext, ON_REWARDED_AD_DISPLAYED, args)
       }
 
       override fun onAdDisplayFailed(error: LevelPlayAdError, adInfo: LevelPlayAdInfo) {
         val args = Arguments.createMap()
-        args.putInt("adObjectId", adObjectId)
+        args.putString("adId",adId)
         args.putMap("error", error.toReadableMap())
         args.putMap("adInfo", adInfo.toReadableMap())
         sendEvent(reactApplicationContext, ON_REWARDED_AD_DISPLAY_FAILED, args)
@@ -191,21 +185,21 @@ class LevelPlayAdObjectManager(
 
       override fun onAdClicked(adInfo: LevelPlayAdInfo) {
         val args = Arguments.createMap()
-        args.putInt("adObjectId", adObjectId)
+        args.putString("adId",adId)
         args.putMap("adInfo", adInfo.toReadableMap())
         sendEvent(reactApplicationContext, ON_REWARDED_AD_CLICKED, args)
       }
 
       override fun onAdClosed(adInfo: LevelPlayAdInfo) {
         val args = Arguments.createMap()
-        args.putInt("adObjectId", adObjectId)
+        args.putString("adId",adId)
         args.putMap("adInfo", adInfo.toReadableMap())
         sendEvent(reactApplicationContext, ON_REWARDED_AD_CLOSED, args)
       }
 
       override fun onAdRewarded(reward: LevelPlayReward, adInfo: LevelPlayAdInfo) {
         val args = Arguments.createMap()
-        args.putInt("adObjectId", adObjectId)
+        args.putString("adId",adId)
         args.putMap("adInfo", adInfo.toReadableMap())
         args.putMap("reward", reward.toReadableMap())
         sendEvent(reactApplicationContext, ON_REWARDED_AD_REWARDED, args)
@@ -215,11 +209,11 @@ class LevelPlayAdObjectManager(
 
   // Shared Methods
 
-  fun removeAd(adObjectId: Int) {
-    if (interstitialAdsMap.containsKey(adObjectId))
-      interstitialAdsMap.remove(adObjectId)
-    if (rewardedAdsMap.containsKey(adObjectId))
-      rewardedAdsMap.remove(adObjectId)
+  fun removeAd(adId: String) {
+    if (interstitialAdsMap.containsKey(adId))
+      interstitialAdsMap.remove(adId)
+    if (rewardedAdsMap.containsKey(adId))
+      rewardedAdsMap.remove(adId)
   }
 
   fun removeAllAds() {
