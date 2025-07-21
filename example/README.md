@@ -36,6 +36,18 @@ yarn android
 
 ### For iOS
 
+The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+ 
+```sh
+bundle install
+```
+ 
+Then, and every time you update your native dependencies, run:
+ 
+```sh
+bundle exec pod install
+```
+
 ```bash
 # using npm
 npm run ios

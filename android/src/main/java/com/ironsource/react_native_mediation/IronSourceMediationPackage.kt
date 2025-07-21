@@ -9,7 +9,7 @@ import com.facebook.react.uimanager.ViewManager
 
 class IronSourceMediationPackage : ReactPackage {
   override fun createNativeModules(reactContext: ReactApplicationContext): List<NativeModule> {
-    return listOf(IronSourceMediationModule(reactContext), IronSourceConfigModule(reactContext))
+    return listOf(IronSourceMediationModule(reactContext), IronSourceConfigModule(reactContext), LevelPlayMediationModule(reactContext))
   }
   override fun createViewManagers(reactContext: ReactApplicationContext): List<ViewManager<*, *>> {
     // Native ad view manager registry(SMALL and MEDIUM templates)

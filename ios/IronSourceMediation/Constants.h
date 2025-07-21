@@ -66,4 +66,6 @@ extern NSString *const ON_REWARDED_AD_DISPLAY_FAILED;
 extern NSString *const ON_REWARDED_AD_CLICKED;
 extern NSString *const ON_REWARDED_AD_CLOSED;
 extern NSString *const ON_REWARDED_AD_REWARDED;
+#pragma mark - LevelPlay ImpressionData
+extern NSString *const ON_LEVEL_PLAY_IMPRESSION_SUCCESS;
 @end

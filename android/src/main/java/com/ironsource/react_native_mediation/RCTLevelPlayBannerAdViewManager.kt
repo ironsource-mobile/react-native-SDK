@@ -77,6 +77,8 @@ class RCTLevelPlayBannerAdViewManager(
     view.placement = value.getString("placement") ?: ""
     view.adUnitId = value.getString("adUnitId") ?: ""
     view.adSize = getLevelPlayAdSize(reactApplicationContext, value.getMap("adSize"))
+    if (value.hasKey("bidFloor"))
+      view.bidFloor = value.getDouble("bidFloor")
 
     view.initializeBanner()
   }

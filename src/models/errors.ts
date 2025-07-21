@@ -33,6 +33,8 @@ export type LevelPlayInitError = {
 
 /**
  * Represents an error related to the consent view process, extending the IronSourceError.
+ * 
+ * @deprecated This API will be removed in version 4.0.0.
  */
 export type ConsentViewError = IronSourceError & {
   /**

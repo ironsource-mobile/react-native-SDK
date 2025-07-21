@@ -91,7 +91,10 @@ object IronConstants {
     const val ON_BANNER_AD_LEFT_APPLICATION = "onBannerAdLeftApplication"
     const val ON_BANNER_AD_GENERATED_ADID = "onBannerAdIdGeneratedEvent"
 
-    // For JS Event Constants mapping
+    //LevelPlay ImpressionData
+    const val ON_LEVEL_PLAY_IMPRESSION_SUCCESS = "onLevelPlayImpressionSuccess"
+
+  // For JS Event Constants mapping
     fun getEventConstants(): MutableMap<String, Any> = hashMapOf(
         // ARM ImpressionDataListener Events
         "ON_IMPRESSION_SUCCESS" to ON_IMPRESSION_SUCCESS,
@@ -157,5 +160,8 @@ object IronConstants {
         "ON_REWARDED_AD_CLICKED" to ON_REWARDED_AD_CLICKED,
         "ON_REWARDED_AD_CLOSED" to ON_REWARDED_AD_CLOSED,
         "ON_REWARDED_AD_REWARDED" to ON_REWARDED_AD_REWARDED,
+
+        // LevelPlay ImpressionData
+        "ON_LEVEL_PLAY_IMPRESSION_SUCCESS" to ON_LEVEL_PLAY_IMPRESSION_SUCCESS
     )
 }

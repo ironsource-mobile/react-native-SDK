@@ -4,6 +4,8 @@ import type { AdFormat } from "./AdFormat";
  * @see https://developers.is.com/ironsource-mobile/general/ad-revenue-measurement-postbacks/#step-2
  *
  * Represents the data collected for an ad impression.
+ *
+ * @deprecated This API will be removed in version 4.0.0.
  */
 export type ImpressionData = {
     /**

@@ -55,6 +55,7 @@ type IronSourceNativeModuleType = {
   /**
    * Android: validateIntegration
    *     iOS: validateIntegration
+   *     @deprecated This API will be removed in version 4.0.0.
    */
   validateIntegration(): Promise<void>
 
@@ -71,42 +72,49 @@ type IronSourceNativeModuleType = {
    *
    * For RV server-to-server callback.
    * Must be set before showRV.
+   * @deprecated This API will be removed in version 4.0.0.
    */
   setDynamicUserId(userId: string): Promise<void>
 
   /**
    * Android: setAdaptersDebug
    *     iOS: setAdaptersDebug
+   * @deprecated This API will be removed in version 4.0.0.
    */
   setAdaptersDebug(isEnabled: boolean): Promise<void>
 
   /**
    * Android: setConsent
    *     iOS: setConsent
+   *  @deprecated This API will be removed in version 4.0.0.
    */
   setConsent(isConsent: boolean): Promise<void>
 
   /**
    * Android: setMetaData
    *     iOS: setMetaDataWithKey
+   * @deprecated This API will be removed in version 4.0.0.
    */
   setMetaData(key: string, values: Array<string>): Promise<void>
 
   /**
    * Android: setSegment
    *     iOS: setSegment
+   * @deprecated This API will be removed in version 4.0.0.
    */
   setSegment(segment: IronSourceSegment): Promise<void>
 
   /**
    * Android: launchTestSuite
    *     iOS: launchTestSuite
+   * @deprecated This API will be removed in version 4.0.0.
    */
   launchTestSuite(): Promise<void>
 
   /**
    * Android: setWaterfallConfiguration
    *     iOS: setWaterfallConfiguration
+   * @deprecated This API will be removed in version 4.0.0.
    */
   setWaterfallConfiguration(
     ceiling: number,
@@ -117,6 +125,7 @@ type IronSourceNativeModuleType = {
   /**
    * Android: clearWaterfallConfiguration
    *     iOS: clearWaterfallConfiguration
+   * @deprecated This API will be removed in version 4.0.0.
    */
   clearWaterfallConfiguration(adUnit: AdUnit): Promise<void>
 
@@ -396,16 +405,25 @@ type IronSourceProxyType = {
 }
 
 type UtilFunctions = {
+  /**
+   * @deprecated This method will be removed in 4.0.0 version.
+   */
   getPluginVersion: () => string
+    /**
+   * @deprecated This method will be removed in 4.0.0 version.
+   */
   getNativeSDKVersion: () => string
 }
 
 type LevelPlayListeners = {
-      /**
+  /**
    * Sets the setInitializationListener to handle initialization events.
    * @deprecated This Listener will be removed in 4.0.0 version.
    */
   setInitializationListener: (listener: InitializationListener) => void
+  /**
+   * @deprecated This method will be removed in 4.0.0 version.
+   */
   setImpressionDataListener: (listener: ImpressionDataListener) => void
     /**
    * Sets the setConsentViewListener to handle consent view events.
@@ -445,20 +463,20 @@ type LevelPlayListeners = {
 /**
  * Exposed Module Type
  */
-type IronSourceType = UtilFunctions &
-  LevelPlayListeners &
-  IronSourceProxyType &
-  Omit<
-    IronSourceNativeModuleType,
+type IronSourceType = UtilFunctions & LevelPlayListeners & IronSourceProxyType &
+  Omit<IronSourceNativeModuleType,
     | 'init'
     | 'initWithAdUnits'
     | 'showRewardedVideo'
     | 'showRewardedVideoForPlacement'
     | 'showInterstitial'
     | 'showInterstitialForPlacement'
-  >
+>
 
 /** Util  =========================================================================**/
+/**
+ * @deprecated This method will be removed in 4.0.0 version.
+ */
 const getReactNativeVersion = (): string => {
   let version = ''
   try {
@@ -470,10 +488,16 @@ const getReactNativeVersion = (): string => {
   }
 }
 
+/**
+ * @deprecated This method will be removed in 4.0.0 version.
+ */
 const getPluginVersion: () => string = () => {
   return PLUGIN_VERSION
 }
 
+/**
+ * @deprecated This method will be removed in 4.0.0 version.
+ */
 const getNativeSDKVersion: () => string = () => {
   return Platform.OS === 'android'
     ? ANDROID_SDK_VERSION
@@ -538,9 +562,18 @@ const showInterstitial: ShowFunction = async (
  */
 const IOSMethodStubs = {
   /** iOS ConversionValue API ========================================================**/
+  /**
+   * @deprecated This method will be removed in 4.0.0 version.
+   */
   getConversionValue: () => Promise.resolve(undefined),
   /** iOS ConsentView API ============================================================**/
+  /**
+   * @deprecated This method will be removed in 4.0.0 version.
+   */
   loadConsentViewWithType: (_: string) => Promise.resolve(),
+  /**
+   * @deprecated This method will be removed in 4.0.0 version.
+   */
   showConsentViewWithType: (_: string) => Promise.resolve(),
 }
 
@@ -590,6 +623,8 @@ const {
 /**
  * Sets the setInitializationListener to handle impression data events.
  * @param listener The setInitializationListener object containing event handlers.
+ * 
+ * @deprecated This Listener will be removed in 4.0.0 version.
  */
 const setInitializationListener = (listener: InitializationListener) => {
   // Remove any existing listeners
@@ -606,6 +641,8 @@ const setInitializationListener = (listener: InitializationListener) => {
 /**
  * Sets the setImpressionDataListener to handle impression data events.
  * @param listener The setImpressionDataListener object containing event handlers.
+ * 
+ * @deprecated This Listener will be removed in 4.0.0 version.
  */
 const setImpressionDataListener = (listener: ImpressionDataListener) => {
   // Remove any existing listeners
@@ -623,6 +660,7 @@ const setImpressionDataListener = (listener: ImpressionDataListener) => {
 /**
  * Sets the consentViewListener to handle consent view events.
  * @param listener The consentViewListener object containing event handlers.
+ * 
  * @deprecated This method will be removed in 4.0.0 version.
  */
 const setConsentViewListener = (listener: ConsentViewListener) => {
@@ -922,7 +960,7 @@ const setLevelPlayRewardedVideoManualListener = async (
     eventEmitter.addListener(LP_RV_ON_AD_CLICKED, (data: any) => {
       const ironSourcePlacement = ironSourceRvPlacementFromMap(data.placement);
       const ironSourceAdInfo = ironSourceAdInfoFromMap(data.adInfo);
-      listener.onAdRewarded!(ironSourcePlacement, ironSourceAdInfo)
+      listener.onAdClicked!(ironSourcePlacement, ironSourceAdInfo)
     })
   }
   if (listener.onAdReady) {
@@ -943,27 +981,23 @@ const setLevelPlayRewardedVideoManualListener = async (
 /**=======================================================================================**/
 
 /**
- * Exposed Module
+ * @deprecated This method will be removed in 4.0.0 version.
  */
-const mergedModule: IronSourceType = {
-  ...IronSourceMediation,
-  getPluginVersion,
-  getNativeSDKVersion,
-  init,
-  showRewardedVideo,
-  showInterstitial,
-  setInitializationListener,
-  setImpressionDataListener,
-  setConsentViewListener,
-  setLevelPlayBannerListener,
-  setLevelPlayInterstitialListener,
-  setLevelPlayRewardedVideoListener,
-  setLevelPlayRewardedVideoManualListener,
-}
-
-export const IronSource: Readonly<IronSourceType> = Object.freeze(
-  Platform.OS === 'ios'
-    ? mergedModule
-    : // overwrite stub iOS related methods
-      { ...mergedModule, ...IOSMethodStubs }
-)
+export const IronSource: IronSourceType = Object.create(Platform.OS === 'ios' ? IronSourceMediation: 
+  // overwrite stub iOS related methods
+  { ...IronSourceMediation, ...IOSMethodStubs } , {
+  getPluginVersion: { value: getPluginVersion, enumerable: true },
+  getNativeSDKVersion: { value: getNativeSDKVersion, enumerable: true },
+  init: { value: init, enumerable: true },
+  showRewardedVideo: { value: showRewardedVideo, enumerable: true },
+  showInterstitial: { value: showInterstitial, enumerable: true },
+  setInitializationListener: { value: setInitializationListener, enumerable: true },
+  setImpressionDataListener: { value: setImpressionDataListener, enumerable: true },
+  setConsentViewListener: { value: setConsentViewListener, enumerable: true },
+  setLevelPlayBannerListener: { value: setLevelPlayBannerListener, enumerable: true },
+  setLevelPlayInterstitialListener: { value: setLevelPlayInterstitialListener, enumerable: true },
+  setLevelPlayRewardedVideoListener: { value: setLevelPlayRewardedVideoListener, enumerable: true },
+  setLevelPlayRewardedVideoManualListener: {
+    value: setLevelPlayRewardedVideoManualListener, enumerable: true
+  },
+})

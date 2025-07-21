@@ -34,25 +34,31 @@
 }
 
 // MARK: Banner Ad View Methods
-// Add initializeBanner method (similar to Android)
 - (void)initializeBanner {
-  // Create a new banner view
-  self.bannerAdView = [[LPMBannerAdView alloc] initWithAdUnitId:self.adUnitId];
-  LPMAdSize *bannerSize = [self getLevelPlayAdSize:self.adSize];
-  if (bannerSize == nil) return;
+    LPMBannerAdViewConfigBuilder *adConfigBuilder = [LPMBannerAdViewConfigBuilder new];
+    LPMAdSize *bannerSize = [self getLevelPlayAdSize:self.adSize];
+    if (bannerSize != nil) {
+        [adConfigBuilder setWithAdSize:bannerSize];
+    }
+    if (self.placementName != nil && ![self.placementName isEqualToString:@""]) {
+        [adConfigBuilder setWithPlacementName:self.placementName];
+    }
+    if (self.bidFloor != nil) {
+        [adConfigBuilder setWithBidFloor:self.bidFloor];
+    }
+    LPMBannerAdViewConfig *adConfig = [adConfigBuilder build];
 
-  [self.bannerAdView setAdSize:bannerSize];
-  if (self.placementName != nil && ![self.placementName isEqualToString:@""]) {
-    [self.bannerAdView setPlacementName:self.placementName];
-  }
-  [self.bannerAdView setDelegate:self];
+    // Create a new banner view
+    self.bannerAdView = [[LPMBannerAdView alloc] initWithAdUnitId:self.adUnitId config:adConfig];
 
-  // Add the banner view to the view hierarchy
-  [self addBannerViewWithSize:bannerSize];
+    [self.bannerAdView setDelegate:self];
 
-  // Access adId property if available
-  if ([self.bannerAdView respondsToSelector:@selector(adId)]) {
-    self.adId = [self.bannerAdView adId];
+    // Add the banner view to the view hierarchy
+    [self addBannerViewWithSize:bannerSize];
+
+    // Access adId property if available
+    if ([self.bannerAdView respondsToSelector:@selector(adId)]) {
+        self.adId = [self.bannerAdView adId];
 
     // Send event with adId to React Native
     if (self.adId != nil && self.onAdIdGeneratedEvent) {  // Add the null check!
@@ -111,6 +117,10 @@
 
     if (creationParams[@"adSize"]) {
       self.adSize = creationParams[@"adSize"];
+    }
+
+    if (creationParams[@"bidFloor"]) {
+      self.bidFloor = creationParams[@"bidFloor"];
     }
 
     // Initialize banner after setting all properties

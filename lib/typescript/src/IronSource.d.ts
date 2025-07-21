@@ -19,6 +19,7 @@ type IronSourceNativeModuleType = {
     /**
      * Android: validateIntegration
      *     iOS: validateIntegration
+     *     @deprecated This API will be removed in version 4.0.0.
      */
     validateIntegration(): Promise<void>;
     /**
@@ -33,41 +34,49 @@ type IronSourceNativeModuleType = {
      *
      * For RV server-to-server callback.
      * Must be set before showRV.
+     * @deprecated This API will be removed in version 4.0.0.
      */
     setDynamicUserId(userId: string): Promise<void>;
     /**
      * Android: setAdaptersDebug
      *     iOS: setAdaptersDebug
+     * @deprecated This API will be removed in version 4.0.0.
      */
     setAdaptersDebug(isEnabled: boolean): Promise<void>;
     /**
      * Android: setConsent
      *     iOS: setConsent
+     *  @deprecated This API will be removed in version 4.0.0.
      */
     setConsent(isConsent: boolean): Promise<void>;
     /**
      * Android: setMetaData
      *     iOS: setMetaDataWithKey
+     * @deprecated This API will be removed in version 4.0.0.
      */
     setMetaData(key: string, values: Array<string>): Promise<void>;
     /**
      * Android: setSegment
      *     iOS: setSegment
+     * @deprecated This API will be removed in version 4.0.0.
      */
     setSegment(segment: IronSourceSegment): Promise<void>;
     /**
      * Android: launchTestSuite
      *     iOS: launchTestSuite
+     * @deprecated This API will be removed in version 4.0.0.
      */
     launchTestSuite(): Promise<void>;
     /**
      * Android: setWaterfallConfiguration
      *     iOS: setWaterfallConfiguration
+     * @deprecated This API will be removed in version 4.0.0.
      */
     setWaterfallConfiguration(ceiling: number, floor: number, adUnit: AdUnit): Promise<void>;
     /**
      * Android: clearWaterfallConfiguration
      *     iOS: clearWaterfallConfiguration
+     * @deprecated This API will be removed in version 4.0.0.
      */
     clearWaterfallConfiguration(adUnit: AdUnit): Promise<void>;
     /**
@@ -315,15 +324,24 @@ type IronSourceProxyType = {
     showInterstitial: ShowFunction;
 };
 type UtilFunctions = {
+    /**
+     * @deprecated This method will be removed in 4.0.0 version.
+     */
     getPluginVersion: () => string;
+    /**
+   * @deprecated This method will be removed in 4.0.0 version.
+   */
     getNativeSDKVersion: () => string;
 };
 type LevelPlayListeners = {
     /**
- * Sets the setInitializationListener to handle initialization events.
- * @deprecated This Listener will be removed in 4.0.0 version.
- */
+     * Sets the setInitializationListener to handle initialization events.
+     * @deprecated This Listener will be removed in 4.0.0 version.
+     */
     setInitializationListener: (listener: InitializationListener) => void;
+    /**
+     * @deprecated This method will be removed in 4.0.0 version.
+     */
     setImpressionDataListener: (listener: ImpressionDataListener) => void;
     /**
    * Sets the setConsentViewListener to handle consent view events.
@@ -363,6 +381,10 @@ type LevelPlayListeners = {
  * Exposed Module Type
  */
 type IronSourceType = UtilFunctions & LevelPlayListeners & IronSourceProxyType & Omit<IronSourceNativeModuleType, 'init' | 'initWithAdUnits' | 'showRewardedVideo' | 'showRewardedVideoForPlacement' | 'showInterstitial' | 'showInterstitialForPlacement'>;
-export declare const IronSource: Readonly<IronSourceType>;
+/**=======================================================================================**/
+/**
+ * @deprecated This method will be removed in 4.0.0 version.
+ */
+export declare const IronSource: IronSourceType;
 export {};
 //# sourceMappingURL=IronSource.d.ts.map

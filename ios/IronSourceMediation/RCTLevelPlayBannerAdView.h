@@ -20,6 +20,7 @@
 @property (nonatomic, copy, nullable) NSDictionary *adSize;
 @property (nonatomic, copy, nullable) NSDictionary *creationParams;
 @property (nonatomic, copy, nullable) NSString *placementName;
+@property (nonatomic, copy, nullable) NSNumber *bidFloor;
 @property (nonatomic, strong, nullable) LPMBannerAdView *bannerAdView;
 @property (nonatomic, copy, nullable) RCTDirectEventBlock onAdLoadedEvent;
 @property (nonatomic, copy, nullable) RCTDirectEventBlock onAdLoadFailedEvent;

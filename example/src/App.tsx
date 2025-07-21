@@ -1,7 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import {
-  AppState,
-  type AppStateStatus,
   type GestureResponderEvent,
   Image,
   Platform,
@@ -13,11 +11,10 @@ import {
   View,
 } from 'react-native'
 import {
-  IronSource,
-  type ImpressionData,
+  type LevelPlayImpressionData,
   ATTrackingManager,
   ATTStatus,
-  type ImpressionDataListener,
+  type LevelPlayImpressionDataListener,
   LevelPlay,
   LevelPlayInitRequest,
   AdFormat,
@@ -79,13 +76,13 @@ const getBannerAdUnitId = () => Platform.select({ android: BANNER_AD_UNIT_ID_AND
  * https://developers.is.com/ironsource-mobile/react-native/impression-level-revenue-integration-react-native/#step-1
  */
 function setImpressionDataListener() {
-  const impressionListener: ImpressionDataListener = {
-    onImpressionSuccess: (data?: ImpressionData) => {
-      logMethodName('ImpressionData', 'onImpressionSuccess:', data)
+  const impressionListener: LevelPlayImpressionDataListener = {
+    onImpressionSuccess: (data: LevelPlayImpressionData) => {
+      logMethodName('LevelPlayImpressionData', 'onImpressionSuccess:', data)
     },
   }
 
-  IronSource.setImpressionDataListener(impressionListener)
+  LevelPlay.addImpressionDataListener(impressionListener)
 }
 
 /**
@@ -107,16 +104,16 @@ async function checkATT() {
 /**
  * Awaited function calls must be done BEFORE init()
  */
-async function init() {
+async function initSDK() {
   try {
     // This API can be called in parallel
-    IronSource.validateIntegration().catch(e => console.error(e))
+    LevelPlay.validateIntegration().catch((e: any) => console.error(e))
 
     // ARM ImpressionData
     setImpressionDataListener()
 
     // Set adapters and network SDKs to debug
-    await IronSource.setAdaptersDebug(true)
+    await LevelPlay.setAdaptersDebug(true)
 
     // Request ATT for iOS
     if (Platform.OS === 'ios') {
@@ -176,21 +173,7 @@ export default function App() {
   }
 
   useEffect(() => {
-    // init the SDK after all child components mounted
-    //   and the app becomes active
-    const subscription = AppState.addEventListener(
-      'change',
-      (state: AppStateStatus) => {
-        if (state === 'active') {
-          init()
-          subscription.remove()
-        }
-      }
-    )
-
-    return () => {
-      subscription.remove()
-    }
+    initSDK()
   }, [])
 
   const loadBannerAd = useCallback(() => {

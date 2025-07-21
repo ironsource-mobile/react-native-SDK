@@ -2,7 +2,7 @@ import { NativeModules } from 'react-native'
 import { LevelPlayAdObjectManager } from '../utils/LevelPlayAdObjectManager'
 import type { LevelPlayInterstitialAdListener } from './listeners/LevelPlayInterstitialAdListener'
 
-const { IronSourceMediation } = NativeModules
+const { LevelPlayMediation } = NativeModules
 const levelPlayObjectManager = LevelPlayAdObjectManager.getInstance()
 
 /**
@@ -12,6 +12,7 @@ export class LevelPlayInterstitialAd {
   adUnitId: string
   adId: string = ''
   listener: LevelPlayInterstitialAdListener | null | undefined
+  bidFloor: number | null | undefined
 
   constructor(adUnitId: string) {
     this.adUnitId = adUnitId
@@ -25,13 +26,21 @@ export class LevelPlayInterstitialAd {
     return this.listener
   }
 
+  setBidFloor(bidFloor: number): void {
+    this.bidFloor = bidFloor
+  }
+
+  getBidFloor(): number | null | undefined {
+    return this.bidFloor
+  }
+
   /**
    * Checks if a specific ad placement is capped.
    * @param placementName - The name of the ad placement to check.
    * @returns A promise that resolves to a boolean indicating whether the placement is capped.
    */
   static async isPlacementCapped(placementName: string): Promise<boolean> {
-    return await IronSourceMediation.isInterstitialAdPlacementCapped({
+    return await LevelPlayMediation.isInterstitialAdPlacementCapped({
       placementName: placementName,
     })
   }

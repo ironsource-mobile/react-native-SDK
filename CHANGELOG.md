@@ -1,5 +1,10 @@
 # Change Log
 
+## 3.2.0
+
+- Android SDK: 8.10.0
+- iOS SDK: 8.10.0
+
 ## 3.1.1
 
 - Android SDK: 8.9.1

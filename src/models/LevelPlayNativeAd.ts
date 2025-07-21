@@ -63,10 +63,10 @@ export class LevelPlayNativeAd {
   }
 
   // Load ad method
-  loadAd(): void {
+  loadAd = () => {
     if (this.nativeAdViewRef && this.nativeAdViewRef.current && this.viewType) {
       const viewId = findNodeHandle(this.nativeAdViewRef.current);
-      const command = UIManager.getViewManagerConfig(this.viewType || 'levelPlayNativeAdViewType').Commands.loadAd;
+      const command = UIManager.getViewManagerConfig(this.viewType || 'levelPlayNativeAdView').Commands.loadAd;
       const finalCommand = Platform.OS === 'ios' ? command : command.toString();
 
       UIManager.dispatchViewManagerCommand(
@@ -81,7 +81,7 @@ export class LevelPlayNativeAd {
   destroyAd(): void {
     if (this.nativeAdViewRef && this.nativeAdViewRef.current && this.viewType) {
       const viewId = findNodeHandle(this.nativeAdViewRef.current);
-      const command = UIManager.getViewManagerConfig(this.viewType || 'levelPlayNativeAdViewType').Commands.destroyAd;
+      const command = UIManager.getViewManagerConfig(this.viewType || 'levelPlayNativeAdView').Commands.destroyAd;
       const finalCommand = Platform.OS === 'ios' ? command : command.toString();
 
       UIManager.dispatchViewManagerCommand(

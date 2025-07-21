@@ -7,6 +7,7 @@ export type LevelPlayBannerAdViewCreationParams = {
         adUnitId: string;
         adSize: LevelPlayAdSize;
         placementName: string | null;
+        bidFloor?: number | null;
     };
 };
 export interface LevelPlayBannerAdViewMethods {
@@ -21,6 +22,7 @@ export interface LevelPlayBannerAdViewProps extends ViewProps {
     adSize: LevelPlayAdSize;
     listener?: LevelPlayBannerAdViewListener;
     placementName: string | null;
+    bidFloor?: number | null;
 }
 export type LevelPlayBannerAdViewNativeEvents = {
     onAdLoadedEvent(event: {

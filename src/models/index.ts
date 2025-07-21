@@ -17,3 +17,5 @@ export * from './LevelPlayInterstitialAd';
 export * from './LevelPlayAdSize';
 export * from './LevelPlayReward';
 export * from './LevelPlayRewardedAd';
+export * from './LevelPlayImpressionData';
+export * from './LevelPlaySegment';

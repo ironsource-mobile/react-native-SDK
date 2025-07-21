@@ -33,9 +33,16 @@
 }
 
 // Interstitial Ad Methods
--(NSString *) createInterstitialAd: (NSString *)adUnitId eventEmitter:(RCTEventEmitter *)eventEmitter{
+-(NSString *) createInterstitialAd: (NSString *)adUnitId bidFloor:(NSNumber *)bidFloor eventEmitter:(RCTEventEmitter *)eventEmitter{
+  // Define a price floor configuration
+  LPMInterstitialAdConfigBuilder *adConfigBuilder = [LPMInterstitialAdConfigBuilder new];
+  if (bidFloor != nil) {
+      [adConfigBuilder setWithBidFloor:bidFloor];
+  }
+  LPMInterstitialAdConfig *adConfig = [adConfigBuilder build];
+
   // Create the interstitial ad
-  LPMInterstitialAd *interstitialAd = [[LPMInterstitialAd alloc] initWithAdUnitId:adUnitId];
+  LPMInterstitialAd *interstitialAd = [[LPMInterstitialAd alloc] initWithAdUnitId:adUnitId config:adConfig];
   if (!interstitialAd) {
     NSLog(@"Failed to create interstitial ad with adUnitId: %@", adUnitId);
     return nil;
@@ -61,7 +68,7 @@
 
 
 
-- (void)loadInterstitialAd:(NSString *)adId adUnitId:(NSString *)adUnitId eventEmitter:(RCTEventEmitter *)eventEmitter {
+- (void)loadInterstitialAd:(NSString *)adId {
   //Retrieve the interstitial ad object from dictionary using the adId
   LPMInterstitialAd *interstitialAd = [self.interstitialAdsDict objectForKey:adId];
   // Only attempt to load the ad if an ad object was retrived successfully
@@ -89,9 +96,16 @@
 }
 
 // Rewarded Ad Methods
--(NSString *) createRewardedAd: (NSString *)adUnitId eventEmitter:(RCTEventEmitter *)eventEmitter{
+-(NSString *) createRewardedAd: (NSString *)adUnitId bidFloor:(NSNumber *)bidFloor eventEmitter:(RCTEventEmitter *)eventEmitter{
+  // Define a price floor configuration
+  LPMRewardedAdConfigBuilder *adConfigBuilder = [LPMRewardedAdConfigBuilder new];
+  if (bidFloor != nil) {
+      [adConfigBuilder setWithBidFloor:bidFloor];
+  }
+  LPMRewardedAdConfig *adConfig = [adConfigBuilder build];
+
   // Create the rewarded ad
-  LPMRewardedAd *rewardedAd = [[LPMRewardedAd alloc] initWithAdUnitId:adUnitId];
+  LPMRewardedAd *rewardedAd = [[LPMRewardedAd alloc] initWithAdUnitId:adUnitId config:adConfig];
   if (!rewardedAd) {
     NSLog(@"Failed to create rewarded ad with adUnitId: %@", adUnitId);
     return nil;
@@ -114,7 +128,7 @@
   // Return the adId
   return rewardedAd.adId;
 }
-- (void)loadRewardedAd:(NSString *)adId adUnitId:(NSString *)adUnitId eventEmitter:(RCTEventEmitter *)eventEmitter {
+- (void)loadRewardedAd:(NSString *)adId {
   //Retrieve the rewarded ad object from dictionary using the adId
   LPMRewardedAd *rewardedAd = [self.rewardedAdsDict objectForKey:adId];
   // Only attempt to load the ad if an ad object was retrieved successfully

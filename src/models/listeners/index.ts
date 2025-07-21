@@ -11,3 +11,4 @@ export * from './LevelPlayInitListener';
 export * from './LevelPlayInterstitialAdListener';
 export * from './LevelPlayBannerAdViewListener';
 export * from './LevelPlayRewardedAdListener';
+export * from './LevelPlayImpressionDataListener';

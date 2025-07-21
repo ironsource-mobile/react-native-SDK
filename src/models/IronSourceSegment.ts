@@ -1,5 +1,7 @@
 /** Segment ===================================================================**/
-
+/**
+ * @deprecated This API will be removed in version 4.0.0.
+ */
 export type IronSourceUserGender = 'female' | 'male'
 
 /**
@@ -11,6 +13,8 @@ export type IronSourceUserGender = 'female' | 'male'
  *   then try by params if there is no match by name.
  *
  * Up to 5 custom parameters are allowed.
+ * 
+ * @deprecated This API will be removed in version 4.0.0.
  */
 export type IronSourceSegment = {
   segmentName?: string

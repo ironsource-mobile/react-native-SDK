@@ -22,6 +22,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (NSDictionary *)getDictForImpressionData:(ISImpressionData *)impressionData;
 + (UIViewController *)getRootViewController;
 + (NSDictionary *)getDictForLevelPlayReward:(LPMReward *)reward;
++ (NSDictionary *)getDictForLevelPlayImpressionData:(LPMImpressionData *)impressionData;
 
 @end
 

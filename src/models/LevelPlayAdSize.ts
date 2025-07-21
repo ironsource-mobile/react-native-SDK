@@ -12,7 +12,7 @@ import {
   SIZE_CUSTOM_LABEL,
 } from '../utils/IronSourceConstants'
 
-const { IronSourceMediation } = NativeModules
+const { LevelPlayMediation } = NativeModules
 
 /**
  * Represents the size of an ad in LevelPlay.
@@ -82,8 +82,8 @@ export class LevelPlayAdSize {
     width: number | null = null
   ): Promise<LevelPlayAdSize | null> {
     const sizeMap = width != null
-            ? await IronSourceMediation.createAdaptiveAdSizeWithWidth(width)
-            : await IronSourceMediation.createAdaptiveAdSize();    
+            ? await LevelPlayMediation.createAdaptiveAdSizeWithWidth(width)
+            : await LevelPlayMediation.createAdaptiveAdSize();    
     return sizeMap != null ? LevelPlayAdSize.fromMap(sizeMap) : null
   }
 

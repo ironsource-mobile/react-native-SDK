@@ -36,9 +36,13 @@ class LevelPlayAdObjectManager(
   private val rewardedAdsMap = hashMapOf<String, LevelPlayRewardedAd>()
 
   // Interstitial Ad Methods
-  fun createInterstitialAd(adUnitId: String): String {
+  fun createInterstitialAd(adUnitId: String, bidFloor: Double?): String {
+    // Set the bidFloor for the interstitial ad
+    val adConfigBuilder = LevelPlayInterstitialAd.Config.Builder()
+    if (bidFloor != null)
+      adConfigBuilder.setBidFloor(bidFloor)
     // Create the interstitial ad
-    val interstitialAd = LevelPlayInterstitialAd(adUnitId)
+    val interstitialAd = LevelPlayInterstitialAd(adUnitId, adConfigBuilder.build())
     // Set the listener for the interstitial ad
     interstitialAd.setListener(createInterstitialAdListener(interstitialAd.adId))
     // Store the interstitial ad in the map
@@ -118,9 +122,13 @@ class LevelPlayAdObjectManager(
   }
 
   // Rewarded Ad Methods
-  fun createRewardedAd(adUnitId: String): String {
+  fun createRewardedAd(adUnitId: String, bidFloor: Double?): String {
+    // Set the bidFloor for the rewarded ad
+    val adConfigBuilder = LevelPlayRewardedAd.Config.Builder()
+    if (bidFloor != null)
+      adConfigBuilder.setBidFloor(bidFloor)
     // Create the rewarded ad
-    val rewardedAd = LevelPlayRewardedAd(adUnitId)
+    val rewardedAd = LevelPlayRewardedAd(adUnitId, adConfigBuilder.build())
     // Set the listener for the rewarded ad
     rewardedAd.setListener(createRewardedAdListener(rewardedAd.adId))
     // Store the rewarded ad in the map

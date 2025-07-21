@@ -6,9 +6,12 @@ export declare class LevelPlayInterstitialAd {
     adUnitId: string;
     adId: string;
     listener: LevelPlayInterstitialAdListener | null | undefined;
+    bidFloor: number | null | undefined;
     constructor(adUnitId: string);
     setListener(listener: LevelPlayInterstitialAdListener): void;
     getListener(): LevelPlayInterstitialAdListener | null | undefined;
+    setBidFloor(bidFloor: number): void;
+    getBidFloor(): number | null | undefined;
     /**
      * Checks if a specific ad placement is capped.
      * @param placementName - The name of the ad placement to check.

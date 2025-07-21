@@ -26,5 +26,9 @@ export type LevelPlayAdInfo = {
      * This can be null if the ad size is not applicable or not provided.
      */
     adSize: LevelPlayAdSize | null;
+    /**
+     * The name of the placement where the ad was shown.
+     */
+    placementName: string | null;
 };
 //# sourceMappingURL=LevelPlayAdInfo.d.ts.map

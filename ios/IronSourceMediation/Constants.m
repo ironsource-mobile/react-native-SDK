@@ -64,4 +64,6 @@ NSString *const ON_REWARDED_AD_DISPLAY_FAILED           = @"onRewardedAdDisplayF
 NSString *const ON_REWARDED_AD_CLICKED                  = @"onRewardedAdClicked";
 NSString *const ON_REWARDED_AD_CLOSED                   = @"onRewardedAdClosed";
 NSString *const ON_REWARDED_AD_REWARDED                 = @"onRewardedAdRewarded";
+#pragma mark - LevelPlay ImpressionData
+NSString *const ON_LEVEL_PLAY_IMPRESSION_SUCCESS = @"onLevelPlayImpressionSuccess";
 @end

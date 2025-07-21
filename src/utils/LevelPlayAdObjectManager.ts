@@ -3,8 +3,8 @@ import { type LevelPlayInterstitialAd } from "../models/LevelPlayInterstitialAd"
 import { type LevelPlayRewardedAd } from "../models/LevelPlayRewardedAd";
 import { levelPlayAdInfoFromMap, levelPlayAdErrorFromMap, levelPlayRewardFromMap } from "./utils";
 
-const { IronSourceMediation } = NativeModules;
-const eventEmitter = new NativeEventEmitter(IronSourceMediation)
+const { LevelPlayMediation } = NativeModules;
+const eventEmitter = new NativeEventEmitter(LevelPlayMediation)
 const {
     ON_INTERSTITIAL_AD_LOADED,
     ON_INTERSTITIAL_AD_LOAD_FAILED,
@@ -21,7 +21,7 @@ const {
     ON_REWARDED_AD_CLICKED,
     ON_REWARDED_AD_CLOSED,
     ON_REWARDED_AD_REWARDED
-} = IronSourceMediation.getConstants();
+} = LevelPlayMediation.getConstants();
 
 /**
  * Manages instances of LevelPlay interstitial ads.
@@ -111,8 +111,9 @@ export class LevelPlayAdObjectManager {
 
     async createInterstitialAd(interstitialAd: LevelPlayInterstitialAd): Promise<string> {
         // Call native module to create the ad and get back an adId string
-        const adId = await IronSourceMediation.createInterstitialAd({
-            adUnitId: interstitialAd.adUnitId
+        const adId = await LevelPlayMediation.createInterstitialAd({
+            adUnitId: interstitialAd.adUnitId,
+            ...(interstitialAd.bidFloor != null && { bidFloor: interstitialAd.bidFloor })
         });
         // Store the ad instance in the map if it's not already present
         if (!this.interstitialAdsMap.has(adId)) {
@@ -131,17 +132,17 @@ export class LevelPlayAdObjectManager {
                 await this.createInterstitialAd(interstitialAd) : interstitialAd.adId;
 
             // Call native module to load the ad using its adId
-            await IronSourceMediation.loadInterstitialAd({ adId: adId });
+            await LevelPlayMediation.loadInterstitialAd({ adId: adId });
     }
 
     async showInterstitialAd(adId: string, placementName: string): Promise<void> {
         if (this.interstitialAdsMap.has(adId)) {
-            await IronSourceMediation.showInterstitialAd({ adId: adId, placementName: placementName })
+            await LevelPlayMediation.showInterstitialAd({ adId: adId, placementName: placementName })
         }
     }
 
     async isInterstitialAdReady(adId: string): Promise<boolean> {
-        return await IronSourceMediation.isInterstitialAdReady({ adId: adId })
+        return await LevelPlayMediation.isInterstitialAdReady({ adId: adId })
     }
 
     // Rewarded Ad
@@ -218,8 +219,9 @@ export class LevelPlayAdObjectManager {
 
         async createRewardedAd(rewardedAd: LevelPlayRewardedAd): Promise<string> {
         // Call native module to create the ad and get back an adId string
-        const adId = await IronSourceMediation.createRewardedAd({
-            adUnitId: rewardedAd.adUnitId
+        const adId = await LevelPlayMediation.createRewardedAd({
+            adUnitId: rewardedAd.adUnitId,
+            ...(rewardedAd.bidFloor != null && { bidFloor: rewardedAd.bidFloor })
         });
         // Store the ad instance in the map if it's not already present
         if (!this.rewardedAdsMap.has(adId)) {
@@ -237,20 +239,20 @@ export class LevelPlayAdObjectManager {
                 await this.createRewardedAd(rewardedAd) : rewardedAd.adId;
 
             // Call native module to load the ad using its adId
-            await IronSourceMediation.loadRewardedAd({ adId: adId });
+            await LevelPlayMediation.loadRewardedAd({ adId: adId });
     }
 
     async showRewardedAd(adId: string, placementName: string): Promise<void> {
         if (this.rewardedAdsMap.has(adId)) {
-            await IronSourceMediation.showRewardedAd({ adId: adId, placementName: placementName })
+            await LevelPlayMediation.showRewardedAd({ adId: adId, placementName: placementName })
         }
     }
 
     async isRewardedAdReady(adId: string): Promise<boolean> {
-        return await IronSourceMediation.isRewardedAdReady({ adId: adId })
+        return await LevelPlayMediation.isRewardedAdReady({ adId: adId })
     }
 
-    // // Shared Methods
+    // Shared Methods
 
     async removeAd(adId: string) {
         let wasRemoved = false;
@@ -266,13 +268,13 @@ export class LevelPlayAdObjectManager {
         }
 
         if (wasRemoved) {
-            await IronSourceMediation.removeAd({ adId: adId })
+            await LevelPlayMediation.removeAd({ adId: adId })
         }
     }
 
     async removeAllAds() {
         this.interstitialAdsMap.clear();
         this.rewardedAdsMap.clear();
-        await IronSourceMediation.removAllAds();
+        await LevelPlayMediation.removeAllAds();
     }
 }

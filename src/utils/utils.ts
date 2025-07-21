@@ -1,4 +1,4 @@
-import { LevelPlayAdSize, type ConsentViewError, type ImpressionData, type IronSourceAdInfo, type IronSourceError, type IronSourceRVPlacement, type LevelPlayAdError, type LevelPlayAdInfo, type LevelPlayConfiguration, type LevelPlayInitError, type LevelPlayReward } from "../models";
+import { LevelPlayAdSize, type ConsentViewError, type ImpressionData, type IronSourceAdInfo, type IronSourceError, type IronSourceRVPlacement, type LevelPlayAdError, type LevelPlayAdInfo, type LevelPlayConfiguration, type LevelPlayInitError, type LevelPlayReward, type LevelPlayImpressionData } from "../models";
 
 export const toNumberOrNull = (value: any): number | null => {
     // Convert value to number if it is not null or undefined and is a finite number
@@ -95,6 +95,7 @@ export const levelPlayAdInfoFromMap = (data: any): LevelPlayAdInfo => {
     adFormat: data.adFormat,
     impressionData: data.impressionData !== null ? impressionDataFromMap(data.impressionData) : null,
     adSize: data.adSize !== null ? LevelPlayAdSize.fromMap(data.adSize) : null,
+    placementName: data.placementName !== null ? data.placementName : null,
   };
 };
 
@@ -110,3 +111,24 @@ export const levelPlayRewardFromMap = (data: any): LevelPlayReward => {
     amount: Number(data.amount)
   };
 };
+
+export const levelPlayImpressionDataFromMap = (data: any): LevelPlayImpressionData => {
+  return {
+    auctionId: data.auctionId,
+    mediationAdUnitName: data.mediationAdUnitName,
+    mediationAdUnitId: data.mediationAdUnitId,
+    adFormat: data.adFormat,
+    country: data.country,
+    ab: data.ab,
+    segmentName: data.segmentName,
+    placement: data.placement,
+    adNetwork: data.adNetwork,
+    instanceName: data.instanceName,
+    instanceId: data.instanceId,
+    revenue: toNumberOrNull(data.revenue),
+    precision: data.precision,
+    encryptedCPM: data.encryptedCPM,
+    creativeId: data.creativeId,
+    conversionValue: toNumberOrNull(data.conversionValue),
+  };
+}

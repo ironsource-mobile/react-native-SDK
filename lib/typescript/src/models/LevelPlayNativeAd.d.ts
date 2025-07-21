@@ -16,7 +16,7 @@ export declare class LevelPlayNativeAd {
     constructor(title: string | null | undefined, advertiser: string | null | undefined, body: string | null | undefined, callToAction: string | null | undefined, icon: LevelPlayNativeAdIcon | null | undefined, listener: LevelPlayNativeAdListener | null | undefined, placement: string | null | undefined);
     setNativeAdViewRef(nativeAdViewRef: React.MutableRefObject<LevelPlayNativeAdViewType | null>): void;
     setViewType(viewType: string): void;
-    loadAd(): void;
+    loadAd: () => void;
     destroyAd(): void;
     toString(): string;
     static builder(): LevelPlayNativeAdBuilder;

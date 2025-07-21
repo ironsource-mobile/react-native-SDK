@@ -2,6 +2,8 @@ import type { ImpressionData } from "../ImpressionData";
 
 /**
  * Interface for handling ImpressionData events
+ * 
+ * @deprecated This API will be removed in version 4.0.0.
  */
 export interface ImpressionDataListener {
     /**
@@ -14,6 +16,8 @@ export interface ImpressionDataListener {
      * 
      * Android: onImpressionSuccess
      *     iOS: impressionDataDidSucceed
+     * 
+     * @deprecated This method is deprecated and will be removed in version 4.0.0.
      */
     onImpressionSuccess?: (data?: ImpressionData) => void;   
 }

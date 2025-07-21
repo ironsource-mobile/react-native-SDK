@@ -17,6 +17,7 @@ import com.unity3d.mediation.LevelPlayAdInfo
 import com.unity3d.mediation.LevelPlayAdSize
 import com.unity3d.mediation.LevelPlayConfiguration
 import com.unity3d.mediation.LevelPlayInitError
+import com.unity3d.mediation.impression.LevelPlayImpressionData
 import com.unity3d.mediation.rewarded.LevelPlayReward
 import java.io.ByteArrayOutputStream
 
@@ -180,6 +181,8 @@ fun LevelPlayAdInfo.toReadableMap(): ReadableMap {
   map.putMap("impressionData", impressionData)
 
   map.putMap("adSize", this.getAdSize().toReadableMap())
+  map.putString("placementName", this.getPlacementName())
+
   return map
 }
 
@@ -215,6 +218,27 @@ fun LevelPlayReward.toReadableMap(): ReadableMap {
   val map = Arguments.createMap()
   map.putString("name", this.name)
   map.putInt("amount", this.amount)
+  return map
+}
+
+/** Bundle impression data into a readable map to send to the React Native layer. */
+fun LevelPlayImpressionData.toReadableMap(): ReadableMap {
+  val map = Arguments.createMap()
+  this.auctionId?.let { map.putString("auctionId", it) }
+  this.mediationAdUnitName?.let { map.putString("mediationAdUnitName", it) }
+  this.mediationAdUnitId?.let { map.putString("mediationAdUnitId", it) }
+  this.adFormat?.let { map.putString("adFormat", it) }
+  this.country?.let { map.putString("country", it) }
+  this.ab?.let { map.putString("ab", it) }
+  this.segmentName?.let { map.putString("segmentName", it) }
+  this.placement?.let { map.putString("placement", it) }
+  this.adNetwork?.let { map.putString("adNetwork", it) }
+  this.instanceName?.let { map.putString("instanceName", it) }
+  this.instanceId?.let { map.putString("instanceId", it) }
+  this.revenue?.let { map.putDouble("revenue", it) }
+  this.precision?.let { map.putString("precision", it) }
+  this.encryptedCPM?.let { map.putString("encryptedCPM", it) }
+  this.creativeId?.let { map.putString("creativeId", it) }
   return map
 }
 

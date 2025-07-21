@@ -30,6 +30,7 @@ export type LevelPlayBannerAdViewCreationParams = {
     adUnitId: string
     adSize: LevelPlayAdSize
     placementName: string | null
+    bidFloor?: number | null
   }
 }
 
@@ -48,6 +49,7 @@ export interface LevelPlayBannerAdViewProps extends ViewProps {
   adSize: LevelPlayAdSize
   listener?: LevelPlayBannerAdViewListener
   placementName: string | null
+  bidFloor?: number | null
 }
 
 // Native events for the LevelPlayBannerAdView component
@@ -75,7 +77,7 @@ export const LevelPlayBannerAdView = forwardRef<
   LevelPlayBannerAdViewProps
 >((props, ref) => {
   // Access props directly
-  const { adUnitId, adSize, listener, placementName, ...otherProps } = props
+  const { adUnitId, adSize, listener, placementName, bidFloor, ...otherProps } = props
 
   // A local reference to the bannerAdView
   const bannerAdViewRef = useRef<LevelPlayBannerAdViewType | null>(null)
@@ -231,7 +233,8 @@ export const LevelPlayBannerAdView = forwardRef<
       creationParams={{
         adUnitId: adUnitId,
         adSize: adSize,
-        placementName: placementName ?? ''
+        placementName: placementName ?? '',
+        ...(bidFloor != null && { bidFloor }),
       }}
       {...otherProps}
       onAdLoadedEvent={onAdLoadedEvent}

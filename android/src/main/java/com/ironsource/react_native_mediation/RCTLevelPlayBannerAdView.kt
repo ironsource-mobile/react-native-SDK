@@ -12,18 +12,28 @@ import com.unity3d.mediation.LevelPlayAdSize
 import com.unity3d.mediation.banner.LevelPlayBannerAdView
 import com.unity3d.mediation.banner.LevelPlayBannerAdViewListener
 
+
 class RCTLevelPlayBannerAdView(private val context: Context) : FrameLayout(context), LevelPlayBannerAdViewListener {
   private var reactContext: ReactContext = context as ReactContext
   var adUnitId: String = ""
   var adSize: LevelPlayAdSize? = null
   var placement: String = ""
+  var bidFloor: Double? = null
   private var levelPlayBanner: LevelPlayBannerAdView? = null
 
   fun initializeBanner() {
-    levelPlayBanner = LevelPlayBannerAdView(context, adUnitId)
+    val adConfigBuilder = LevelPlayBannerAdView.Config.Builder()
+
     if (adSize != null)
-      levelPlayBanner!!.setAdSize(adSize!!)
-    levelPlayBanner!!.setPlacementName(placement)
+      adConfigBuilder.setAdSize(adSize!!)
+
+    if (bidFloor != null)
+      adConfigBuilder.setBidFloor(bidFloor!!)
+
+    adConfigBuilder.setPlacementName(placement)
+    val adConfig = adConfigBuilder.build()
+
+    levelPlayBanner = LevelPlayBannerAdView(context, adUnitId, adConfig)
     levelPlayBanner!!.setBannerListener(this)
 
     // Set the banner ad view
