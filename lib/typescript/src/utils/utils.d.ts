@@ -1,18 +1,12 @@
-import { type ConsentViewError, type ImpressionData, type IronSourceAdInfo, type IronSourceError, type IronSourceRVPlacement, type LevelPlayAdError, type LevelPlayAdInfo, type LevelPlayConfiguration, type LevelPlayInitError, type LevelPlayReward, type LevelPlayImpressionData } from "../models";
+import { type AdInfo, type IronSourceError, type LevelPlayAdError, type LevelPlayAdInfo, type LevelPlayConfiguration, type LevelPlayInitError, type LevelPlayReward, type LevelPlayImpressionData, LevelPlayNativeAd } from "../models";
 export declare const toNumberOrNull: (value: any) => number | null;
-export type Without<T> = {
-    [P in keyof T]?: undefined;
-};
-export type XOR<T, U> = (Without<T> & U) | (Without<U> & T);
 export declare const ironSourceErrorFromMap: (data: any) => IronSourceError;
 export declare const levelPlayInitErrorFromMap: (data: any) => LevelPlayInitError;
-export declare const conentViewErrorFromMap: (data: any) => ConsentViewError;
-export declare const impressionDataFromMap: (data: any) => ImpressionData;
-export declare const ironSourceAdInfoFromMap: (data: any) => IronSourceAdInfo;
-export declare const ironSourceRvPlacementFromMap: (data: any) => IronSourceRVPlacement;
+export declare const adInfoFromMap: (data: any) => AdInfo;
 export declare const levelPlayAdErrorFromMap: (data: any) => LevelPlayAdError;
 export declare const levelPlayAdInfoFromMap: (data: any) => LevelPlayAdInfo;
 export declare const levelPlayConfigurationFromMap: (data: any) => LevelPlayConfiguration;
 export declare const levelPlayRewardFromMap: (data: any) => LevelPlayReward;
 export declare const levelPlayImpressionDataFromMap: (data: any) => LevelPlayImpressionData;
+export declare const levelPlayNativeAdFromMap: (data: any, originalAd: LevelPlayNativeAd) => LevelPlayNativeAd;
 //# sourceMappingURL=utils.d.ts.map

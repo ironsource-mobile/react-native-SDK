@@ -27,16 +27,4 @@ export type LevelPlayInitError = {
      */
     errorMessage: string;
 };
-/**
- * Represents an error related to the consent view process, extending the IronSourceError.
- *
- * @deprecated This API will be removed in version 4.0.0.
- */
-export type ConsentViewError = IronSourceError & {
-    /**
-     * The type of the consent view that encountered the error.
-     * This can be used to identify which consent view (e.g., GDPR, CCPA) the error is associated with.
-     */
-    consentViewType: string;
-};
 //# sourceMappingURL=errors.d.ts.map

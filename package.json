@@ -1,7 +1,7 @@
 {
-  "name": "ironsource-mediation",
-  "version": "3.2.0",
-  "description": "IronSource ad mediation React-Native plugin. Monetize apps with rewarded video, interstitial, banner, and native ads.",
+  "name": "unity-levelplay-mediation",
+  "version": "9.0.0",
+  "description": "Unity LevelPlay ad mediation React-Native plugin. Monetize apps with rewarded video, interstitial, banner, and native ads.",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
   "types": "lib/typescript/src/index.d.ts",
@@ -13,7 +13,7 @@
     "android",
     "ios",
     "cpp",
-    "ironsource-mediation.podspec",
+    "unity-levelplay-mediation.podspec",
     "!lib/typescript/example",
     "!android/build",
     "!ios/build",
@@ -46,10 +46,14 @@
     "ironSource",
     "iron-source",
     "level-play",
-    "LevelPlay"
+    "LevelPlay",
+    "Unity",
+    "unity",
+    "UnityLevelPlay",
+    "unity-levelplay"
   ],
   "repository": "https://github.com/ironsource-mobile/react-native-SDK",
-  "author": "ironSource",
+  "author": "Unity LevelPlay",
   "license": "https://developers.is.com/ironsource-mobile/general/ironsource-platform-online-terms-conditions/",
   "homepage": "https://www.is.com/",
   "publishConfig": {
@@ -93,5 +97,13 @@
         }
       ]
     ]
+  },
+  "codegenConfig": {
+    "name": "LevelPlayMediationSpec",
+    "type": "all",
+    "jsSrcsDir": "src/specs",
+    "android": {
+      "javaPackageName": "com.unity3d.reactnative"
+    }
   }
 }
