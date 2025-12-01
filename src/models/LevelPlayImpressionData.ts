@@ -1,5 +1,3 @@
-import type { AdFormat } from "./AdFormat";
-
 /**
  * Represents the data collected for an ad impression.
  */
@@ -22,7 +20,7 @@ export type LevelPlayImpressionData = {
   /**
    * The format of the ad.
    */
-  adFormat: AdFormat | null;
+  adFormat: string | null;
 
   /**
    * The country where the ad was displayed.

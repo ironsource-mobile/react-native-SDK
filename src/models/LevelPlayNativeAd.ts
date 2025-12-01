@@ -1,5 +1,3 @@
-import { findNodeHandle, Platform, UIManager } from 'react-native';
-import type { LevelPlayNativeAdViewType } from '../components/LevelPlayNativeAdView';
 import type { LevelPlayNativeAdListener } from './listeners/LevelPlayNativeAdListener';
 
 /**
@@ -13,11 +11,9 @@ export class LevelPlayNativeAd {
   callToAction: string | null | undefined;
   icon: LevelPlayNativeAdIcon | null | undefined
 
-  // Reference to the native ad view
-  nativeAdViewRef?: React.MutableRefObject<LevelPlayNativeAdViewType | null> | null;
-
-  // Type of the native ad view
-  viewType?: string
+  // Private callback functions assigned by LevelPlayNativeAdView
+  private loadAdCallback?: (() => void) | null;
+  private destroyAdCallback?: (() => void) | null;
 
   // Event listener for native ad events
   listener?: LevelPlayNativeAdListener | null;
@@ -45,50 +41,31 @@ export class LevelPlayNativeAd {
     this.loadAd = this.loadAd.bind(this);
     this.destroyAd = this.destroyAd.bind(this);
 
-    // Initialize ref instance
-    this.nativeAdViewRef = null;
-
     // Initialize builder
     this.listener = listener;
     this.placement = placement;
   }
 
-  // Setter for ref instance
-  setNativeAdViewRef(nativeAdViewRef: React.MutableRefObject<LevelPlayNativeAdViewType | null>): void {
-    this.nativeAdViewRef = nativeAdViewRef;
+  // Internal setter methods for LevelPlayNativeAdView (not exposed to users)
+  setLoadAdCallback(callback: (() => void) | null): void {
+    this.loadAdCallback = callback;
   }
 
-  setViewType(viewType: string): void {
-    this.viewType = viewType;
+  setDestroyAdCallback(callback: (() => void) | null): void {
+    this.destroyAdCallback = callback;
   }
 
-  // Load ad method
+  // Load ad method - calls the callback assigned by LevelPlayNativeAdView
   loadAd = () => {
-    if (this.nativeAdViewRef && this.nativeAdViewRef.current && this.viewType) {
-      const viewId = findNodeHandle(this.nativeAdViewRef.current);
-      const command = UIManager.getViewManagerConfig(this.viewType || 'levelPlayNativeAdView').Commands.loadAd;
-      const finalCommand = Platform.OS === 'ios' ? command : command.toString();
-
-      UIManager.dispatchViewManagerCommand(
-        viewId,
-        finalCommand,
-        []
-      );
+    if (this.loadAdCallback) {
+      this.loadAdCallback();
     }
   }
 
-  // Destroy ad method
+  // Destroy ad method - calls the callback assigned by LevelPlayNativeAdView
   destroyAd(): void {
-    if (this.nativeAdViewRef && this.nativeAdViewRef.current && this.viewType) {
-      const viewId = findNodeHandle(this.nativeAdViewRef.current);
-      const command = UIManager.getViewManagerConfig(this.viewType || 'levelPlayNativeAdView').Commands.destroyAd;
-      const finalCommand = Platform.OS === 'ios' ? command : command.toString();
-
-      UIManager.dispatchViewManagerCommand(
-        viewId,
-        finalCommand,
-        []
-      );
+    if (this.destroyAdCallback) {
+      this.destroyAdCallback();
     }
   }
   

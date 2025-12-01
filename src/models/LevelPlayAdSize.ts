@@ -1,4 +1,3 @@
-import { NativeModules } from 'react-native'
 import {
   BANNER_WIDTH,
   BANNER_HEIGHT,
@@ -10,9 +9,8 @@ import {
   MEDIUM_RECTANGLE_HEIGHT,
   SIZE_MEDIUM_RECTANGLE_LABEL,
   SIZE_CUSTOM_LABEL,
-} from '../utils/IronSourceConstants'
-
-const { LevelPlayMediation } = NativeModules
+} from '../utils/LevelPlayConstants'
+import NativeLevelPlayMediation from '../specs/NativeLevelPlayMediation'
 
 /**
  * Represents the size of an ad in LevelPlay.
@@ -82,12 +80,12 @@ export class LevelPlayAdSize {
     width: number | null = null
   ): Promise<LevelPlayAdSize | null> {
     const sizeMap = width != null
-            ? await LevelPlayMediation.createAdaptiveAdSizeWithWidth(width)
-            : await LevelPlayMediation.createAdaptiveAdSize();    
+            ? await NativeLevelPlayMediation.createAdaptiveAdSizeWithWidth(width)
+            : await NativeLevelPlayMediation.createAdaptiveAdSize();    
     return sizeMap != null ? LevelPlayAdSize.fromMap(sizeMap) : null
   }
 
-  toMap(): { [key: string]: any } {
+  toMap(): { width: number; height: number; adLabel?: string | null; isAdaptive: boolean } {
     return {
       width: this.width,
       height: this.height,

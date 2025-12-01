@@ -1,8 +1,8 @@
-# ironSource React-Native Plugin
+# Unity LevelPlay React-Native Plugin
 
-A bridge for ironSource SDK
+A bridge for LevelPlay SDK
 
-- [ironSource Knowledge Center](https://developers.is.com/)
+- [LevelPlay Knowledge Center](https://developers.is.com/)
 - [Android SDK](https://developers.ironsrc.com/ironsource-mobile/android/android-sdk/)
 - [iOS SDK](https://developers.ironsrc.com/ironsource-mobile/ios/ios-sdk/)
 - [React-Native Plugin](https://developers.is.com/ironsource-mobile/react-native/react-native-plugin-integration/)
@@ -16,20 +16,20 @@ Please refer to the [ReactNative official page](https://reactnative.dev/docs/env
 ## Installation
 
 ```shell
-npm install ironsource-mediation
+npm install unity-levelplay-mediation
 # or
-yarn add ironsource-mediation
+yarn add unity-levelplay-mediation
 ```
 
 ## Platform Setup
 
 ### Android
 
-- Follow [ironSource Knowledge Center](https://developers.ironsrc.com/ironsource-mobile/android/android-sdk/) Android integration guide for required settings.
+- Follow [LevelPlay Knowledge Center](https://developers.ironsrc.com/ironsource-mobile/android/android-sdk/) Android integration guide for required settings.
 
 ### Gradle Dependencies Included
 
-- ironSource SDK
+- LevelPlay SDK
 
 ### Gradle Dependencies Required
 
@@ -46,11 +46,11 @@ dependencies {
 
 ### iOS
 
-- Follow [ironSource Knowledge Center](https://developers.ironsrc.com/ironsource-mobile/ios/ios-sdk/) iOS integration guide for required settings.
+- Follow [LevelPlay Knowledge Center](https://developers.ironsrc.com/ironsource-mobile/ios/ios-sdk/) iOS integration guide for required settings.
 
 ### Pods Included
 
-- ironSource SDK
+- LevelPlay SDK
 
 ### Additional Requirements
 
@@ -72,7 +72,7 @@ dependencies {
 
 #### <ins>App Transport Security Settings</ins>
 
-Set [NSAllowsArbitraryLoads](https://developer.apple.com/documentation/bundleresources/information_property_list/nsapptransportsecurity/nsallowsarbitraryloads): `true` on info.plist to allow http as some mediated networks require http calls. (Note: ironSource Network calls are all encrypted.)
+Set [NSAllowsArbitraryLoads](https://developer.apple.com/documentation/bundleresources/information_property_list/nsapptransportsecurity/nsallowsarbitraryloads): `true` on info.plist to allow http as some mediated networks require http calls. (Note: LevelPlay Network calls are all encrypted.)
 
 Note:
 
@@ -92,7 +92,7 @@ Implement the ATT prompt to request user authorization for app-related data.
 
 Note:
 
-- This is not part of ironSource SDK but a bridge for `AppTrackingTransparency ATTrackingManager`.
+- This is not part of LevelPlay SDK but a bridge for `AppTrackingTransparency ATTrackingManager`.
 - You have to add `NSUserTrackingUsageDescription` to your info.plist if you intend to call this API.
 
 ```typescript
@@ -184,15 +184,13 @@ function SomeComponent() {
 
 #### LevelPlayNativeAdListener
 ```typescript
-import { IronSource } from 'ironsource-mediation'
-
 function SomeComponent() {
   useEffect(() => {
     const listener: LevelPlayNativeAdListener = {
-      onAdLoaded: (nativeAd: LevelPlayNativeAd, adInfo: IronSourceAdInfo) => {},
+      onAdLoaded: (nativeAd: LevelPlayNativeAd, adInfo: AdInfo) => {},
       onAdLoadFailed: (nativeAd: LevelPlayNativeAd, error: IronSourceError) => {},
-      onAdClicked: (nativeAd: LevelPlayNativeAd, adInfo: IronSourceAdInfo) => {},
-      onAdImpression: (nativeAd: LevelPlayNativeAd, adInfo: IronSourceAdInfo) => {},
+      onAdClicked: (nativeAd: LevelPlayNativeAd, adInfo: AdInfo) => {},
+      onAdImpression: (nativeAd: LevelPlayNativeAd, adInfo: AdInfo) => {},
     };
     // Add the listener to the LevelPlayNativeAd instance...
   }, [])
@@ -208,14 +206,13 @@ async function init() {
   const appKey = "[YOUR_APP_KEY]"
   const userId = "[YOUR_USER_ID]"
   let initRequest: LevelPlayInitRequest = LevelPlayInitRequest.builder(appKey)
-      .withLegacyAdFormats([AdFormat.BANNER, AdFormat.INTERSTITIAL, AdFormat.REWARDED, AdFormat.NATIVE_AD])
       .withUserId(userId)
       .build();
-    const initListener: LevelPlayInitListener = {
+  const initListener: LevelPlayInitListener = {
       onInitFailed: (error: LevelPlayInitError) => {},
       onInitSuccess: (configuration: LevelPlayConfiguration) => {}
-    }
-    await LevelPlay.init(initRequest, initListener)
+  }
+  await LevelPlay.init(initRequest, initListener)
 }
 ```
 
@@ -350,10 +347,8 @@ Refer to the [example app](./example) for the more detailed implementation sampl
 
 Note:
 
-- Make sure to read the official documents at [ironSource Knowledge Center](https://developers.ironsrc.com/ironsource-mobile/android/android-sdk/) for proper usage.
-- Some config functions must be called before `IronSource.init`.
-- LevelPlayBannerListener is deprecated - Please use LevelPlayBannerAdViewListener with LevelPlayBannerAdView instead.
-- LevelPlayInterstitialListener is deprecated - Please use LevelPlayInterstitialAdListener with LevelPlayInterstitialAd instead.
+- Make sure to read the official documents at [LevelPlay Knowledge Center](https://developers.ironsrc.com/ironsource-mobile/android/android-sdk/) for proper usage.
+- Some config functions must be called before `LevelPlay.init`.
 
 ## Functions Not Supported
 
@@ -376,14 +371,14 @@ Some functions are not supported.
 
 ## Android
 
-Make sure to follow [ironSource Knowledge Center](https://developers.ironsrc.com/ironsource-mobile/android/mediation-networks-android/) document for additional setup.
+Make sure to follow [LevelPlay Knowledge Center](https://developers.ironsrc.com/ironsource-mobile/android/mediation-networks-android/) document for additional setup.
 
 - Add adapter/sdk dependencies to `PROJECT_ROOT/android/app/build.gradle`
 - Add required settings to `PROJECT_ROOT/android/app/src/main/AndroidManifest.xml`
 
 ## iOS
 
-Make sure to follow [ironSource Knowledge Center](https://developers.ironsrc.com/ironsource-mobile/ios/mediation-networks-ios/) document for additional setup.
+Make sure to follow [LevelPlay Knowledge Center](https://developers.ironsrc.com/ironsource-mobile/ios/mediation-networks-ios/) document for additional setup.
 
 - Add adapter/sdk pod dependencies to `PROJECT_ROOT/ios/Podfile`
 - Add required settings to `PROJECT_ROOT/ios/APP_NAME/info.plist`
@@ -394,7 +389,7 @@ Almost all the features are implemented on the [example app](./example). We reco
 
 ```shell
 # The plugin project root
-cd ironsource-mediation
+cd unity-levelplay-mediation
 
 # Install dependencies
 npm install
@@ -420,7 +415,7 @@ yarn run ios
 ```
 
 ## Version history 
-You can find a summary of the ironSouce SDK version history [here](https://developers.is.com/ironsource-mobile/react-native/sdk-change-log/).
+You can find a summary of the LevelPlay SDK version history [here](https://developers.is.com/ironsource-mobile/react-native/sdk-change-log/).
 
 ## Contact US 
 For any question please contact us [here](https://ironsrc.formtitan.com/knowledge-center#/). 

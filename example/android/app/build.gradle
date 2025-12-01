@@ -77,9 +77,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.ironsourcemediationexample"
+    namespace "com.levelplaymediationexample"
     defaultConfig {
-        applicationId "com.ironsourcemediationexample"
+        applicationId "com.levelplaymediationexample"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -125,8 +125,7 @@ dependencies {
     // Play Services
     implementation 'com.google.android.gms:play-services-appset:16.1.0'
     implementation 'com.google.android.gms:play-services-ads-identifier:18.2.0'
-    implementation 'com.google.android.gms:play-services-basement:18.7.1'
 
     // Required when using custom native ad implementation
-    implementation 'com.unity3d.ads-mediation:mediation-sdk:8.10.0'
+    implementation 'com.unity3d.ads-mediation:mediation-sdk:9.2.0'
 }
