@@ -31,7 +31,10 @@ export declare class LevelPlayAdSize {
      */
     static createAdaptiveAdSize(width?: number | null): Promise<LevelPlayAdSize | null>;
     toMap(): {
-        [key: string]: any;
+        width: number;
+        height: number;
+        adLabel?: string | null;
+        isAdaptive: boolean;
     };
     static fromMap(map: {
         [key: string]: any;

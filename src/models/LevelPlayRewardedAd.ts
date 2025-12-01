@@ -1,8 +1,7 @@
-import { NativeModules } from 'react-native'
 import { LevelPlayAdObjectManager } from '../utils/LevelPlayAdObjectManager'
 import type { LevelPlayRewardedAdListener } from './listeners/LevelPlayRewardedAdListener'
+import NativeLevelPlayMediation from '../specs/NativeLevelPlayMediation'
 
-const { LevelPlayMediation } = NativeModules
 const levelPlayObjectManager = LevelPlayAdObjectManager.getInstance()
 
 /**
@@ -40,9 +39,7 @@ export class LevelPlayRewardedAd {
    * @returns A promise that resolves to a boolean indicating whether the placement is capped.
    */
   static async isPlacementCapped(placementName: string): Promise<boolean> {
-    return await LevelPlayMediation.isRewardedAdPlacementCapped({
-      placementName: placementName,
-    })
+    return await NativeLevelPlayMediation.isRewardedAdPlacementCapped(placementName)
   }
 
   /**

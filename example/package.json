@@ -1,12 +1,12 @@
 {
-  "name": "ironsource-mediation-example",
-  "version": "3.2.0",
+  "name": "levelplay-mediation-example",
+  "version": "9.0.0",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "build:android": "cd android && ./gradlew assembleDebug",
-    "build:ios": "cd ios && xcodebuild -workspace ReactNativeTester.xcworkspace -scheme ReactNativeTester -configuration Debug -sdk iphonesimulator CC=clang CPLUSPLUS=clang++ LD=clang LDPLUSPLUS=clang++ GCC_OPTIMIZATION_LEVEL=0 GCC_PRECOMPILE_PREFIX_HEADER=YES ASSETCATALOG_COMPILER_OPTIMIZATION=time DEBUG_INFORMATION_FORMAT=dwarf COMPILER_INDEX_STORE_ENABLE=NO",
+    "build:ios": "cd ios && xcodebuild -workspace LevelPlayMediationExample.xcworkspace -scheme LevelPlayMediationExample -configuration Debug -sdk iphonesimulator CC=clang CPLUSPLUS=clang++ LD=clang LDPLUSPLUS=clang++ GCC_OPTIMIZATION_LEVEL=0 GCC_PRECOMPILE_PREFIX_HEADER=YES ASSETCATALOG_COMPILER_OPTIMIZATION=time DEBUG_INFORMATION_FORMAT=dwarf COMPILER_INDEX_STORE_ENABLE=NO",
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest"

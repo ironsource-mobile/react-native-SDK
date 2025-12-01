@@ -1,7 +1,19 @@
 import * as React from 'react';
 import { type NativeMethods, type ViewProps, type ColorValue } from 'react-native';
-import { type IronSourceAdInfo, type IronSourceError, LevelPlayNativeAd } from '../models';
-export type LevelPlayNativeAdViewType = React.Component<LevelPlayNativeAdViewProps> & NativeMethods;
+import { type AdInfo, type IronSourceError, LevelPlayNativeAd } from '../models';
+export type LevelPlayNativeAdViewType = React.Component<LevelPlayNativeAdViewCreationParams> & NativeMethods;
+export type LevelPlayNativeAdViewCreationParams = {
+    creationParams: {
+        templateType?: LevelPlayTemplateType;
+        templateStyle?: LevelPlayNativeAdTemplateStyle;
+        viewType?: string;
+        nativeAd: LevelPlayNativeAd | null;
+    };
+};
+export interface LevelPlayNativeAdViewMethods {
+    loadAd(): void;
+    destroyAd(): void;
+}
 export interface LevelPlayNativeAdViewProps extends ViewProps {
     templateType?: LevelPlayTemplateType;
     templateStyle?: LevelPlayNativeAdTemplateStyle;
@@ -12,7 +24,7 @@ export type LevelPlayNativeAdViewNativeEvents = {
     onAdLoadedEvent(event: {
         nativeEvent: {
             nativeAd: LevelPlayNativeAd;
-            adInfo: IronSourceAdInfo;
+            adInfo: AdInfo;
         };
     }): void;
     onAdLoadFailedEvent(event: {
@@ -24,20 +36,20 @@ export type LevelPlayNativeAdViewNativeEvents = {
     onAdClickedEvent(event: {
         nativeEvent: {
             nativeAd: LevelPlayNativeAd;
-            adInfo: IronSourceAdInfo;
+            adInfo: AdInfo;
         };
     }): void;
     onAdImpressionEvent(event: {
         nativeEvent: {
             nativeAd: LevelPlayNativeAd;
-            adInfo: IronSourceAdInfo;
+            adInfo: AdInfo;
         };
     }): void;
 };
 /**
  * LevelPlay React component for displaying native ads
  */
-export declare function LevelPlayNativeAdView(props: LevelPlayNativeAdViewProps): React.JSX.Element | null;
+export declare const LevelPlayNativeAdView: React.ForwardRefExoticComponent<LevelPlayNativeAdViewProps & React.RefAttributes<LevelPlayNativeAdViewMethods>>;
 export declare enum LevelPlayTemplateType {
     Small = "SMALL",
     Medium = "MEDIUM"

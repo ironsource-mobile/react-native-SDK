@@ -1,26 +1,57 @@
 import * as React from 'react';
-import { useRef, useCallback, useEffect, useState } from 'react';
+import { useRef, useCallback, useEffect, useState, useImperativeHandle } from 'react';
 import {type NativeMethods, type ViewProps, type ColorValue, type HostComponent, requireNativeComponent} from 'react-native'
-import { type IronSourceAdInfo, type IronSourceError, LevelPlayNativeAd } from '../models';
+import { type AdInfo, type IronSourceError, LevelPlayNativeAd } from '../models';
+import { levelPlayNativeAdFromMap, adInfoFromMap, ironSourceErrorFromMap } from '../utils/utils';
+import LevelPlayNativeAdViewComponent, { Commands } from '../specs/LevelPlayNativeAdViewNativeComponent'
+import type { 
+  AdLoadedEvent, 
+  AdLoadFailedEvent, 
+  AdClickedEvent, 
+  AdImpressionEvent 
+} from '../specs/LevelPlayNativeAdViewNativeComponent'
+import type { DirectEventHandler } from 'react-native/Libraries/Types/CodegenTypes'
 
 // Object to cache native components
-const componentCache: { [key: string]: HostComponent<LevelPlayNativeAdViewProps & ViewProps & LevelPlayNativeAdViewNativeEvents> } = {};
+const componentCache: { [key: string]: HostComponent<any> } = {};
 
 /**
- * Retrieves or creates a native component for a given viewType and returns it as a HostComponent.
- * 
+ * Retrieves or creates a native component for a given viewType.
+ *
  * @param viewType The type of the native component to be retrieved or created.
  * @returns A HostComponent representing the native component with specified props and events.
  */
-const LevelPlayNativeAdComponent = (viewType: string): HostComponent<LevelPlayNativeAdViewProps & ViewProps & LevelPlayNativeAdViewNativeEvents> => {
+const LevelPlayNativeAdComponent = (viewType: string): HostComponent<any> => {
   if (!componentCache[viewType]) {
-    componentCache[viewType] = requireNativeComponent<LevelPlayNativeAdViewProps & ViewProps & LevelPlayNativeAdViewNativeEvents>(viewType);
+    if (viewType !== 'LevelPlayNativeAdView') {
+      // Custom layout - developer creates their own native module extending the abstract manager
+      // Use requireNativeComponent since custom modules are created dynamically by developers
+      componentCache[viewType] = requireNativeComponent(viewType);
+    } else {
+      // Built-in templates (Small/Medium) - uses template manager with XIB files
+      componentCache[viewType] = LevelPlayNativeAdViewComponent;
+    }
   }
   return componentCache[viewType];
 };
 
 // Defining the type of the LevelPlayNativeAdView React component
-export type LevelPlayNativeAdViewType = React.Component<LevelPlayNativeAdViewProps> & NativeMethods
+export type LevelPlayNativeAdViewType = React.Component<LevelPlayNativeAdViewCreationParams> & NativeMethods
+
+export type LevelPlayNativeAdViewCreationParams = {
+  creationParams: {
+    templateType?: LevelPlayTemplateType
+    templateStyle?: LevelPlayNativeAdTemplateStyle
+    viewType?: string
+    nativeAd: LevelPlayNativeAd | null
+  }
+}
+
+// Defining the native ad view methods to be exposed
+export interface LevelPlayNativeAdViewMethods {
+  loadAd(): void;
+  destroyAd(): void;
+}
 
 // Props interface for the LevelPlayNativeAdView component
 export interface LevelPlayNativeAdViewProps extends ViewProps {
@@ -32,16 +63,19 @@ export interface LevelPlayNativeAdViewProps extends ViewProps {
 
 // Native events for the LevelPlayNativeAdView component
 export type LevelPlayNativeAdViewNativeEvents = {
-  onAdLoadedEvent(event: { nativeEvent: { nativeAd: LevelPlayNativeAd; adInfo: IronSourceAdInfo } }): void;
+  onAdLoadedEvent(event: { nativeEvent: { nativeAd: LevelPlayNativeAd; adInfo: AdInfo } }): void;
   onAdLoadFailedEvent(event: { nativeEvent: { nativeAd: LevelPlayNativeAd; error: IronSourceError } }): void;
-  onAdClickedEvent(event: { nativeEvent: { nativeAd: LevelPlayNativeAd; adInfo: IronSourceAdInfo } }): void;
-  onAdImpressionEvent(event: { nativeEvent: { nativeAd: LevelPlayNativeAd; adInfo: IronSourceAdInfo } }): void;
+  onAdClickedEvent(event: { nativeEvent: { nativeAd: LevelPlayNativeAd; adInfo: AdInfo } }): void;
+  onAdImpressionEvent(event: { nativeEvent: { nativeAd: LevelPlayNativeAd; adInfo: AdInfo } }): void;
 };
 
 /**
  * LevelPlay React component for displaying native ads
  */
-export function LevelPlayNativeAdView(props : LevelPlayNativeAdViewProps) {
+export const LevelPlayNativeAdView = React.forwardRef<
+  LevelPlayNativeAdViewMethods,
+  LevelPlayNativeAdViewProps
+>((props, ref) => {
     // Access props directly
     const templateType = props.templateType;
     const templateStyle = props.templateStyle;
@@ -51,66 +85,87 @@ export function LevelPlayNativeAdView(props : LevelPlayNativeAdViewProps) {
     const otherProps = { ...props }; // Exclude known props
 
   // A reference to the nativeAdView
-  const nativeAdViewRef = useRef<LevelPlayNativeAdViewType | null>(null);
+  const nativeAdViewRef = useRef<React.ElementRef<typeof LevelPlayNativeAdViewComponent> | null>(null);
 
   // State for holding the NativeComponent
-  const [NativeComponent, setNativeComponent] = useState<any>(null);
+  const [NativeComponent, setNativeComponent] = useState<HostComponent<any> | null>(null);
 
-  useEffect(() => {
-    // Set nativeAdViewRef and viewType
-    nativeAd?.setNativeAdViewRef(nativeAdViewRef);
-    nativeAd?.setViewType(viewType || 'levelPlayNativeAdView');
-
-    // Get the native component based on viewType
-    const component = LevelPlayNativeAdComponent(viewType || 'levelPlayNativeAdView');
-    setNativeComponent(component);
-
+  // Command methods (moved from LevelPlayNativeAd)
+  const loadAd = useCallback(() => {
+    nativeAdViewRef.current && Commands.loadAd(nativeAdViewRef.current)
   }, []);
 
+  const destroyAd = useCallback(() => {
+    nativeAdViewRef.current && Commands.destroyAd(nativeAdViewRef.current)
+  }, []);
+
+  useEffect(() => {
+    // Assign callbacks to the native ad model using setter methods
+    if (nativeAd) {
+      nativeAd.setLoadAdCallback(loadAd);
+      nativeAd.setDestroyAdCallback(destroyAd);
+    }
+
+    // Get the native component based on viewType
+    const component = LevelPlayNativeAdComponent(viewType || 'LevelPlayNativeAdView');
+    setNativeComponent(component);
+
+  }, [viewType, loadAd, destroyAd, nativeAd]);
+
+  // Expose methods to the parent using useImperativeHandle
+  useImperativeHandle(
+    ref,
+    () => ({
+      loadAd,
+      destroyAd,
+    }),
+    [loadAd, destroyAd]
+  );
+
   // Save the nativeAdViewRef element
-  const saveElement = useCallback((element: LevelPlayNativeAdViewType | null) => {
+  const saveElement = useCallback((element: React.ElementRef<typeof LevelPlayNativeAdViewComponent> | null) => {
       if (element) {
         nativeAdViewRef.current = element
       }
     },
     []);
 
-  // Function to extract completed native ad
-  function extractCompletedNativeAd(levelPlayNativeAd: LevelPlayNativeAd) {
-    if (nativeAd == null) return levelPlayNativeAd;
-
-    nativeAd.title = levelPlayNativeAd.title;
-    nativeAd.body = levelPlayNativeAd.body;
-    nativeAd.advertiser = levelPlayNativeAd.advertiser;
-    nativeAd.callToAction = levelPlayNativeAd.callToAction;
-    nativeAd.icon = levelPlayNativeAd.icon;
-    return nativeAd;
-  }
-
   // Handle the native ad events:
-  const onAdLoadedEvent = useCallback((event: { nativeEvent: { nativeAd: LevelPlayNativeAd; adInfo: IronSourceAdInfo } }) => {
-    if (nativeAd?.listener?.onAdLoaded) {
-      nativeAd?.listener?.onAdLoaded(extractCompletedNativeAd(event.nativeEvent.nativeAd), event.nativeEvent.adInfo);
+  const onAdLoadedEvent: DirectEventHandler<AdLoadedEvent> = useCallback((event) => {
+    if (nativeAd?.listener?.onAdLoaded && nativeAd) {
+      nativeAd.listener.onAdLoaded(
+        levelPlayNativeAdFromMap(event.nativeEvent.nativeAd, nativeAd),
+        adInfoFromMap(event.nativeEvent.adInfo)
+      );
     }
-  }, [nativeAd?.listener]);
+  }, [nativeAd]);
 
-  const onAdLoadFailedEvent = useCallback((event: { nativeEvent: { nativeAd: LevelPlayNativeAd; error: IronSourceError } }) => {
-    if (nativeAd?.listener?.onAdLoadFailed) {
-      nativeAd?.listener?.onAdLoadFailed(extractCompletedNativeAd(event.nativeEvent.nativeAd), event.nativeEvent.error);
+  const onAdLoadFailedEvent: DirectEventHandler<AdLoadFailedEvent> = useCallback((event) => {
+    if (nativeAd?.listener?.onAdLoadFailed && nativeAd) {
+      nativeAd.listener.onAdLoadFailed(
+        levelPlayNativeAdFromMap(event.nativeEvent.nativeAd, nativeAd),
+        ironSourceErrorFromMap(event.nativeEvent.error)
+      );
     }
-  }, [nativeAd?.listener]);
+  }, [nativeAd]);
 
-  const onAdClickedEvent = useCallback((event: { nativeEvent: { nativeAd: LevelPlayNativeAd; adInfo: IronSourceAdInfo } }) => {
-    if (nativeAd?.listener?.onAdClicked) {
-      nativeAd?.listener?.onAdClicked(extractCompletedNativeAd(event.nativeEvent.nativeAd), event.nativeEvent.adInfo);
+  const onAdClickedEvent: DirectEventHandler<AdClickedEvent> = useCallback((event) => {
+    if (nativeAd?.listener?.onAdClicked && nativeAd) {
+      nativeAd.listener.onAdClicked(
+        levelPlayNativeAdFromMap(event.nativeEvent.nativeAd, nativeAd),
+        adInfoFromMap(event.nativeEvent.adInfo)
+      );
     }
-  }, [nativeAd?.listener]);
+  }, [nativeAd]);
 
-  const onAdImpressionEvent = useCallback((event: { nativeEvent: { nativeAd: LevelPlayNativeAd; adInfo: IronSourceAdInfo } }) => {
-    if (nativeAd?.listener?.onAdImpression) {
-      nativeAd?.listener?.onAdImpression(extractCompletedNativeAd(event.nativeEvent.nativeAd), event.nativeEvent.adInfo);
+  const onAdImpressionEvent: DirectEventHandler<AdImpressionEvent> = useCallback((event) => {
+    if (nativeAd?.listener?.onAdImpression && nativeAd) {
+      nativeAd.listener.onAdImpression(
+        levelPlayNativeAdFromMap(event.nativeEvent.nativeAd, nativeAd),
+        adInfoFromMap(event.nativeEvent.adInfo)
+      );
     }
-  }, [nativeAd?.listener]);
+  }, [nativeAd]);
 
   if (!NativeComponent) {
     return null; // Render nothing if the component is not set yet
@@ -132,7 +187,7 @@ export function LevelPlayNativeAdView(props : LevelPlayNativeAdViewProps) {
       style={style}
       {...otherProps}/>
   )
-}
+});
 
 
 /// LevelPlayTemplateType - native ad template options

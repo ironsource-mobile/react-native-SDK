@@ -4,7 +4,7 @@
     "rootDir": ".",
     "baseUrl": "./",
     "paths": {
-      "ironsource-mediation": ["./src/index"]
+      "unity-levelplay-mediation": ["./src/index"]
     },
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,

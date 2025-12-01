@@ -1,10 +1,10 @@
-import { NativeEventEmitter, NativeModules } from "react-native";
+import { NativeEventEmitter } from "react-native";
 import { type LevelPlayInterstitialAd } from "../models/LevelPlayInterstitialAd";
 import { type LevelPlayRewardedAd } from "../models/LevelPlayRewardedAd";
 import { levelPlayAdInfoFromMap, levelPlayAdErrorFromMap, levelPlayRewardFromMap } from "./utils";
+import NativeLevelPlayMediation from "../specs/NativeLevelPlayMediation";
 
-const { LevelPlayMediation } = NativeModules;
-const eventEmitter = new NativeEventEmitter(LevelPlayMediation)
+const eventEmitter = new NativeEventEmitter(NativeLevelPlayMediation)
 const {
     ON_INTERSTITIAL_AD_LOADED,
     ON_INTERSTITIAL_AD_LOAD_FAILED,
@@ -21,7 +21,7 @@ const {
     ON_REWARDED_AD_CLICKED,
     ON_REWARDED_AD_CLOSED,
     ON_REWARDED_AD_REWARDED
-} = LevelPlayMediation.getConstants();
+} = NativeLevelPlayMediation.getConstants();
 
 /**
  * Manages instances of LevelPlay interstitial ads.
@@ -111,10 +111,11 @@ export class LevelPlayAdObjectManager {
 
     async createInterstitialAd(interstitialAd: LevelPlayInterstitialAd): Promise<string> {
         // Call native module to create the ad and get back an adId string
-        const adId = await LevelPlayMediation.createInterstitialAd({
-            adUnitId: interstitialAd.adUnitId,
-            ...(interstitialAd.bidFloor != null && { bidFloor: interstitialAd.bidFloor })
-        });
+        // Pass -1 for bidFloor if not set (old architecture compatibility)
+        const adId = await NativeLevelPlayMediation.createInterstitialAd(
+            interstitialAd.adUnitId,
+            interstitialAd.bidFloor ?? -1
+        );
         // Store the ad instance in the map if it's not already present
         if (!this.interstitialAdsMap.has(adId)) {
             // Assign the returned ID to the ad object
@@ -132,17 +133,17 @@ export class LevelPlayAdObjectManager {
                 await this.createInterstitialAd(interstitialAd) : interstitialAd.adId;
 
             // Call native module to load the ad using its adId
-            await LevelPlayMediation.loadInterstitialAd({ adId: adId });
+            await NativeLevelPlayMediation.loadInterstitialAd(adId);
     }
 
     async showInterstitialAd(adId: string, placementName: string): Promise<void> {
         if (this.interstitialAdsMap.has(adId)) {
-            await LevelPlayMediation.showInterstitialAd({ adId: adId, placementName: placementName })
+            await NativeLevelPlayMediation.showInterstitialAd(adId, placementName)
         }
     }
 
     async isInterstitialAdReady(adId: string): Promise<boolean> {
-        return await LevelPlayMediation.isInterstitialAdReady({ adId: adId })
+        return await NativeLevelPlayMediation.isInterstitialAdReady(adId)
     }
 
     // Rewarded Ad
@@ -219,10 +220,11 @@ export class LevelPlayAdObjectManager {
 
         async createRewardedAd(rewardedAd: LevelPlayRewardedAd): Promise<string> {
         // Call native module to create the ad and get back an adId string
-        const adId = await LevelPlayMediation.createRewardedAd({
-            adUnitId: rewardedAd.adUnitId,
-            ...(rewardedAd.bidFloor != null && { bidFloor: rewardedAd.bidFloor })
-        });
+        // Pass -1 for bidFloor if not set (old architecture compatibility)
+        const adId = await NativeLevelPlayMediation.createRewardedAd(
+            rewardedAd.adUnitId,
+            rewardedAd.bidFloor ?? -1
+        );
         // Store the ad instance in the map if it's not already present
         if (!this.rewardedAdsMap.has(adId)) {
             // Assign the returned ID to the ad object
@@ -239,17 +241,17 @@ export class LevelPlayAdObjectManager {
                 await this.createRewardedAd(rewardedAd) : rewardedAd.adId;
 
             // Call native module to load the ad using its adId
-            await LevelPlayMediation.loadRewardedAd({ adId: adId });
+            await NativeLevelPlayMediation.loadRewardedAd(adId);
     }
 
     async showRewardedAd(adId: string, placementName: string): Promise<void> {
         if (this.rewardedAdsMap.has(adId)) {
-            await LevelPlayMediation.showRewardedAd({ adId: adId, placementName: placementName })
+            await NativeLevelPlayMediation.showRewardedAd(adId, placementName)
         }
     }
 
     async isRewardedAdReady(adId: string): Promise<boolean> {
-        return await LevelPlayMediation.isRewardedAdReady({ adId: adId })
+        return await NativeLevelPlayMediation.isRewardedAdReady(adId)
     }
 
     // Shared Methods
@@ -268,13 +270,13 @@ export class LevelPlayAdObjectManager {
         }
 
         if (wasRemoved) {
-            await LevelPlayMediation.removeAd({ adId: adId })
+            await NativeLevelPlayMediation.removeAd(adId)
         }
     }
 
     async removeAllAds() {
         this.interstitialAdsMap.clear();
         this.rewardedAdsMap.clear();
-        await LevelPlayMediation.removeAllAds();
+        await NativeLevelPlayMediation.removeAllAds();
     }
 }
