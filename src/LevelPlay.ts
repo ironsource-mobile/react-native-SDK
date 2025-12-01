@@ -1,4 +1,4 @@
-import { NativeModules, NativeEventEmitter, Platform } from 'react-native'
+import { NativeEventEmitter, Platform } from 'react-native'
 import type {
   LevelPlayImpressionDataListener,
   LevelPlayInitListener,
@@ -14,14 +14,14 @@ import {
   PLUGIN_TYPE,
   ANDROID_SDK_VERSION,
   IOS_SDK_VERSION,
-} from './utils/IronSourceConstants'
+} from './utils/LevelPlayConstants'
 import type { LevelPlaySegment } from './models/LevelPlaySegment'
-import { setPluginData } from './utils/IronSourceConfig'
+import { setPluginData } from './utils/LevelPlayConfig'
+import NativeLevelPlayMediation from './specs/NativeLevelPlayMediation'
 
-const { LevelPlayMediation } = NativeModules
-const eventEmitter = new NativeEventEmitter(LevelPlayMediation)
-const { ON_INIT_FAILED, ON_INIT_SUCCESS, ON_LEVEL_PLAY_IMPRESSION_SUCCESS } =
-  LevelPlayMediation.getConstants()
+const eventEmitter = new NativeEventEmitter(NativeLevelPlayMediation)
+const { ON_INIT_FAILED, ON_INIT_SUCCESS, ON_IMPRESSION_SUCCESS } =
+  NativeLevelPlayMediation.getConstants()
 
 /**
  * Defines the methods for LevelPlay.
@@ -171,13 +171,13 @@ const addImpressionDataListener = async  (
   listener: LevelPlayImpressionDataListener
 ) => {
   // Remove any existing listeners
-  eventEmitter.removeAllListeners(ON_LEVEL_PLAY_IMPRESSION_SUCCESS)
+  eventEmitter.removeAllListeners(ON_IMPRESSION_SUCCESS)
 
-  await LevelPlayMediation.addImpressionDataListener()
+  await NativeLevelPlayMediation.addImpressionDataListener()
 
   // Add the new listener if provided
   if (listener.onImpressionSuccess) {
-    eventEmitter.addListener(ON_LEVEL_PLAY_IMPRESSION_SUCCESS, (data: any) => {
+    eventEmitter.addListener(ON_IMPRESSION_SUCCESS, (data: any) => {
       listener.onImpressionSuccess!(levelPlayImpressionDataFromMap(data))
     })
   }
@@ -203,7 +203,7 @@ const init = async (
   }
 
   setLevelPlayInitListener(initListener)
-  await LevelPlayMediation.initLevelPlay(initRequest.toMap())
+  await NativeLevelPlayMediation.init(initRequest.appKey, initRequest.userId || undefined)
 }
 
 type LevelPlayNativeMethodsType = Omit<
@@ -214,7 +214,7 @@ type LevelPlayNativeMethodsType = Omit<
   | 'addImpressionDataListener'
 >
 
-const LevelPlayNativeMethods: LevelPlayNativeMethodsType = LevelPlayMediation
+const LevelPlayNativeMethods: LevelPlayNativeMethodsType = NativeLevelPlayMediation
 
 export const LevelPlay: LevelPlayType = Object.create(LevelPlayNativeMethods, {
   getPluginVersion: {

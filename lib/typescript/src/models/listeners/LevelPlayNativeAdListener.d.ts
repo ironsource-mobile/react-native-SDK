@@ -1,4 +1,4 @@
-import type { IronSourceAdInfo } from "../IronSourceAdInfo";
+import type { AdInfo } from "../AdInfo";
 import type { IronSourceError } from "../errors";
 import { LevelPlayNativeAd } from "../LevelPlayNativeAd";
 /**
@@ -13,7 +13,7 @@ export interface LevelPlayNativeAdListener {
      * Android: onAdLoaded
      *     iOS: didLoad
      */
-    onAdLoaded?: (nativeAd: LevelPlayNativeAd, adInfo: IronSourceAdInfo) => void;
+    onAdLoaded: (nativeAd: LevelPlayNativeAd, adInfo: AdInfo) => void;
     /**
      * Callback when native ad fails to load
      * [nativeAd] includes information about the native ad
@@ -22,7 +22,7 @@ export interface LevelPlayNativeAdListener {
      * Android: onAdLoadFailed
      *     iOS: didFailToLoad
      */
-    onAdLoadFailed?: (nativeAd: LevelPlayNativeAd, error: IronSourceError) => void;
+    onAdLoadFailed: (nativeAd: LevelPlayNativeAd, error: IronSourceError) => void;
     /**
      * Callback when a user clicks on the native ad
      * [nativeAd] includes information about the native ad
@@ -31,7 +31,7 @@ export interface LevelPlayNativeAdListener {
      * Android: onAdClicked
      *     iOS: didClick
      */
-    onAdClicked?: (nativeAd: LevelPlayNativeAd, adInfo: IronSourceAdInfo) => void;
+    onAdClicked: (nativeAd: LevelPlayNativeAd, adInfo: AdInfo) => void;
     /**
      * Called after a native ad has been clicked.
      * [nativeAd] includes information about the native ad
@@ -40,6 +40,6 @@ export interface LevelPlayNativeAdListener {
      * Android: onAdImpression
      *     iOS: didRecordImpression
      */
-    onAdImpression?: (nativeAd: LevelPlayNativeAd, adInfo: IronSourceAdInfo) => void;
+    onAdImpression: (nativeAd: LevelPlayNativeAd, adInfo: AdInfo) => void;
 }
 //# sourceMappingURL=LevelPlayNativeAdListener.d.ts.map

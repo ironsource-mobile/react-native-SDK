@@ -1,4 +1,3 @@
-export * from './IronSource';
 export * from './LevelPlay';
 export * from './models';
 export * from './components';

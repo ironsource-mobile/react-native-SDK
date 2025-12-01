@@ -17,7 +17,6 @@ import {
   type LevelPlayImpressionDataListener,
   LevelPlay,
   LevelPlayInitRequest,
-  AdFormat,
   type LevelPlayInitListener,
   type LevelPlayInitError,
   type LevelPlayConfiguration,
@@ -27,7 +26,7 @@ import {
   type LevelPlayAdError,
   LevelPlayNativeAd,
   type LevelPlayNativeAdListener,
-  type IronSourceAdInfo,
+  type AdInfo,
   LevelPlayNativeAdView,
   LevelPlayTemplateType,
   type IronSourceError,
@@ -38,7 +37,8 @@ import {
   LevelPlayRewardedAd,
   type LevelPlayRewardedAdListener,
   type LevelPlayReward,
-} from 'ironsource-mediation'
+  type LevelPlayNativeAdViewMethods,
+} from 'unity-levelplay-mediation'
 
 // --- Constants and Helpers ---
 const APP_USER_ID = '[YOUR_UNIQUE_APP_USER_ID]'; // Make sure to replace this
@@ -121,7 +121,6 @@ async function initSDK() {
     }
     // Initialize the LevelPlay SDK
     let initRequest: LevelPlayInitRequest = LevelPlayInitRequest.builder(getAppKey())
-      .withLegacyAdFormats([AdFormat.NATIVE_AD])
       .withUserId(APP_USER_ID)
       .build()
     const initListener: LevelPlayInitListener = {
@@ -187,31 +186,34 @@ export default function App() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollViewContent}
-      >
-        <View style={[styles.container]}>
-          <View style={styles.wrapper}>
-            <Image
-              source={require('./assets/images/iron_logo.png')}
-              style={styles.image}
+      <View style={styles.mainContainer}>
+        <ScrollView
+          contentInsetAdjustmentBehavior="automatic"
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollViewContent}
+          scrollEnabled={true}
+        >
+          <View style={[styles.container]}>
+            <View style={styles.wrapper}>
+              <Image
+                source={require('./assets/images/logo_small.png')}
+                style={styles.image}
+              />
+              <Text style={styles.text}>for ReactNative</Text>
+            </View>
+            <LevelPlayRewardedAdSection />
+            <LevelPlayInterstitialAdSection />
+            <LevelPlayBannerAdSection
+              onLoadBanner={loadBannerAd}
+              onDestroyBanner={destroyBannerAd}
             />
-            <Text style={styles.text}>for ReactNative</Text>
+            <LevelPlayNativeAdSection />
           </View>
-          <LevelPlayRewardedAdSection />
-          <LevelPlayInterstitialAdSection />
-          <LevelPlayBannerAdSection
-            onLoadBanner={loadBannerAd}
-            onDestroyBanner={destroyBannerAd}
-          />
-          <LevelPlayNativeAdSection />
-        </View>
+        </ScrollView>
 
         {/* Position banner on bottom of the screen */}
         <LevelPlayBannerAdView
-          key = {bannerKey}
+          key={bannerKey}
           ref={bannerAdRef}
           adUnitId={
             getBannerAdUnitId()
@@ -221,7 +223,7 @@ export default function App() {
           listener={listener}
           style={styles.bannerAd}
         />
-      </ScrollView>
+      </View>
     </SafeAreaView>
   )
 }
@@ -386,19 +388,18 @@ const LevelPlayBannerAdSection: React.FC<
 }
 
 const LevelPlayNativeAdSection = () => {
+  const nativeAdRef = useRef<LevelPlayNativeAdViewMethods>(null)
   const [nativeAd, setNativeAd] = useState<LevelPlayNativeAd | null>()
-  const [isAdLoaded, setIsAdLoaded] = useState<boolean>(false)
   const [nativeAdKey, setnativeAdKey] = useState<number>(0); // Key for refreshing the component
 
-  const createNewNativeAd = useCallback(() => { 
+  const createNewNativeAd = useCallback(() => {
     const listener: LevelPlayNativeAdListener = {
-      onAdLoaded: (nativeAd: LevelPlayNativeAd, adInfo: IronSourceAdInfo) => {
-      logMethodName('Native Ad', 'onAdLoaded:', {
-        adInfo,
-        nativeAd: nativeAd.placement,
-      })
+      onAdLoaded: (nativeAd: LevelPlayNativeAd, adInfo: AdInfo) => {
+        logMethodName('Native Ad', 'onAdLoaded:', {
+          adInfo,
+          nativeAd: nativeAd.placement,
+        })
         setNativeAd(nativeAd);
-        setIsAdLoaded(true);
       },
       onAdLoadFailed: (nativeAd: LevelPlayNativeAd, error: IronSourceError) => {
         logMethodName('Native Ad', 'onAdLoadFailed:', {
@@ -406,17 +407,17 @@ const LevelPlayNativeAdSection = () => {
           nativeAd: nativeAd.placement,
         });
       },
-      onAdClicked: (nativeAd: LevelPlayNativeAd, adInfo: IronSourceAdInfo) => {
-      logMethodName('Native Ad', 'onAdClicked:', {
-        adInfo,
-        nativeAd: nativeAd.placement,
-      })
+      onAdClicked: (nativeAd: LevelPlayNativeAd, adInfo: AdInfo) => {
+        logMethodName('Native Ad', 'onAdClicked:', {
+          adInfo,
+          nativeAd: nativeAd.placement,
+        })
       },
-      onAdImpression: (nativeAd: LevelPlayNativeAd, adInfo: IronSourceAdInfo) => {
-      logMethodName('Native Ad', 'onAdImpression:', {
-        adInfo,
-        nativeAd: nativeAd.placement,
-      })
+      onAdImpression: (nativeAd: LevelPlayNativeAd, adInfo: AdInfo) => {
+        logMethodName('Native Ad', 'onAdImpression:', {
+          adInfo,
+          nativeAd: nativeAd.placement,
+        })
       },
     };
 
@@ -444,7 +445,6 @@ const LevelPlayNativeAdSection = () => {
   const destroyAd = useCallback(() => {
     nativeAd?.destroyAd();
 
-    setIsAdLoaded(false); // Reset the `isAdLoaded` state
     createNewNativeAd(); // Create a new ad instance
     setnativeAdKey(prevKey => prevKey + 1); // Increment the key to force remount of the view component
   }, [nativeAd])
@@ -459,10 +459,11 @@ const LevelPlayNativeAdSection = () => {
       {nativeAd && (
         // Initialize native ad view widget with native ad
         <LevelPlayNativeAdView
-        key={nativeAdKey}
+          key={nativeAdKey}
+          ref={nativeAdRef}
           nativeAd={nativeAd} // Native ad object
           templateType={LevelPlayTemplateType.Medium} // Built-in native ad template(not required when implementing custom template)
-          style={[styles.nativeAd, { display: isAdLoaded ? 'flex' : 'none' }]} // Ad styling
+          style={[styles.nativeAd]} // Ad styling
         />
       )}
     </View>
@@ -478,7 +479,7 @@ const LevelPlayNativeAdSection = () => {
  */
 export function logMethodName(
   adFormat: string,
-  methodName: string, 
+  methodName: string,
   data?: any         // data is optional and can be any type
 ): void {
   if (data !== undefined) {
@@ -554,11 +555,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
   },
+  mainContainer: {
+    flex: 1,
+  },
   scrollView: {
     flex: 1,
   },
   scrollViewContent: {
     flexGrow: 1,
+    paddingBottom: 60, // Space for banner at bottom
   },
   container: {
     flex: 1,
