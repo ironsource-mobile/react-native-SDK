@@ -19,7 +19,7 @@ Pod::Spec.new do |s|
     'unity_levelplay_mediation' => ['ios/**/*.xib']
   }
 
-  s.dependency "IronSourceSDK", "9.2.0.0"
+  s.dependency "IronSourceSDK", "9.4.0.0"
 
   # React Native integration
   if respond_to?(:install_modules_dependencies, true)

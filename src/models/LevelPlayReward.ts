@@ -5,10 +5,10 @@ export type LevelPlayReward = {
   /**
    * The reward name.
    */
-  name: string;
-  
+  name: string
+
   /**
    * The reward amount.
    */
-  amount: number;
-};
+  amount: number
+}

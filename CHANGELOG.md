@@ -1,5 +1,14 @@
 # Change Log
 
+## 9.1.0
+
+### SDK Updates
+- Wraps Android SDK 9.4.0 API
+- Wraps iOS SDK 9.4.0 API
+
+### Bug Fixes
+- Fixed support for fabric components
+
 ## 9.0.0
 
 ### Breaking Changes

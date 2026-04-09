@@ -1,9 +1,6 @@
 import React, { forwardRef, useImperativeHandle } from 'react'
 import { useCallback, useRef, useState } from 'react'
-import {
-  type NativeMethods,
-  type ViewProps,
-} from 'react-native'
+import { type NativeMethods, type ViewProps } from 'react-native'
 import {
   type LevelPlayAdError,
   type LevelPlayAdInfo,
@@ -11,17 +8,19 @@ import {
   type LevelPlayBannerAdViewListener,
 } from '../models'
 import { levelPlayAdInfoFromMap } from '../utils/utils'
-import LevelPlayBannerAdComponent, { Commands } from '../specs/LevelPlayBannerAdViewNativeComponent'
-import type { 
-  AdLoadedEvent, 
-  AdLoadFailedEvent, 
-  AdDisplayedEvent, 
-  AdDisplayFailedEvent, 
-  AdClickedEvent, 
-  AdExpandedEvent, 
-  AdCollapsedEvent, 
+import LevelPlayBannerAdComponent, {
+  Commands,
+} from '../specs/LevelPlayBannerAdViewNativeComponent'
+import type {
+  AdLoadedEvent,
+  AdLoadFailedEvent,
+  AdDisplayedEvent,
+  AdDisplayFailedEvent,
+  AdClickedEvent,
+  AdExpandedEvent,
+  AdCollapsedEvent,
   AdLeftApplicationEvent,
-  AdIdGeneratedEvent
+  AdIdGeneratedEvent,
 } from '../specs/LevelPlayBannerAdViewNativeComponent'
 import type { DirectEventHandler } from 'react-native/Libraries/Types/CodegenTypes'
 
@@ -44,7 +43,7 @@ export interface LevelPlayBannerAdViewMethods {
   destroy: () => void
   pauseAutoRefresh: () => void
   resumeAutoRefresh: () => void
-  getAdId: () => string 
+  getAdId: () => string
 }
 
 // Props interface for the LevelPlayBannerAdView compoenent
@@ -81,10 +80,13 @@ export const LevelPlayBannerAdView = forwardRef<
   LevelPlayBannerAdViewProps
 >((props, ref) => {
   // Access props directly
-  const { adUnitId, adSize, listener, placementName, bidFloor, ...otherProps } = props
+  const { adUnitId, adSize, listener, placementName, bidFloor, ...otherProps } =
+    props
 
   // A local reference to the bannerAdView
-  const bannerAdViewRef = useRef<React.ElementRef<typeof LevelPlayBannerAdComponent> | null>(null)
+  const bannerAdViewRef = useRef<React.ElementRef<
+    typeof LevelPlayBannerAdComponent
+  > | null>(null)
 
   // State to store the adId received from native
   const [internalAdId, setInternalAdId] = useState<string>('')
@@ -96,7 +98,6 @@ export const LevelPlayBannerAdView = forwardRef<
     },
     []
   )
-
 
   // A method to load the banner ad
   const loadAd = useCallback(() => {
@@ -110,12 +111,14 @@ export const LevelPlayBannerAdView = forwardRef<
 
   // A method to resume the auto refresh of the banner after it is paused
   const resumeAutoRefresh = useCallback(() => {
-    bannerAdViewRef.current && Commands.resumeAutoRefresh(bannerAdViewRef.current)
+    bannerAdViewRef.current &&
+      Commands.resumeAutoRefresh(bannerAdViewRef.current)
   }, [])
 
   // A method to pause the auto refresh of loaded banner add
   const pauseAutoRefresh = useCallback(() => {
-    bannerAdViewRef.current && Commands.pauseAutoRefresh(bannerAdViewRef.current)
+    bannerAdViewRef.current &&
+      Commands.pauseAutoRefresh(bannerAdViewRef.current)
   }, [])
 
   // Expose methods to the parent using useImperativeHandle
@@ -126,78 +129,85 @@ export const LevelPlayBannerAdView = forwardRef<
       destroy,
       resumeAutoRefresh,
       pauseAutoRefresh,
-      getAdId : () => internalAdId,
+      getAdId: () => internalAdId,
     }),
     [loadAd, destroy, resumeAutoRefresh, pauseAutoRefresh, internalAdId]
   )
 
   // Handle the banner ad events:
   const onAdLoadedEvent: DirectEventHandler<AdLoadedEvent> = useCallback(
-    (event) => {
+    event => {
       listener?.onAdLoaded(levelPlayAdInfoFromMap(event.nativeEvent.adInfo))
     },
     [listener]
   )
 
-  const onAdLoadFailedEvent: DirectEventHandler<AdLoadFailedEvent> = useCallback(
-    (event) => {
-      listener?.onAdLoadFailed(event.nativeEvent.error)
-    },
-    [listener]
-  )
+  const onAdLoadFailedEvent: DirectEventHandler<AdLoadFailedEvent> =
+    useCallback(
+      event => {
+        listener?.onAdLoadFailed(event.nativeEvent.error)
+      },
+      [listener]
+    )
 
   const onAdDisplayedEvent: DirectEventHandler<AdDisplayedEvent> = useCallback(
-    (event) => {
-      listener?.onAdDisplayed?.(levelPlayAdInfoFromMap(event.nativeEvent.adInfo))
-    },
-    [listener]
-  )
-
-  const onAdDisplayFailedEvent: DirectEventHandler<AdDisplayFailedEvent> = useCallback(
-    (event) => {
-      listener?.onAdDisplayFailed?.(
-        levelPlayAdInfoFromMap(event.nativeEvent.adInfo),
-        event.nativeEvent.error
+    event => {
+      listener?.onAdDisplayed?.(
+        levelPlayAdInfoFromMap(event.nativeEvent.adInfo)
       )
     },
     [listener]
   )
 
+  const onAdDisplayFailedEvent: DirectEventHandler<AdDisplayFailedEvent> =
+    useCallback(
+      event => {
+        listener?.onAdDisplayFailed?.(
+          levelPlayAdInfoFromMap(event.nativeEvent.adInfo),
+          event.nativeEvent.error
+        )
+      },
+      [listener]
+    )
+
   const onAdClickedEvent: DirectEventHandler<AdClickedEvent> = useCallback(
-    (event) => {
+    event => {
       listener?.onAdClicked?.(levelPlayAdInfoFromMap(event.nativeEvent.adInfo))
     },
     [listener]
   )
 
   const onAdExpandedEvent: DirectEventHandler<AdExpandedEvent> = useCallback(
-    (event) => {
+    event => {
       listener?.onAdExpanded?.(levelPlayAdInfoFromMap(event.nativeEvent.adInfo))
     },
     [listener]
   )
 
   const onAdCollapsedEvent: DirectEventHandler<AdCollapsedEvent> = useCallback(
-    (event) => {
-      listener?.onAdCollapsed?.(levelPlayAdInfoFromMap(event.nativeEvent.adInfo))
+    event => {
+      listener?.onAdCollapsed?.(
+        levelPlayAdInfoFromMap(event.nativeEvent.adInfo)
+      )
     },
     [listener]
   )
 
-  const onAdLeftApplicationEvent: DirectEventHandler<AdLeftApplicationEvent> = useCallback(
-    (event) => {
-      listener?.onAdLeftApplication?.(levelPlayAdInfoFromMap(event.nativeEvent.adInfo))
-    },
-    [listener]
-  )
+  const onAdLeftApplicationEvent: DirectEventHandler<AdLeftApplicationEvent> =
+    useCallback(
+      event => {
+        listener?.onAdLeftApplication?.(
+          levelPlayAdInfoFromMap(event.nativeEvent.adInfo)
+        )
+      },
+      [listener]
+    )
 
-  const onAdIdGeneratedEvent: DirectEventHandler<AdIdGeneratedEvent> = useCallback(
-    (event) => {
+  const onAdIdGeneratedEvent: DirectEventHandler<AdIdGeneratedEvent> =
+    useCallback(event => {
       const adId = event.nativeEvent.adId
-        setInternalAdId(adId) // Update the internal state with the new ad ID
-    },
-    [] 
-  )
+      setInternalAdId(adId) // Update the internal state with the new ad ID
+    }, [])
 
   return (
     <LevelPlayBannerAdComponent
@@ -217,7 +227,7 @@ export const LevelPlayBannerAdView = forwardRef<
       onAdExpandedEvent={onAdExpandedEvent}
       onAdCollapsedEvent={onAdCollapsedEvent}
       onAdLeftApplicationEvent={onAdLeftApplicationEvent}
-      onAdIdGeneratedEvent={onAdIdGeneratedEvent} 
+      onAdIdGeneratedEvent={onAdIdGeneratedEvent}
     />
   )
 })

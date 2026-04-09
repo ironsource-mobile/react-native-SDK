@@ -1,4 +1,4 @@
-import type { LevelPlayAdSize } from './LevelPlayAdSize';
+import type { LevelPlayAdSize } from './LevelPlayAdSize'
 
 /**
  * Represents detailed information about a LevelPlay ad.
@@ -7,91 +7,91 @@ export type LevelPlayAdInfo = {
   /**
    * The unique identifier of the ad object.
    */
-  adId: string;
+  adId: string
 
   /**
    * The unique identifier of the ad unit.
    */
-  adUnitId: string;
+  adUnitId: string
 
   /**
    * The name of the ad unit.
    */
-  adUnitName: string;
+  adUnitName: string
 
   /**
    * The size of the ad.
    * This can be null if the ad size is not applicable or not provided.
    */
-  adSize: LevelPlayAdSize | null;
+  adSize: LevelPlayAdSize | null
 
   /**
    * The format of the ad (e.g., BANNER, INTERSTITIAL, REWARDED, NATIVE_AD).
    */
-  adFormat: string;
+  adFormat: string
 
   /**
    * The name of the placement where the ad was shown.
    */
-  placementName: string;
+  placementName: string
 
   /**
    * The unique identifier for the auction in which the ad was won.
    */
-  auctionId: string;
+  auctionId: string
 
   /**
    * The country where the ad was displayed.
    */
-  country: string;
+  country: string
 
   /**
    * A/B testing group identifier.
    */
-  ab: string;
+  ab: string
 
   /**
    * The name of the segment in which the user falls.
    */
-  segmentName: string;
+  segmentName: string
 
   /**
    * The name of the ad network that served the ad.
    */
-  adNetwork: string;
+  adNetwork: string
 
   /**
    * The name of the ad instance.
    */
-  instanceName: string;
+  instanceName: string
 
   /**
    * The identifier of the ad instance.
    */
-  instanceId: string;
+  instanceId: string
 
   /**
    * The revenue earned from the ad impression.
    */
-  revenue: number;
+  revenue: number
 
   /**
    * The precision of the revenue amount.
    */
-  precision: string;
+  precision: string
 
   /**
    * The encrypted cost per thousand impressions (CPM).
    */
-  encryptedCPM: string;
+  encryptedCPM: string
 
   /**
    * The conversion value attributed to this impression, used for SKAdNetwork.
    */
-  conversionValue: number | null;
+  conversionValue: number | null
 
   /**
    * The unique identifier of the creative that was displayed.
    */
-  creativeId: string;
-};
+  creativeId: string
+}

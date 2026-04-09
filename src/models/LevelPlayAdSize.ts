@@ -34,8 +34,16 @@ export class LevelPlayAdSize {
   }
 
   // Predefined ad sizes
-  static BANNER = new LevelPlayAdSize(BANNER_WIDTH, BANNER_HEIGHT, SIZE_BANNER_LABEL)
-  static LARGE = new LevelPlayAdSize(LARGE_WIDTH, LARGE_HEIGHT, SIZE_LARGE_LABEL)
+  static BANNER = new LevelPlayAdSize(
+    BANNER_WIDTH,
+    BANNER_HEIGHT,
+    SIZE_BANNER_LABEL
+  )
+  static LARGE = new LevelPlayAdSize(
+    LARGE_WIDTH,
+    LARGE_HEIGHT,
+    SIZE_LARGE_LABEL
+  )
   static MEDIUM_RECTANGLE = new LevelPlayAdSize(
     MEDIUM_RECTANGLE_WIDTH,
     MEDIUM_RECTANGLE_HEIGHT,
@@ -79,13 +87,19 @@ export class LevelPlayAdSize {
   static async createAdaptiveAdSize(
     width: number | null = null
   ): Promise<LevelPlayAdSize | null> {
-    const sizeMap = width != null
-            ? await NativeLevelPlayMediation.createAdaptiveAdSizeWithWidth(width)
-            : await NativeLevelPlayMediation.createAdaptiveAdSize();    
+    const sizeMap =
+      width != null
+        ? await NativeLevelPlayMediation.createAdaptiveAdSizeWithWidth(width)
+        : await NativeLevelPlayMediation.createAdaptiveAdSize()
     return sizeMap != null ? LevelPlayAdSize.fromMap(sizeMap) : null
   }
 
-  toMap(): { width: number; height: number; adLabel?: string | null; isAdaptive: boolean } {
+  toMap(): {
+    width: number
+    height: number
+    adLabel?: string | null
+    isAdaptive: boolean
+  } {
     return {
       width: this.width,
       height: this.height,

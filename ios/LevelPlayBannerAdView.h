@@ -33,6 +33,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy, nullable) RCTDirectEventBlock onAdExpandedEvent;
 @property (nonatomic, copy, nullable) RCTDirectEventBlock onAdLeftApplicationEvent;
 @property (nonatomic, copy, nullable) RCTDirectEventBlock onAdIdGeneratedEvent;
+@property (nonatomic, assign) BOOL isInitialized;
 
 - (instancetype)initWithBridge:(RCTBridge *)bridge;
 - (void)initializeBanner;

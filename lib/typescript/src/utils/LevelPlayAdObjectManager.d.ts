@@ -1,5 +1,5 @@
-import { type LevelPlayInterstitialAd } from "../models/LevelPlayInterstitialAd";
-import { type LevelPlayRewardedAd } from "../models/LevelPlayRewardedAd";
+import { type LevelPlayInterstitialAd } from '../models/LevelPlayInterstitialAd';
+import { type LevelPlayRewardedAd } from '../models/LevelPlayRewardedAd';
 /**
  * Manages instances of LevelPlay interstitial ads.
  */

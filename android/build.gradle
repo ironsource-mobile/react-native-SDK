@@ -85,5 +85,5 @@ def kotlin_version = getExtOrDefault('kotlinVersion')
 dependencies {
   implementation "com.facebook.react:react-android"
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-  implementation 'com.unity3d.ads-mediation:mediation-sdk:9.2.0'
+  implementation 'com.unity3d.ads-mediation:mediation-sdk:9.4.0'
 }

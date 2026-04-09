@@ -21,6 +21,31 @@ using namespace facebook::react;
 
 @end
 
+#pragma mark - Event Helpers
+
+// Helper to safely convert NSString/NSNull to std::string
+static std::string safeStringFromDict(NSDictionary *dict, NSString *key) {
+    id value = dict[key];
+    if (value == nil || [value isKindOfClass:[NSNull class]]) {
+        return "";
+    }
+    if ([value isKindOfClass:[NSString class]]) {
+        return std::string([(NSString *)value UTF8String]);
+    }
+    return "";
+}
+
+static double safeDoubleFromDict(NSDictionary *dict, NSString *key) {
+    id value = dict[key];
+    if (value == nil || [value isKindOfClass:[NSNull class]]) {
+        return 0.0;
+    }
+    if ([value isKindOfClass:[NSNumber class]]) {
+        return [(NSNumber *)value doubleValue];
+    }
+    return 0.0;
+}
+
 /**
  Class for implementing instance of LevelPlayNativeAdView.
  */
@@ -41,11 +66,17 @@ using namespace facebook::react;
 }
 
 #ifdef RCT_NEW_ARCH_ENABLED
++ (ComponentDescriptorProvider)componentDescriptorProvider
+{
+  return concreteComponentDescriptorProvider<LevelPlayNativeAdViewComponentDescriptor>();
+}
+
 - (instancetype)initWithFrame:(CGRect)frame
 {
   if (self = [super initWithFrame:frame]) {
     static const auto defaultProps = std::make_shared<const facebook::react::LevelPlayNativeAdViewProps>();
     _props = defaultProps;
+    [self configureEventBlocks];
   }
   return self;
 }
@@ -54,13 +85,96 @@ using namespace facebook::react;
 {
   const auto &oldViewProps = *std::static_pointer_cast<LevelPlayNativeAdViewProps const>(_props);
   const auto &newViewProps = *std::static_pointer_cast<LevelPlayNativeAdViewProps const>(props);
-  
+
   _props = std::static_pointer_cast<LevelPlayNativeAdViewProps const>(props);
-  
-  // Basic implementation - add specific prop handling as needed
-  // For now, just call super to handle the basic props update
-  
+
   [super updateProps:props oldProps:oldProps];
+
+  // Handle creationParams from Fabric
+  auto creationParamsValue = newViewProps.creationParams;
+  NSMutableDictionary *creationParams = [NSMutableDictionary new];
+
+  // Extract placement
+  if (!creationParamsValue.placement.empty()) {
+    NSString *placement = RCTNSStringFromString(creationParamsValue.placement);
+    creationParams[@"placement"] = placement;
+    self.placement = placement;
+  }
+
+  // Extract templateType
+  if (!creationParamsValue.templateType.empty()) {
+    NSString *templateType = RCTNSStringFromString(creationParamsValue.templateType);
+    creationParams[@"templateType"] = templateType;
+    self.templateType = templateType;
+  }
+
+  // Extract viewType
+  if (!creationParamsValue.viewType.empty()) {
+    NSString *viewType = RCTNSStringFromString(creationParamsValue.viewType);
+    creationParams[@"viewType"] = viewType;
+    self.viewType = viewType;
+  }
+
+  // Extract templateStyle
+  auto templateStyleValue = creationParamsValue.templateStyle;
+  NSMutableDictionary *templateStyleDict = [NSMutableDictionary new];
+
+  if (!templateStyleValue.mainBackgroundColor.empty()) {
+    templateStyleDict[@"mainBackgroundColor"] = RCTNSStringFromString(templateStyleValue.mainBackgroundColor);
+  }
+  if (!templateStyleValue.titleTextColor.empty()) {
+    templateStyleDict[@"titleTextColor"] = RCTNSStringFromString(templateStyleValue.titleTextColor);
+  }
+  if (!templateStyleValue.bodyTextColor.empty()) {
+    templateStyleDict[@"bodyTextColor"] = RCTNSStringFromString(templateStyleValue.bodyTextColor);
+  }
+  if (!templateStyleValue.advertiserTextColor.empty()) {
+    templateStyleDict[@"advertiserTextColor"] = RCTNSStringFromString(templateStyleValue.advertiserTextColor);
+  }
+  if (!templateStyleValue.ctaBackgroundColor.empty()) {
+    templateStyleDict[@"ctaBackgroundColor"] = RCTNSStringFromString(templateStyleValue.ctaBackgroundColor);
+  }
+  if (!templateStyleValue.ctaTextColor.empty()) {
+    templateStyleDict[@"ctaTextColor"] = RCTNSStringFromString(templateStyleValue.ctaTextColor);
+  }
+  if (templateStyleValue.ctaCornerRadius > 0) {
+    templateStyleDict[@"ctaCornerRadius"] = @(templateStyleValue.ctaCornerRadius);
+  }
+
+  if (templateStyleDict.count > 0) {
+    creationParams[@"templateStyle"] = templateStyleDict;
+  }
+
+  // Initialize native ad with extracted params (only if not already initialized)
+  if (creationParams.count > 0 && !self.isInitialized) {
+    [self setCreationParams:creationParams];
+    self.isInitialized = YES;
+  }
+}
+
+- (void)prepareForRecycle
+{
+  [super prepareForRecycle];
+
+  // Clean up native ad when recycled
+  if (self.nativeAd != nil) {
+    [self.nativeAd destroyAd];
+    self.nativeAd = nil;
+  }
+
+  // Remove and clean up the native ad view
+  if (self.isNativeAdView != nil) {
+    self.isNativeAdView.hidden = YES;
+    [self.isNativeAdView removeFromSuperview];
+    self.isNativeAdView = nil;
+  }
+
+  // Reset properties
+  self.placement = nil;
+  self.templateType = nil;
+  self.viewType = nil;
+  self.templateStyle = nil;
+  self.isInitialized = NO;
 }
 #endif
 
@@ -102,6 +216,11 @@ using namespace facebook::react;
  */
 - (void)setCreationParams:(NSDictionary *)creationParams
 {
+    // Skip if already initialized (Fabric mode already handled this)
+    if (self.isInitialized) {
+        return;
+    }
+
     // Extract variables from dict
     NSString *placement = [creationParams[@"placement"] isKindOfClass:[NSString class]] ? creationParams[@"placement"] : nil;
     NSString *templateType = [creationParams[@"templateType"] isKindOfClass:[NSString class]] ? creationParams[@"templateType"] : nil;
@@ -172,6 +291,9 @@ using namespace facebook::react;
     self.isNativeAdView.hidden = YES;
 
     [self addSubview:isNativeAdView];
+
+    // Mark as initialized
+    self.isInitialized = YES;
 }
 
 - (void)applyStylesWithTitleView:(UILabel *)titleView
@@ -293,6 +415,200 @@ using namespace facebook::react;
                                                              cornerRadius:cornerRadius];
 }
 
+- (void)configureEventBlocks {
+#ifdef RCT_NEW_ARCH_ENABLED
+    // onAdLoadedEvent
+    self.onAdLoadedEvent = [self](NSDictionary *event) {
+        if (_eventEmitter) {
+            auto fabricEventEmitter = std::static_pointer_cast<const facebook::react::LevelPlayNativeAdViewEventEmitter>(_eventEmitter);
+
+            NSDictionary *nativeAdDict = event[@"nativeAd"];
+            NSDictionary *adInfoDict = event[@"adInfo"];
+            facebook::react::LevelPlayNativeAdViewEventEmitter::OnAdLoadedEvent fabricEvent;
+
+            fabricEvent.nativeAd.title = safeStringFromDict(nativeAdDict, @"title");
+            fabricEvent.nativeAd.body = safeStringFromDict(nativeAdDict, @"body");
+            fabricEvent.nativeAd.advertiser = safeStringFromDict(nativeAdDict, @"advertiser");
+            fabricEvent.nativeAd.callToAction = safeStringFromDict(nativeAdDict, @"callToAction");
+
+            NSDictionary *iconDict = nativeAdDict[@"icon"];
+            if (iconDict && ![iconDict isKindOfClass:[NSNull class]]) {
+                fabricEvent.nativeAd.icon.uri = safeStringFromDict(iconDict, @"uri");
+                fabricEvent.nativeAd.icon.imageData = safeStringFromDict(iconDict, @"imageData");
+            }
+
+            fabricEvent.nativeAd.placement = safeStringFromDict(nativeAdDict, @"placement");
+
+            fabricEvent.adInfo.auctionId = safeStringFromDict(adInfoDict, @"auctionId");
+            fabricEvent.adInfo.country = safeStringFromDict(adInfoDict, @"country");
+            fabricEvent.adInfo.ab = safeStringFromDict(adInfoDict, @"ab");
+            fabricEvent.adInfo.segmentName = safeStringFromDict(adInfoDict, @"segmentName");
+            fabricEvent.adInfo.adNetwork = safeStringFromDict(adInfoDict, @"adNetwork");
+            fabricEvent.adInfo.instanceName = safeStringFromDict(adInfoDict, @"instanceName");
+            fabricEvent.adInfo.instanceId = safeStringFromDict(adInfoDict, @"instanceId");
+            fabricEvent.adInfo.revenue = safeDoubleFromDict(adInfoDict, @"revenue");
+            fabricEvent.adInfo.precision = safeStringFromDict(adInfoDict, @"precision");
+            fabricEvent.adInfo.encryptedCPM = safeStringFromDict(adInfoDict, @"encryptedCPM");
+            fabricEvent.adInfo.conversionValue = safeDoubleFromDict(adInfoDict, @"conversionValue");
+
+            fabricEventEmitter->onAdLoadedEvent(fabricEvent);
+        }
+    };
+
+    // onAdLoadFailedEvent
+    self.onAdLoadFailedEvent = [self](NSDictionary *event) {
+        if (_eventEmitter) {
+            auto fabricEventEmitter = std::static_pointer_cast<const facebook::react::LevelPlayNativeAdViewEventEmitter>(_eventEmitter);
+
+            NSDictionary *nativeAdDict = event[@"nativeAd"];
+            NSDictionary *errorDict = event[@"error"];
+            facebook::react::LevelPlayNativeAdViewEventEmitter::OnAdLoadFailedEvent fabricEvent;
+
+            fabricEvent.nativeAd.title = safeStringFromDict(nativeAdDict, @"title");
+            fabricEvent.nativeAd.body = safeStringFromDict(nativeAdDict, @"body");
+            fabricEvent.nativeAd.advertiser = safeStringFromDict(nativeAdDict, @"advertiser");
+            fabricEvent.nativeAd.callToAction = safeStringFromDict(nativeAdDict, @"callToAction");
+
+            NSDictionary *iconDict = nativeAdDict[@"icon"];
+            if (iconDict && ![iconDict isKindOfClass:[NSNull class]]) {
+                fabricEvent.nativeAd.icon.uri = safeStringFromDict(iconDict, @"uri");
+                fabricEvent.nativeAd.icon.imageData = safeStringFromDict(iconDict, @"imageData");
+            }
+
+            fabricEvent.nativeAd.placement = safeStringFromDict(nativeAdDict, @"placement");
+            fabricEvent.error.errorCode = (int)safeDoubleFromDict(errorDict, @"errorCode");
+            fabricEvent.error.message = safeStringFromDict(errorDict, @"message");
+
+            fabricEventEmitter->onAdLoadFailedEvent(fabricEvent);
+        }
+    };
+
+    // onAdClickedEvent
+    self.onAdClickedEvent = [self](NSDictionary *event) {
+        if (_eventEmitter) {
+            auto fabricEventEmitter = std::static_pointer_cast<const facebook::react::LevelPlayNativeAdViewEventEmitter>(_eventEmitter);
+
+            NSDictionary *nativeAdDict = event[@"nativeAd"];
+            NSDictionary *adInfoDict = event[@"adInfo"];
+            facebook::react::LevelPlayNativeAdViewEventEmitter::OnAdClickedEvent fabricEvent;
+
+            fabricEvent.nativeAd.title = safeStringFromDict(nativeAdDict, @"title");
+            fabricEvent.nativeAd.body = safeStringFromDict(nativeAdDict, @"body");
+            fabricEvent.nativeAd.advertiser = safeStringFromDict(nativeAdDict, @"advertiser");
+            fabricEvent.nativeAd.callToAction = safeStringFromDict(nativeAdDict, @"callToAction");
+
+            NSDictionary *iconDict = nativeAdDict[@"icon"];
+            if (iconDict && ![iconDict isKindOfClass:[NSNull class]]) {
+                fabricEvent.nativeAd.icon.uri = safeStringFromDict(iconDict, @"uri");
+                fabricEvent.nativeAd.icon.imageData = safeStringFromDict(iconDict, @"imageData");
+            }
+
+            fabricEvent.nativeAd.placement = safeStringFromDict(nativeAdDict, @"placement");
+
+            fabricEvent.adInfo.auctionId = safeStringFromDict(adInfoDict, @"auctionId");
+            fabricEvent.adInfo.country = safeStringFromDict(adInfoDict, @"country");
+            fabricEvent.adInfo.ab = safeStringFromDict(adInfoDict, @"ab");
+            fabricEvent.adInfo.segmentName = safeStringFromDict(adInfoDict, @"segmentName");
+            fabricEvent.adInfo.adNetwork = safeStringFromDict(adInfoDict, @"adNetwork");
+            fabricEvent.adInfo.instanceName = safeStringFromDict(adInfoDict, @"instanceName");
+            fabricEvent.adInfo.instanceId = safeStringFromDict(adInfoDict, @"instanceId");
+            fabricEvent.adInfo.revenue = safeDoubleFromDict(adInfoDict, @"revenue");
+            fabricEvent.adInfo.precision = safeStringFromDict(adInfoDict, @"precision");
+            fabricEvent.adInfo.encryptedCPM = safeStringFromDict(adInfoDict, @"encryptedCPM");
+            fabricEvent.adInfo.conversionValue = safeDoubleFromDict(adInfoDict, @"conversionValue");
+
+            fabricEventEmitter->onAdClickedEvent(fabricEvent);
+        }
+    };
+
+    // onAdImpressionEvent
+    self.onAdImpressionEvent = [self](NSDictionary *event) {
+        if (_eventEmitter) {
+            auto fabricEventEmitter = std::static_pointer_cast<const facebook::react::LevelPlayNativeAdViewEventEmitter>(_eventEmitter);
+
+            NSDictionary *nativeAdDict = event[@"nativeAd"];
+            NSDictionary *adInfoDict = event[@"adInfo"];
+            facebook::react::LevelPlayNativeAdViewEventEmitter::OnAdImpressionEvent fabricEvent;
+
+            fabricEvent.nativeAd.title = safeStringFromDict(nativeAdDict, @"title");
+            fabricEvent.nativeAd.body = safeStringFromDict(nativeAdDict, @"body");
+            fabricEvent.nativeAd.advertiser = safeStringFromDict(nativeAdDict, @"advertiser");
+            fabricEvent.nativeAd.callToAction = safeStringFromDict(nativeAdDict, @"callToAction");
+
+            NSDictionary *iconDict = nativeAdDict[@"icon"];
+            if (iconDict && ![iconDict isKindOfClass:[NSNull class]]) {
+                fabricEvent.nativeAd.icon.uri = safeStringFromDict(iconDict, @"uri");
+                fabricEvent.nativeAd.icon.imageData = safeStringFromDict(iconDict, @"imageData");
+            }
+
+            fabricEvent.nativeAd.placement = safeStringFromDict(nativeAdDict, @"placement");
+
+            fabricEvent.adInfo.auctionId = safeStringFromDict(adInfoDict, @"auctionId");
+            fabricEvent.adInfo.country = safeStringFromDict(adInfoDict, @"country");
+            fabricEvent.adInfo.ab = safeStringFromDict(adInfoDict, @"ab");
+            fabricEvent.adInfo.segmentName = safeStringFromDict(adInfoDict, @"segmentName");
+            fabricEvent.adInfo.adNetwork = safeStringFromDict(adInfoDict, @"adNetwork");
+            fabricEvent.adInfo.instanceName = safeStringFromDict(adInfoDict, @"instanceName");
+            fabricEvent.adInfo.instanceId = safeStringFromDict(adInfoDict, @"instanceId");
+            fabricEvent.adInfo.revenue = safeDoubleFromDict(adInfoDict, @"revenue");
+            fabricEvent.adInfo.precision = safeStringFromDict(adInfoDict, @"precision");
+            fabricEvent.adInfo.encryptedCPM = safeStringFromDict(adInfoDict, @"encryptedCPM");
+            fabricEvent.adInfo.conversionValue = safeDoubleFromDict(adInfoDict, @"conversionValue");
+
+            fabricEventEmitter->onAdImpressionEvent(fabricEvent);
+        }
+    };
+#endif
+}
+
+// Helper method to bind native ad to view (used in Fabric mode when delegate is nil)
+- (void)bindNativeAdToView:(LevelPlayNativeAd *)nativeAd {
+    if (nativeAd == nil || self.isNativeAdView == nil) {
+        return;
+    }
+
+    // Extract views from XIB
+    UILabel *titleView = self.isNativeAdView.adTitleView;
+    UILabel *bodyView = self.isNativeAdView.adBodyView;
+    UILabel *advertiserView = self.isNativeAdView.adAdvertiserView;
+    UIButton *callToActionView = self.isNativeAdView.adCallToActionView;
+    UIImageView *iconView = self.isNativeAdView.adAppIcon;
+    LevelPlayMediaView *mediaView = self.isNativeAdView.adMediaView;
+
+    // Bind native ad data to views
+    if (nativeAd.title != nil) {
+        titleView.text = nativeAd.title;
+        [self.isNativeAdView setAdTitleView:titleView];
+    }
+
+    if (nativeAd.body != nil) {
+        bodyView.text = nativeAd.body;
+        [self.isNativeAdView setAdBodyView:bodyView];
+    }
+
+    if (nativeAd.advertiser != nil) {
+        advertiserView.text = nativeAd.advertiser;
+        [self.isNativeAdView setAdAdvertiserView:advertiserView];
+    }
+
+    if (nativeAd.callToAction != nil) {
+        [callToActionView setTitle:nativeAd.callToAction forState:UIControlStateNormal];
+        [self.isNativeAdView setAdCallToActionView:callToActionView];
+    }
+
+    if (nativeAd.icon != nil) {
+        iconView.image = nativeAd.icon.image;
+        [self.isNativeAdView setAdAppIcon:iconView];
+    }
+
+    if (mediaView != nil) {
+        [self.isNativeAdView setAdMediaView:mediaView];
+    }
+
+    // Register native ad views with the provided native ad
+    [self.isNativeAdView registerNativeAdViews:nativeAd];
+}
+
 #pragma mark - LevelPlayNativeAdDelegate
 
 /**
@@ -305,12 +621,21 @@ using namespace facebook::react;
     // Save native ad instance
     _nativeAd = nativeAd;
 
-    [self.delegate bindNativeAdToView:nativeAd isNativeAdView:self.isNativeAdView];
+    // Bind native ad to view
+    // Old arch (Interop enabled): delegate is always set, use it for both templates and custom views
+    // Fabric (Interop disabled): delegate is nil, use direct binding for templates only
+    if (self.delegate) {
+        [self.delegate bindNativeAdToView:nativeAd isNativeAdView:self.isNativeAdView];
+    } else {
+        // Fabric mode without delegate - direct binding for templates
+        [self bindNativeAdToView:nativeAd];
+    }
 
-    NSDictionary *adDict = [LevelPlayUtils getDictWithNativeAd:nativeAd];
-    NSDictionary *adInfoDict = [LevelPlayUtils getDictWithAdInfo:adInfo];
     if (self.onAdLoadedEvent) {
-        self.onAdLoadedEvent(@{@"nativeAd": adDict, @"adInfo": adInfoDict});
+        self.onAdLoadedEvent(@{
+            @"nativeAd": [LevelPlayUtils getDictWithNativeAd:nativeAd],
+            @"adInfo": [LevelPlayUtils getDictWithAdInfo:adInfo]
+        });
     }
 
     // Apply styles
@@ -330,10 +655,11 @@ using namespace facebook::react;
  */
 - (void)didFailToLoad:(LevelPlayNativeAd *)nativeAd withError:(NSError *)error
 {
-    NSDictionary *adDict = [LevelPlayUtils getDictWithNativeAd:nativeAd];
-    NSDictionary *errorDict = [LevelPlayUtils getDictWithError:error];
     if (self.onAdLoadFailedEvent) {
-        self.onAdLoadFailedEvent(@{@"nativeAd": adDict, @"error": errorDict});
+        self.onAdLoadFailedEvent(@{
+            @"nativeAd": [LevelPlayUtils getDictWithNativeAd:nativeAd],
+            @"error": [LevelPlayUtils getDictWithError:error]
+        });
     }
 }
 
@@ -345,10 +671,11 @@ using namespace facebook::react;
 
 - (void)didClick:(LevelPlayNativeAd *)nativeAd withAdInfo:(ISAdInfo *)adInfo
 {
-    NSDictionary *adDict = [LevelPlayUtils getDictWithNativeAd:nativeAd];
-    NSDictionary *adInfoDict = [LevelPlayUtils getDictWithAdInfo:adInfo];
     if (self.onAdClickedEvent) {
-        self.onAdClickedEvent(@{@"nativeAd": adDict, @"adInfo": adInfoDict});
+        self.onAdClickedEvent(@{
+            @"nativeAd": [LevelPlayUtils getDictWithNativeAd:nativeAd],
+            @"adInfo": [LevelPlayUtils getDictWithAdInfo:adInfo]
+        });
     }
 }
 
@@ -359,12 +686,20 @@ using namespace facebook::react;
  */
 - (void)didRecordImpression:(LevelPlayNativeAd *)nativeAd withAdInfo:(ISAdInfo *)adInfo
 {
-    NSDictionary *adDict = [LevelPlayUtils getDictWithNativeAd:nativeAd];
-    NSDictionary *adInfoDict = [LevelPlayUtils getDictWithAdInfo:adInfo];
     if (self.onAdImpressionEvent) {
-        self.onAdImpressionEvent(@{@"nativeAd": adDict, @"adInfo": adInfoDict});
+        self.onAdImpressionEvent(@{
+            @"nativeAd": [LevelPlayUtils getDictWithNativeAd:nativeAd],
+            @"adInfo": [LevelPlayUtils getDictWithAdInfo:adInfo]
+        });
     }
 }
+
+#ifdef RCT_NEW_ARCH_ENABLED
+- (void)handleCommand:(NSString *)commandName args:(NSArray *)args
+{
+  RCTLevelPlayNativeAdViewHandleCommand(self, commandName, args);
+}
+#endif
 
 @end
 

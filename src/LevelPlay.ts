@@ -29,7 +29,7 @@ const { ON_INIT_FAILED, ON_INIT_SUCCESS, ON_IMPRESSION_SUCCESS } =
 type LevelPlayType = {
   /**
    * Validates the integration of the LevelPlay SDK.
-   * 
+   *
    * Android: validateIntegration
    *     iOS: validateIntegration
    */
@@ -37,7 +37,7 @@ type LevelPlayType = {
 
   /**
    * Sets a dynamic user ID for tracking purposes.
-   * 
+   *
    * Android: setDynamicUserId
    *     iOS: setDynamicUserId
    */
@@ -45,7 +45,7 @@ type LevelPlayType = {
 
   /**
    * Enables or disables debug mode for LevelPlay adapters.
-   * 
+   *
    * Android: setAdaptersDebug
    *     iOS: setAdaptersDebug
    */
@@ -53,7 +53,7 @@ type LevelPlayType = {
 
   /**
    * Sets the user's consent status for data collection.
-   * 
+   *
    * Android: setConsent
    *     iOS: setConsent
    */
@@ -61,7 +61,7 @@ type LevelPlayType = {
 
   /**
    * Sets metadata with key-value pairs for custom configurations.
-   * 
+   *
    * Android: setMetaData
    *     iOS: setMetaDataWithKey
    */
@@ -69,7 +69,7 @@ type LevelPlayType = {
 
   /**
    * Configures a user segment with specific attributes for targeting purposes.
-   * 
+   *
    * Android: setSegment
    *     iOS: setSegment
    */
@@ -77,7 +77,7 @@ type LevelPlayType = {
 
   /**
    * Launches the LevelPlay Test Suite for debugging and validation.
-   * 
+   *
    * Android: launchTestSuite
    *     iOS: launchTestSuite
    */
@@ -98,7 +98,9 @@ type LevelPlayType = {
    * Adds a listener for receiving impression data events.
    * @param listener - The listener to handle impression data events.
    */
-  addImpressionDataListener: (listener: LevelPlayImpressionDataListener) => Promise<void>
+  addImpressionDataListener: (
+    listener: LevelPlayImpressionDataListener
+  ) => Promise<void>
 
   /**
    * @returns The version of the LevelPlay plugin.
@@ -167,7 +169,7 @@ const setLevelPlayInitListener = (listener: LevelPlayInitListener) => {
  * Sets the addImpressionDataListener to handle impression data events.
  * @param listener The addImpressionDataListener object containing event handlers.
  */
-const addImpressionDataListener = async  (
+const addImpressionDataListener = async (
   listener: LevelPlayImpressionDataListener
 ) => {
   // Remove any existing listeners
@@ -203,7 +205,10 @@ const init = async (
   }
 
   setLevelPlayInitListener(initListener)
-  await NativeLevelPlayMediation.init(initRequest.appKey, initRequest.userId || undefined)
+  await NativeLevelPlayMediation.init(
+    initRequest.appKey,
+    initRequest.userId || undefined
+  )
 }
 
 type LevelPlayNativeMethodsType = Omit<
@@ -214,7 +219,8 @@ type LevelPlayNativeMethodsType = Omit<
   | 'addImpressionDataListener'
 >
 
-const LevelPlayNativeMethods: LevelPlayNativeMethodsType = NativeLevelPlayMediation
+const LevelPlayNativeMethods: LevelPlayNativeMethodsType =
+  NativeLevelPlayMediation
 
 export const LevelPlay: LevelPlayType = Object.create(LevelPlayNativeMethods, {
   getPluginVersion: {

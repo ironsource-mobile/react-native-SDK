@@ -39,7 +39,9 @@ export class LevelPlayInterstitialAd {
    * @returns A promise that resolves to a boolean indicating whether the placement is capped.
    */
   static async isPlacementCapped(placementName: string): Promise<boolean> {
-    return await NativeLevelPlayMediation.isInterstitialAdPlacementCapped(placementName)
+    return await NativeLevelPlayMediation.isInterstitialAdPlacementCapped(
+      placementName
+    )
   }
 
   /**
@@ -56,7 +58,10 @@ export class LevelPlayInterstitialAd {
    * @returns A promise that resolves when the ad is shown.
    */
   async showAd(placementName: string | null = ''): Promise<void> {
-    await levelPlayObjectManager.showInterstitialAd(this.adId, placementName ?? '')
+    await levelPlayObjectManager.showInterstitialAd(
+      this.adId,
+      placementName ?? ''
+    )
   }
 
   /**

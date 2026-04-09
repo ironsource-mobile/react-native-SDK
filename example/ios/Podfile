@@ -23,6 +23,9 @@ target 'LevelPlayMediationExample' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
+  # UnityAds Adapter
+  pod 'IronSourceUnityAdsAdapter'
+
   post_install do |installer|
     # https://github.com/facebook/react-native/blob/main/packages/react-native/scripts/react_native_pods.rb#L197-L202
     react_native_post_install(
@@ -31,5 +34,14 @@ target 'LevelPlayMediationExample' do
       :mac_catalyst_enabled => false,
       # :ccache_enabled => true
     )
+
+    # Workaround for fmt 11.x compilation error with Xcode 16
+    installer.pods_project.targets.each do |target|
+      if target.name == 'fmt'
+        target.build_configurations.each do |config|
+          config.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'c++17'
+        end
+      end
+    end
   end
 end

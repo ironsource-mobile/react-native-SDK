@@ -1,6 +1,6 @@
-export * from './LevelPlay';
-export * from './models';
-export * from './components';
+export * from './LevelPlay'
+export * from './models'
+export * from './components'
 
 // Non LevelPlay SDK
-export * from './utils/ATTrackingManager';
+export * from './utils/ATTrackingManager'

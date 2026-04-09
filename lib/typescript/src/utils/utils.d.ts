@@ -1,4 +1,4 @@
-import { type AdInfo, type IronSourceError, type LevelPlayAdError, type LevelPlayAdInfo, type LevelPlayConfiguration, type LevelPlayInitError, type LevelPlayReward, type LevelPlayImpressionData, LevelPlayNativeAd } from "../models";
+import { type AdInfo, type IronSourceError, type LevelPlayAdError, type LevelPlayAdInfo, type LevelPlayConfiguration, type LevelPlayInitError, type LevelPlayReward, type LevelPlayImpressionData, LevelPlayNativeAd } from '../models';
 export declare const toNumberOrNull: (value: any) => number | null;
 export declare const ironSourceErrorFromMap: (data: any) => IronSourceError;
 export declare const levelPlayInitErrorFromMap: (data: any) => LevelPlayInitError;

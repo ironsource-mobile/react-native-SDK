@@ -5,10 +5,7 @@ export class LevelPlayInitRequest {
   appKey: string
   userId: string | null
 
-  constructor(
-    appKey: string,
-    userId: string | null
-  ) {
+  constructor(appKey: string, userId: string | null) {
     this.appKey = appKey
     this.userId = userId ?? ''
   }

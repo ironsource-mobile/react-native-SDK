@@ -1,45 +1,45 @@
-import type {AdInfo} from "../AdInfo";
-import type {IronSourceError} from "../errors";
-import {LevelPlayNativeAd} from "../LevelPlayNativeAd";
+import type { AdInfo } from '../AdInfo'
+import type { IronSourceError } from '../errors'
+import { LevelPlayNativeAd } from '../LevelPlayNativeAd'
 
 /**
  * Interface for handling LevelPlayNativeAd events
  */
 export interface LevelPlayNativeAdListener {
-    /**
-     * Called after a native ad has been successfully loaded
-     * [nativeAd] includes information about the native ad
-     * [adInfo] includes information about the loaded ad
-     * 
-     * Android: onAdLoaded
-     *     iOS: didLoad
-     */
-    onAdLoaded: (nativeAd: LevelPlayNativeAd, adInfo: AdInfo) => void;
-    /**
-     * Callback when native ad fails to load
-     * [nativeAd] includes information about the native ad
-     * [error] includes information about the error
-     * 
-     * Android: onAdLoadFailed
-     *     iOS: didFailToLoad
-     */
-    onAdLoadFailed: (nativeAd: LevelPlayNativeAd, error: IronSourceError) => void;
-    /**
-     * Callback when a user clicks on the native ad
-     * [nativeAd] includes information about the native ad
-     * [adInfo] includes information about the loaded ad
-     * 
-     * Android: onAdClicked
-     *     iOS: didClick
-     */
-    onAdClicked: (nativeAd: LevelPlayNativeAd, adInfo: AdInfo) => void;
-    /**
-     * Called after a native ad has been clicked.
-     * [nativeAd] includes information about the native ad
-     * [adInfo] includes information about the loaded ad
-     * 
-     * Android: onAdImpression
-     *     iOS: didRecordImpression
-     */
-    onAdImpression: (nativeAd: LevelPlayNativeAd, adInfo: AdInfo) => void;
-  }
+  /**
+   * Called after a native ad has been successfully loaded
+   * [nativeAd] includes information about the native ad
+   * [adInfo] includes information about the loaded ad
+   *
+   * Android: onAdLoaded
+   *     iOS: didLoad
+   */
+  onAdLoaded: (nativeAd: LevelPlayNativeAd, adInfo: AdInfo) => void
+  /**
+   * Callback when native ad fails to load
+   * [nativeAd] includes information about the native ad
+   * [error] includes information about the error
+   *
+   * Android: onAdLoadFailed
+   *     iOS: didFailToLoad
+   */
+  onAdLoadFailed: (nativeAd: LevelPlayNativeAd, error: IronSourceError) => void
+  /**
+   * Callback when a user clicks on the native ad
+   * [nativeAd] includes information about the native ad
+   * [adInfo] includes information about the loaded ad
+   *
+   * Android: onAdClicked
+   *     iOS: didClick
+   */
+  onAdClicked: (nativeAd: LevelPlayNativeAd, adInfo: AdInfo) => void
+  /**
+   * Called after a native ad has been clicked.
+   * [nativeAd] includes information about the native ad
+   * [adInfo] includes information about the loaded ad
+   *
+   * Android: onAdImpression
+   *     iOS: didRecordImpression
+   */
+  onAdImpression: (nativeAd: LevelPlayNativeAd, adInfo: AdInfo) => void
+}

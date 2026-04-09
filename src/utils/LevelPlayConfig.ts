@@ -14,4 +14,3 @@ const { LevelPlayConfig } = NativeModules
 
 export const setPluginData =
   LevelPlayConfig.setPluginData as SetPluginDataFunction
-

@@ -1,5 +1,5 @@
-import type { LevelPlayConfiguration } from "../LevelPlayConfiguration";
-import type { LevelPlayInitError } from "../errors";
+import type { LevelPlayConfiguration } from '../LevelPlayConfiguration';
+import type { LevelPlayInitError } from '../errors';
 /**
  * Interface for handling LevelPlay Init events
  */

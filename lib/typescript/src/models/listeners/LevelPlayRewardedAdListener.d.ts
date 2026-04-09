@@ -1,6 +1,6 @@
-import type { LevelPlayAdError } from "../LevelPlayAdError";
-import type { LevelPlayAdInfo } from "../LevelPlayAdInfo";
-import type { LevelPlayReward } from "../LevelPlayReward";
+import type { LevelPlayAdError } from '../LevelPlayAdError';
+import type { LevelPlayAdInfo } from '../LevelPlayAdInfo';
+import type { LevelPlayReward } from '../LevelPlayReward';
 /**
  * Interface for handling LevelPlayRewardedAd events
  */

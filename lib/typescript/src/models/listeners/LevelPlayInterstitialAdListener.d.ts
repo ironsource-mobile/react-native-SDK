@@ -1,5 +1,5 @@
-import type { LevelPlayAdError } from "../LevelPlayAdError";
-import type { LevelPlayAdInfo } from "../LevelPlayAdInfo";
+import type { LevelPlayAdError } from '../LevelPlayAdError';
+import type { LevelPlayAdInfo } from '../LevelPlayAdInfo';
 /**
  * Interface for handling LevelPlayInterstitialAd events
  */

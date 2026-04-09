@@ -1,4 +1,4 @@
-import type { LevelPlayImpressionData } from "../LevelPlayImpressionData";
+import type { LevelPlayImpressionData } from '../LevelPlayImpressionData';
 /**
  * Interface for handling LevelPlayImpressionData events
  */

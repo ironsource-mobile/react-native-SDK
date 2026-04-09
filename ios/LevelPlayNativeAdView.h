@@ -27,6 +27,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy, nullable) LevelPlayNativeAdTemplateStyle *templateStyle;
 @property (nonatomic, strong, nullable) LevelPlayNativeAd *nativeAd;
 @property (nonatomic, strong) ISNativeAdView *isNativeAdView;
+@property (nonatomic, assign) BOOL isInitialized;
 @property (nonatomic, copy, nullable) RCTDirectEventBlock onAdLoadedEvent;
 @property (nonatomic, copy, nullable) RCTDirectEventBlock onAdLoadFailedEvent;
 @property (nonatomic, copy, nullable) RCTDirectEventBlock onAdClickedEvent;

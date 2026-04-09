@@ -24,12 +24,6 @@ import {
   type LevelPlayInterstitialAdListener,
   type LevelPlayAdInfo,
   type LevelPlayAdError,
-  LevelPlayNativeAd,
-  type LevelPlayNativeAdListener,
-  type AdInfo,
-  LevelPlayNativeAdView,
-  LevelPlayTemplateType,
-  type IronSourceError,
   type LevelPlayBannerAdViewListener,
   LevelPlayAdSize,
   LevelPlayBannerAdView,
@@ -37,28 +31,27 @@ import {
   LevelPlayRewardedAd,
   type LevelPlayRewardedAdListener,
   type LevelPlayReward,
-  type LevelPlayNativeAdViewMethods,
 } from 'unity-levelplay-mediation'
 
 // --- Constants and Helpers ---
 const APP_USER_ID = '[YOUR_UNIQUE_APP_USER_ID]'; // Make sure to replace this
 const TAG = 'LevelPlayReactNativeDemo';
 
-// App Keys
-const APP_KEY_ANDROID = '85460dcd';
-const APP_KEY_IOS = '8545d445';
+// App Keys (UnityAds)
+const APP_KEY_ANDROID = '25b63cf85';
+const APP_KEY_IOS = '25c43a4a5';
 
 // Rewarded video ad unit IDs
-const REWARDED_AD_UNIT_ID_ANDROID = '76yy3nay3ceui2a3';
-const REWARDED_AD_UNIT_ID_IOS = 'qwouvdrkuwivay5q';
+const REWARDED_AD_UNIT_ID_ANDROID = 'syz3d8ekts22q0or';
+const REWARDED_AD_UNIT_ID_IOS = 'l1quzz1xmmdhw5er';
 
 // Interstitial ad unit IDs
-const INTERSTITIAL_AD_UNIT_ID_ANDROID = 'aeyqi3vqlv6o8sh9';
-const INTERSTITIAL_AD_UNIT_ID_IOS = 'wmgt0712uuux8ju4';
+const INTERSTITIAL_AD_UNIT_ID_ANDROID = 'h3xw38h9214adgxo';
+const INTERSTITIAL_AD_UNIT_ID_IOS = 'obg6ohwts3y690ks';
 
 // Banner ad unit IDs
-const BANNER_AD_UNIT_ID_ANDROID = 'thnfvcsog13bhn08';
-const BANNER_AD_UNIT_ID_IOS = 'iep3rxsyp9na3rw8';
+const BANNER_AD_UNIT_ID_ANDROID = '4fpetq4lhe5lsw3e';
+const BANNER_AD_UNIT_ID_IOS = 'xc2bsuntn9ea734t';
 
 
 // Helper methods to get platform-specific appkeys and ad unit IDs.
@@ -207,7 +200,6 @@ export default function App() {
               onLoadBanner={loadBannerAd}
               onDestroyBanner={destroyBannerAd}
             />
-            <LevelPlayNativeAdSection />
           </View>
         </ScrollView>
 
@@ -387,89 +379,6 @@ const LevelPlayBannerAdSection: React.FC<
   )
 }
 
-const LevelPlayNativeAdSection = () => {
-  const nativeAdRef = useRef<LevelPlayNativeAdViewMethods>(null)
-  const [nativeAd, setNativeAd] = useState<LevelPlayNativeAd | null>()
-  const [nativeAdKey, setnativeAdKey] = useState<number>(0); // Key for refreshing the component
-
-  const createNewNativeAd = useCallback(() => {
-    const listener: LevelPlayNativeAdListener = {
-      onAdLoaded: (nativeAd: LevelPlayNativeAd, adInfo: AdInfo) => {
-        logMethodName('Native Ad', 'onAdLoaded:', {
-          adInfo,
-          nativeAd: nativeAd.placement,
-        })
-        setNativeAd(nativeAd);
-      },
-      onAdLoadFailed: (nativeAd: LevelPlayNativeAd, error: IronSourceError) => {
-        logMethodName('Native Ad', 'onAdLoadFailed:', {
-          error,
-          nativeAd: nativeAd.placement,
-        });
-      },
-      onAdClicked: (nativeAd: LevelPlayNativeAd, adInfo: AdInfo) => {
-        logMethodName('Native Ad', 'onAdClicked:', {
-          adInfo,
-          nativeAd: nativeAd.placement,
-        })
-      },
-      onAdImpression: (nativeAd: LevelPlayNativeAd, adInfo: AdInfo) => {
-        logMethodName('Native Ad', 'onAdImpression:', {
-          adInfo,
-          nativeAd: nativeAd.placement,
-        })
-      },
-    };
-
-    const levelPlayNativeAd = LevelPlayNativeAd.builder()
-      .withPlacement('DefaultNativeAd') // Your placement name string
-      .withListener(listener) // Your LevelPlayNativeAd listener
-      .build();
-
-    // Set the newly created native ad instance
-    setNativeAd(levelPlayNativeAd);
-  }, []);
-
-
-  // Initialize the Native Ad on Component Mount
-  useEffect(() => {
-    createNewNativeAd();
-  }, [createNewNativeAd]);
-
-  // Load native ad
-  const loadAd = useCallback(() => {
-    nativeAd?.loadAd()
-  }, [nativeAd])
-
-  // Destroy native
-  const destroyAd = useCallback(() => {
-    nativeAd?.destroyAd();
-
-    createNewNativeAd(); // Create a new ad instance
-    setnativeAdKey(prevKey => prevKey + 1); // Increment the key to force remount of the view component
-  }, [nativeAd])
-
-  return (
-    <View>
-      <Text style={[styles.title]}>Native Ad</Text>
-      <View style={styles.horizontalSpaceBetween}>
-        <HighlightButton buttonText={'Load Native Ad'} onPress={loadAd} />
-        <HighlightButton buttonText={'Destroy Native Ad'} onPress={destroyAd} />
-      </View>
-      {nativeAd && (
-        // Initialize native ad view widget with native ad
-        <LevelPlayNativeAdView
-          key={nativeAdKey}
-          ref={nativeAdRef}
-          nativeAd={nativeAd} // Native ad object
-          templateType={LevelPlayTemplateType.Medium} // Built-in native ad template(not required when implementing custom template)
-          style={[styles.nativeAd]} // Ad styling
-        />
-      )}
-    </View>
-  )
-}
-
 // Utils
 /**
  * Log utility function to print ad format, method name and additional data.
@@ -602,11 +511,5 @@ const styles = StyleSheet.create({
     position: 'absolute',
     zIndex: 10,
     bottom: 0,
-  },
-  nativeAd: {
-    width: '100%',
-    height: 350,
-    alignSelf: 'center',
-    marginBottom: 40
   },
 })

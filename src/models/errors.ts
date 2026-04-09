@@ -6,13 +6,13 @@ export type IronSourceError = {
    * The error code associated with the IronSource error.
    * This code can be used to identify the type of error that occurred.
    */
-  errorCode: number;
+  errorCode: number
 
   /**
    * A descriptive message providing more details about the error.
    * This can be `null` if no additional information is available.
    */
-  message: string | null;
+  message: string | null
 }
 
 /**
@@ -23,10 +23,10 @@ export type LevelPlayInitError = {
    * The error code associated with the initialization error.
    * This code can be used to identify what went wrong during initialization.
    */
-  errorCode: number;
+  errorCode: number
 
   /**
    * A detailed message providing more details about the initialization error.
    */
-  errorMessage: string;
+  errorMessage: string
 }

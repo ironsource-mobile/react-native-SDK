@@ -39,7 +39,9 @@ export class LevelPlayRewardedAd {
    * @returns A promise that resolves to a boolean indicating whether the placement is capped.
    */
   static async isPlacementCapped(placementName: string): Promise<boolean> {
-    return await NativeLevelPlayMediation.isRewardedAdPlacementCapped(placementName)
+    return await NativeLevelPlayMediation.isRewardedAdPlacementCapped(
+      placementName
+    )
   }
 
   /**
@@ -71,7 +73,7 @@ export class LevelPlayRewardedAd {
    * Removes the rewarded ad.
    * @returns A promise that resolves when the ad is removed.
    */
-   async remove(): Promise<void> {
-     await levelPlayObjectManager.removeAd(this.adId)
+  async remove(): Promise<void> {
+    await levelPlayObjectManager.removeAd(this.adId)
   }
 }
