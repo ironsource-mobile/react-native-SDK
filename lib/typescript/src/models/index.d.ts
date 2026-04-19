@@ -12,4 +12,5 @@ export * from './LevelPlayReward';
 export * from './LevelPlayRewardedAd';
 export * from './LevelPlayImpressionData';
 export * from './LevelPlaySegment';
+export * from './LevelPlayPrivacySettings';
 //# sourceMappingURL=index.d.ts.map

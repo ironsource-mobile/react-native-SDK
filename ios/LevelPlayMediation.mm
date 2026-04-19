@@ -9,6 +9,7 @@
 #import "LevelPlayConstants.h"
 #import "LevelPlayUtils.h"
 #import "LevelPlayAdObjectManager.h"
+#import <IronSource/LPMPrivacySettings.h>
 
 @interface LevelPlayMediation() <LPMImpressionDataDelegate>
 
@@ -81,6 +82,7 @@ RCT_EXPORT_METHOD(setAdaptersDebug:(BOOL)isEnabled resolve:(RCTPromiseResolveBlo
 /**
  * Sets the user's consent status for data collection.
  *
+ * @deprecated Use LPMPrivacySettings.setGDPRConsents() instead for more granular control per network.
  * @param isConsent A boolean flag indicating whether the user has given consent.
  */
 RCT_EXPORT_METHOD(setConsent:(BOOL)isConsent resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
@@ -165,6 +167,50 @@ RCT_EXPORT_METHOD(launchTestSuite:(RCTPromiseResolveBlock)resolve reject:(RCTPro
         [LevelPlay launchTestSuite:[self getRootViewController]];
         resolve(nil);
     });
+}
+
+#pragma mark - Privacy Settings API ===================================================================
+
+/**
+ * Sets the consent per network, a dictionary of network keys to boolean values that indicates whether
+ * the user has granted consent for each network to collect and share data. Consent is used for
+ * GDPR compliance.
+ *
+ * @param networkConsents A dictionary where keys are network identifiers (NSString) and values are
+ * NSNumber objects wrapping boolean values.
+ */
+RCT_EXPORT_METHOD(setGDPRConsents:(nonnull NSDictionary *)networkConsents resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    NSMutableDictionary<NSString *, NSNumber *> *consentsDict = [NSMutableDictionary new];
+    for (NSString *key in networkConsents) {
+        NSNumber *value = networkConsents[key];
+        if (value != nil && ![[NSNull null] isEqual:value]) {
+            consentsDict[key] = value;
+        }
+    }
+    [LPMPrivacySettings setGDPRConsents:consentsDict];
+    resolve(nil);
+}
+
+/**
+ * Sets the CCPA (California Consumer Privacy Act) flag. This flag indicates whether the user has
+ * opted out of the sale of their personal information.
+ *
+ * @param value YES if the user has opted out of the sale of their personal information, NO otherwise.
+ */
+RCT_EXPORT_METHOD(setCCPA:(BOOL)value resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    [LPMPrivacySettings setCCPA:value];
+    resolve(nil);
+}
+
+/**
+ * Sets the COPPA (Children's Online Privacy Protection Act) flag. This flag indicates whether the
+ * user is a child and the app should comply with COPPA regulations.
+ *
+ * @param value YES if the user is a child and COPPA compliance is required, NO otherwise.
+ */
+RCT_EXPORT_METHOD(setCOPPA:(BOOL)value resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    [LPMPrivacySettings setCOPPA:value];
+    resolve(nil);
 }
 
 /**

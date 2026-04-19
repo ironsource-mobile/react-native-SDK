@@ -16,6 +16,7 @@ import com.unity3d.mediation.impression.LevelPlayImpressionDataListener
 import com.unity3d.mediation.interstitial.LevelPlayInterstitialAd
 import com.unity3d.mediation.rewarded.LevelPlayRewardedAd
 import com.unity3d.mediation.segment.LevelPlaySegment
+import com.unity3d.mediation.LevelPlayPrivacySettings
 
 /**
  * Shared implementation for LevelPlayMediation module.
@@ -25,7 +26,7 @@ import com.unity3d.mediation.segment.LevelPlaySegment
 class LevelPlayMediationModuleShared(private val reactContext: ReactApplicationContext) :
   LevelPlayImpressionDataListener,
   LevelPlayInitListener {
-  
+
   companion object {
     const val NAME = "LevelPlayMediation"
   }
@@ -79,7 +80,9 @@ class LevelPlayMediationModuleShared(private val reactContext: ReactApplicationC
 
   /**
    * Sets the user's consent status for data collection.
+   * @deprecated Use LevelPlayPrivacySettings.setGDPRConsents() instead for more granular control per network.
    */
+  @Deprecated("Use LevelPlayPrivacySettings.setGDPRConsents() instead")
   fun setConsent(isConsent: Boolean, promise: Promise) {
     LevelPlay.setConsent(isConsent)
     promise.resolve(null)
@@ -136,6 +139,41 @@ class LevelPlayMediationModuleShared(private val reactContext: ReactApplicationC
    */
   fun launchTestSuite(promise: Promise) {
     LevelPlay.launchTestSuite(reactContext)
+    promise.resolve(null)
+  }
+
+  /** Privacy Settings API  ===================================================================== **/
+
+  /**
+   * Sets the consent per network, a map of network keys to boolean values that indicates whether
+   * the user has granted consent for each network to collect and share data. Consent is used for
+   * GDPR compliance.
+   */
+  fun setGDPRConsents(networkConsents: ReadableMap, promise: Promise) {
+    val consentsMap = mutableMapOf<String, Boolean>()
+    networkConsents.entryIterator.forEach { entry ->
+      consentsMap[entry.key] = entry.value as Boolean
+    }
+    LevelPlayPrivacySettings.setGDPRConsents(consentsMap)
+    promise.resolve(null)
+  }
+
+  /**
+   * Sets the CCPA (California Consumer Privacy Act) flag. This flag indicates whether the user has
+   * opted out of the sale of their personal information.
+   */
+  fun setCCPA(value: Boolean, promise: Promise) {
+    LevelPlayPrivacySettings.setCCPA(value)
+    promise.resolve(null)
+  }
+
+  /**
+   * Sets the COPPA (Children's Online Privacy Protection Act) flag. This flag indicates whether the
+   * user is a child under the age of 13. This will apply COPPA settings to all supported network
+   * adapters.
+   */
+  fun setCOPPA(value: Boolean, promise: Promise) {
+    LevelPlayPrivacySettings.setCOPPA(value)
     promise.resolve(null)
   }
 

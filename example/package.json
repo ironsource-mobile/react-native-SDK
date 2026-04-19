@@ -1,6 +1,6 @@
 {
   "name": "levelplay-mediation-example",
-  "version": "9.0.0",
+  "version": "9.2.0",
   "private": true,
   "scripts": {
     "android": "react-native run-android",

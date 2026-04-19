@@ -66,10 +66,19 @@ export interface Spec extends TurboModule {
   validateIntegration(): Promise<void>
   setDynamicUserId(userId: string): Promise<void>
   setAdaptersDebug(isEnabled: boolean): Promise<void>
+  /** @deprecated Use LevelPlayPrivacySettings.setGDPRConsents() instead */
   setConsent(isConsent: boolean): Promise<void>
   setSegment(segmentDict: LevelPlaySegmentSpec): Promise<void>
   setMetaData(key: string, values: string[]): Promise<void>
   launchTestSuite(): Promise<void>
+
+  // ─────────────────────────────────────────────────────────
+  // Privacy Settings API
+  // ─────────────────────────────────────────────────────────
+
+  setGDPRConsents(networkConsents: { [key: string]: boolean }): Promise<void>
+  setCCPA(value: boolean): Promise<void>
+  setCOPPA(value: boolean): Promise<void>
 
   // ─────────────────────────────────────────────────────────
   // Impression Data API

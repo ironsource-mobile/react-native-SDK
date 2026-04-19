@@ -28,6 +28,8 @@ type LevelPlayType = {
     /**
      * Sets the user's consent status for data collection.
      *
+     * @deprecated Use `LevelPlayPrivacySettings.setGDPRConsents()` instead for more granular control per network.
+     *
      * Android: setConsent
      *     iOS: setConsent
      */

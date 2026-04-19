@@ -52,10 +52,16 @@ export interface Spec extends TurboModule {
     validateIntegration(): Promise<void>;
     setDynamicUserId(userId: string): Promise<void>;
     setAdaptersDebug(isEnabled: boolean): Promise<void>;
+    /** @deprecated Use LevelPlayPrivacySettings.setGDPRConsents() instead */
     setConsent(isConsent: boolean): Promise<void>;
     setSegment(segmentDict: LevelPlaySegmentSpec): Promise<void>;
     setMetaData(key: string, values: string[]): Promise<void>;
     launchTestSuite(): Promise<void>;
+    setGDPRConsents(networkConsents: {
+        [key: string]: boolean;
+    }): Promise<void>;
+    setCCPA(value: boolean): Promise<void>;
+    setCOPPA(value: boolean): Promise<void>;
     addImpressionDataListener(): Promise<void>;
     init(appKey: string, userId?: string): Promise<void>;
     createInterstitialAd(adUnitId: string, bidFloor?: number): Promise<string>;

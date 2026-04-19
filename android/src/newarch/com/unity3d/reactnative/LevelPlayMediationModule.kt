@@ -51,6 +51,20 @@ class LevelPlayMediationModule(reactContext: ReactApplicationContext) :
     shared.launchTestSuite(promise)
   }
 
+  /** Privacy Settings API  ===================================================================== **/
+
+  override fun setGDPRConsents(networkConsents: ReadableMap, promise: Promise) {
+    shared.setGDPRConsents(networkConsents, promise)
+  }
+
+  override fun setCCPA(value: Boolean, promise: Promise) {
+    shared.setCCPA(value, promise)
+  }
+
+  override fun setCOPPA(value: Boolean, promise: Promise) {
+    shared.setCOPPA(value, promise)
+  }
+
   override fun addImpressionDataListener(promise: Promise) {
     shared.addImpressionDataListener(promise)
   }
