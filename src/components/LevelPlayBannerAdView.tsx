@@ -6,8 +6,13 @@ import {
   type LevelPlayAdInfo,
   LevelPlayAdSize,
   type LevelPlayBannerAdViewListener,
+  type LevelPlayImpressionData,
+  type LevelPlayImpressionDataListener,
 } from '../models'
-import { levelPlayAdInfoFromMap } from '../utils/utils'
+import {
+  levelPlayAdInfoFromMap,
+  levelPlayImpressionDataFromMap,
+} from '../utils/utils'
 import LevelPlayBannerAdComponent, {
   Commands,
 } from '../specs/LevelPlayBannerAdViewNativeComponent'
@@ -21,6 +26,7 @@ import type {
   AdCollapsedEvent,
   AdLeftApplicationEvent,
   AdIdGeneratedEvent,
+  AdImpressionDataEvent,
 } from '../specs/LevelPlayBannerAdViewNativeComponent'
 import type { DirectEventHandler } from 'react-native/Libraries/Types/CodegenTypes'
 
@@ -51,6 +57,13 @@ export interface LevelPlayBannerAdViewProps extends ViewProps {
   adUnitId: string
   adSize: LevelPlayAdSize
   listener?: LevelPlayBannerAdViewListener
+  /**
+   * Listener for impression-level revenue data of this banner instance.
+   *
+   * Android: setImpressionDataListener
+   *     iOS: setImpressionDataDelegate
+   */
+  impressionDataListener?: LevelPlayImpressionDataListener
   placementName: string | null
   bidFloor?: number | null
 }
@@ -70,6 +83,9 @@ export type LevelPlayBannerAdViewNativeEvents = {
     nativeEvent: { adInfo: LevelPlayAdInfo }
   }): void
   onAdIdGeneratedEvent(event: { nativeEvent: { adId: string } }): void
+  onAdImpressionDataEvent(event: {
+    nativeEvent: { impressionData: LevelPlayImpressionData }
+  }): void
 }
 
 /**
@@ -80,8 +96,15 @@ export const LevelPlayBannerAdView = forwardRef<
   LevelPlayBannerAdViewProps
 >((props, ref) => {
   // Access props directly
-  const { adUnitId, adSize, listener, placementName, bidFloor, ...otherProps } =
-    props
+  const {
+    adUnitId,
+    adSize,
+    listener,
+    impressionDataListener,
+    placementName,
+    bidFloor,
+    ...otherProps
+  } = props
 
   // A local reference to the bannerAdView
   const bannerAdViewRef = useRef<React.ElementRef<
@@ -209,6 +232,16 @@ export const LevelPlayBannerAdView = forwardRef<
       setInternalAdId(adId) // Update the internal state with the new ad ID
     }, [])
 
+  const onAdImpressionDataEvent: DirectEventHandler<AdImpressionDataEvent> =
+    useCallback(
+      event => {
+        impressionDataListener?.onImpressionSuccess(
+          levelPlayImpressionDataFromMap(event.nativeEvent.impressionData)
+        )
+      },
+      [impressionDataListener]
+    )
+
   return (
     <LevelPlayBannerAdComponent
       ref={saveElement}
@@ -228,6 +261,7 @@ export const LevelPlayBannerAdView = forwardRef<
       onAdCollapsedEvent={onAdCollapsedEvent}
       onAdLeftApplicationEvent={onAdLeftApplicationEvent}
       onAdIdGeneratedEvent={onAdIdGeneratedEvent}
+      onAdImpressionDataEvent={onAdImpressionDataEvent}
     />
   )
 })

@@ -10,6 +10,7 @@ export declare class LevelPlayAdSize {
     static BANNER: LevelPlayAdSize;
     static LARGE: LevelPlayAdSize;
     static MEDIUM_RECTANGLE: LevelPlayAdSize;
+    static LEADERBOARD: LevelPlayAdSize;
     /**
      * Creates a custom ad size.
      * @param width - The width of the custom ad.

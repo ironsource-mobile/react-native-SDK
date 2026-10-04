@@ -1,4 +1,5 @@
 import type { LevelPlayRewardedAdListener } from './listeners/LevelPlayRewardedAdListener';
+import type { LevelPlayImpressionDataListener } from './listeners/LevelPlayImpressionDataListener';
 /**
  * Represents a LevelPlay rewarded ad.
  */
@@ -6,10 +7,19 @@ export declare class LevelPlayRewardedAd {
     adUnitId: string;
     adId: string;
     listener: LevelPlayRewardedAdListener | null | undefined;
+    impressionDataListener: LevelPlayImpressionDataListener | undefined;
     bidFloor: number | null | undefined;
     constructor(adUnitId: string);
     setListener(listener: LevelPlayRewardedAdListener): void;
     getListener(): LevelPlayRewardedAdListener | null | undefined;
+    /**
+     * Sets a listener for impression-level revenue data of this ad instance.
+     *
+     * Android: setImpressionDataListener
+     *     iOS: setImpressionDataDelegate
+     */
+    setImpressionDataListener(listener: LevelPlayImpressionDataListener): void;
+    getImpressionDataListener(): LevelPlayImpressionDataListener | undefined;
     setBidFloor(bidFloor: number): void;
     getBidFloor(): number | null | undefined;
     /**

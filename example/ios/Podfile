@@ -42,6 +42,12 @@ target 'LevelPlayMediationExample' do
           config.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'c++17'
         end
       end
+      # Some SDK pods declare deployment targets below iOS 15, which Xcode 26 rejects
+      target.build_configurations.each do |config|
+        if config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'].to_f < 15.1
+          config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.1'
+        end
+      end
     end
   end
 end

@@ -21,6 +21,7 @@ RCT_EXPORT_VIEW_PROPERTY(onAdCollapsedEvent, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onAdExpandedEvent, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onAdLeftApplicationEvent, RCTDirectEventBlock)
 RCT_EXPORT_VIEW_PROPERTY(onAdIdGeneratedEvent, RCTDirectEventBlock)
+RCT_EXPORT_VIEW_PROPERTY(onAdImpressionDataEvent, RCTDirectEventBlock)
 
 + (BOOL)requiresMainQueueSetup {
     // Determine whether the module needs to be initialized on the main thread.

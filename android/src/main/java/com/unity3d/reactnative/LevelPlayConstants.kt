@@ -20,6 +20,7 @@ object LevelPlayConstants {
     const val ON_INTERSTITIAL_AD_DISPLAY_FAILED = "onInterstitialAdDisplayFailed"
     const val ON_INTERSTITIAL_AD_CLICKED = "onInterstitialAdClicked"
     const val ON_INTERSTITIAL_AD_CLOSED = "onInterstitialAdClosed"
+    const val ON_INTERSTITIAL_AD_IMPRESSION_DATA = "onInterstitialAdImpressionData"
 
     // LevelPlay Rewarded Ad
     const val ON_REWARDED_AD_LOADED = "onRewardedAdLoaded"
@@ -30,6 +31,7 @@ object LevelPlayConstants {
     const val ON_REWARDED_AD_CLICKED = "onRewardedAdClicked"
     const val ON_REWARDED_AD_CLOSED = "onRewardedAdClosed"
     const val ON_REWARDED_AD_REWARDED = "onRewardedAdRewarded"
+    const val ON_REWARDED_AD_IMPRESSION_DATA = "onRewardedAdImpressionData"
 
     //LevelPlay Events (Fabric compatible - generic events for all ad types)
     const val ON_AD_LOADED_EVENT = "onAdLoadedEvent"
@@ -42,6 +44,7 @@ object LevelPlayConstants {
     const val ON_AD_LEFT_APPLICATION_EVENT = "onAdLeftApplicationEvent"
     const val ON_AD_IMPRESSION_EVENT = "onAdImpressionEvent"
     const val ON_AD_ID_GENERATED_EVENT = "onAdIdGeneratedEvent"
+    const val ON_AD_IMPRESSION_DATA_EVENT = "onAdImpressionDataEvent"
 
   // For JS Event Constants mapping
     fun getEventConstants(): MutableMap<String, Any> = hashMapOf(
@@ -60,6 +63,7 @@ object LevelPlayConstants {
         "ON_INTERSTITIAL_AD_DISPLAY_FAILED" to ON_INTERSTITIAL_AD_DISPLAY_FAILED,
         "ON_INTERSTITIAL_AD_CLICKED" to ON_INTERSTITIAL_AD_CLICKED,
         "ON_INTERSTITIAL_AD_CLOSED" to ON_INTERSTITIAL_AD_CLOSED,
+        "ON_INTERSTITIAL_AD_IMPRESSION_DATA" to ON_INTERSTITIAL_AD_IMPRESSION_DATA,
 
         // LevelPlay Rewarded Ad
         "ON_REWARDED_AD_LOADED" to ON_REWARDED_AD_LOADED,
@@ -69,6 +73,7 @@ object LevelPlayConstants {
         "ON_REWARDED_AD_DISPLAY_FAILED" to ON_REWARDED_AD_DISPLAY_FAILED,
         "ON_REWARDED_AD_CLICKED" to ON_REWARDED_AD_CLICKED,
         "ON_REWARDED_AD_CLOSED" to ON_REWARDED_AD_CLOSED,
-        "ON_REWARDED_AD_REWARDED" to ON_REWARDED_AD_REWARDED
+        "ON_REWARDED_AD_REWARDED" to ON_REWARDED_AD_REWARDED,
+        "ON_REWARDED_AD_IMPRESSION_DATA" to ON_REWARDED_AD_IMPRESSION_DATA
     )
 }

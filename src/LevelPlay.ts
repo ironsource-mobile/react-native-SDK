@@ -54,7 +54,7 @@ type LevelPlayType = {
   /**
    * Sets the user's consent status for data collection.
    *
-   * @deprecated Use `LevelPlayPrivacySettings.setGDPRConsents()` instead for more granular control per network.
+   * @deprecated Use `LevelPlayPrivacySettings.setGDPRConsent()` instead.
    *
    * Android: setConsent
    *     iOS: setConsent
@@ -99,6 +99,9 @@ type LevelPlayType = {
   /**
    * Adds a listener for receiving impression data events.
    * @param listener - The listener to handle impression data events.
+   *
+   * @deprecated Use `setImpressionDataListener` on each `LevelPlayInterstitialAd` / `LevelPlayRewardedAd`,
+   * or the `impressionDataListener` prop on `LevelPlayBannerAdView` instead.
    */
   addImpressionDataListener: (
     listener: LevelPlayImpressionDataListener

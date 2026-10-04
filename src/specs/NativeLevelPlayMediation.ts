@@ -47,6 +47,7 @@ export interface Spec extends TurboModule {
     ON_INTERSTITIAL_AD_DISPLAY_FAILED: string
     ON_INTERSTITIAL_AD_CLICKED: string
     ON_INTERSTITIAL_AD_CLOSED: string
+    ON_INTERSTITIAL_AD_IMPRESSION_DATA: string
 
     // Rewarded ad events
     ON_REWARDED_AD_LOADED: string
@@ -57,6 +58,7 @@ export interface Spec extends TurboModule {
     ON_REWARDED_AD_CLICKED: string
     ON_REWARDED_AD_CLOSED: string
     ON_REWARDED_AD_REWARDED: string
+    ON_REWARDED_AD_IMPRESSION_DATA: string
   }
 
   // ─────────────────────────────────────────────────────────
@@ -66,7 +68,7 @@ export interface Spec extends TurboModule {
   validateIntegration(): Promise<void>
   setDynamicUserId(userId: string): Promise<void>
   setAdaptersDebug(isEnabled: boolean): Promise<void>
-  /** @deprecated Use LevelPlayPrivacySettings.setGDPRConsents() instead */
+  /** @deprecated Use LevelPlayPrivacySettings.setGDPRConsent() instead */
   setConsent(isConsent: boolean): Promise<void>
   setSegment(segmentDict: LevelPlaySegmentSpec): Promise<void>
   setMetaData(key: string, values: string[]): Promise<void>
@@ -76,6 +78,8 @@ export interface Spec extends TurboModule {
   // Privacy Settings API
   // ─────────────────────────────────────────────────────────
 
+  setGDPRConsent(consent: boolean): Promise<void>
+  /** @deprecated Use setGDPRConsent() instead */
   setGDPRConsents(networkConsents: { [key: string]: boolean }): Promise<void>
   setCCPA(value: boolean): Promise<void>
   setCOPPA(value: boolean): Promise<void>

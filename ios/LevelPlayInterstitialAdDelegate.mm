@@ -76,4 +76,12 @@
   [LevelPlayUtils sendEventWithName:@"onInterstitialAdClosed" args:args eventEmitter:self.eventEmitter];
 }
 
+- (void)impressionDataDidSucceed:(LPMImpressionData *)impressionData {
+    NSDictionary *args = @{
+            @"adId": self.adId,
+            @"impressionData": [LevelPlayUtils getDictForLevelPlayImpressionData:impressionData]
+    };
+  [LevelPlayUtils sendEventWithName:@"onInterstitialAdImpressionData" args:args eventEmitter:self.eventEmitter];
+}
+
 @end

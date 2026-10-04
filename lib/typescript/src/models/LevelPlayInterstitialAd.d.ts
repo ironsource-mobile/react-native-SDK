@@ -1,4 +1,5 @@
 import type { LevelPlayInterstitialAdListener } from './listeners/LevelPlayInterstitialAdListener';
+import type { LevelPlayImpressionDataListener } from './listeners/LevelPlayImpressionDataListener';
 /**
  * Represents a LevelPlay interstitial ad.
  */
@@ -6,10 +7,19 @@ export declare class LevelPlayInterstitialAd {
     adUnitId: string;
     adId: string;
     listener: LevelPlayInterstitialAdListener | null | undefined;
+    impressionDataListener: LevelPlayImpressionDataListener | undefined;
     bidFloor: number | null | undefined;
     constructor(adUnitId: string);
     setListener(listener: LevelPlayInterstitialAdListener): void;
     getListener(): LevelPlayInterstitialAdListener | null | undefined;
+    /**
+     * Sets a listener for impression-level revenue data of this ad instance.
+     *
+     * Android: setImpressionDataListener
+     *     iOS: setImpressionDataDelegate
+     */
+    setImpressionDataListener(listener: LevelPlayImpressionDataListener): void;
+    getImpressionDataListener(): LevelPlayImpressionDataListener | undefined;
     setBidFloor(bidFloor: number): void;
     getBidFloor(): number | null | undefined;
     /**

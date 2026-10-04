@@ -6,6 +6,24 @@ import NativeLevelPlayMediation from '../specs/NativeLevelPlayMediation'
  */
 type LevelPlayPrivacySettingsType = {
   /**
+   * Sets the user's GDPR consent. Indicates whether the user has granted consent to collect and
+   * share data.
+   *
+   * @param consent - true if the user has granted consent, false otherwise.
+   *
+   * @example
+   * ```typescript
+   * LevelPlayPrivacySettings.setGDPRConsent(true);
+   * ```
+   *
+   * Android: LevelPlayPrivacySettings.setGDPRConsent
+   *     iOS: LPMPrivacySettings.setGDPRConsent
+   */
+  setGDPRConsent(consent: boolean): Promise<void>
+
+  /**
+   * @deprecated Use `setGDPRConsent(consent)` instead.
+   *
    * Sets the consent per network. A map of network keys to boolean values that indicates whether
    * the user has granted consent for each network to collect and share data. Consent is used for
    * GDPR compliance.
@@ -67,9 +85,13 @@ type LevelPlayPrivacySettingsType = {
  * Provides privacy compliance methods for GDPR, CCPA, and COPPA.
  */
 export const LevelPlayPrivacySettings: LevelPlayPrivacySettingsType = {
-  setGDPRConsents: async (
-    networkConsents: { [key: string]: boolean }
-  ): Promise<void> => {
+  setGDPRConsent: async (consent: boolean): Promise<void> => {
+    return await NativeLevelPlayMediation.setGDPRConsent(consent)
+  },
+
+  setGDPRConsents: async (networkConsents: {
+    [key: string]: boolean
+  }): Promise<void> => {
     return await NativeLevelPlayMediation.setGDPRConsents(networkConsents)
   },
 

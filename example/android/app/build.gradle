@@ -127,7 +127,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-ads-identifier:18.2.0'
 
     // Required when using custom native ad implementation
-    implementation 'com.unity3d.ads-mediation:mediation-sdk:9.2.0'
+    implementation 'com.unity3d.ads-mediation:mediation-sdk:9.6.1'
 
     // UnityAds Adapter
     implementation "com.unity3d.ads-mediation:unityads-adapter:5.+"

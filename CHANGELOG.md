@@ -1,5 +1,28 @@
 # Change Log
 
+## 9.3.0
+
+### SDK Updates
+- Wraps Android SDK 9.6.1 API
+- Wraps iOS SDK 9.6.1 API
+
+### New Features
+- Add `LevelPlayPrivacySettings.setGDPRConsent(consent)`
+- Add per-instance impression data listeners: `LevelPlayInterstitialAd.setImpressionDataListener`, `LevelPlayRewardedAd.setImpressionDataListener`, and the `impressionDataListener` prop on `LevelPlayBannerAdView`
+- Add `LevelPlayAdSize.LEADERBOARD` banner size
+
+### Deprecations
+- `LevelPlayPrivacySettings.setGDPRConsents` is deprecated, use `setGDPRConsent` instead
+- `LevelPlay.addImpressionDataListener` is deprecated by the native SDKs, use the per-instance impression data listeners instead
+
+### Bug Fixes
+- iOS: `encryptedCPM` was missing from native ad `LevelPlayAdInfo`
+- iOS: `setSegment` resolved the promise after rejecting it on an invalid parameter
+
+### Notes
+- Android SDK 9.6.1 depends on `kotlin-stdlib` 2.1.x. Android projects must build with Kotlin 2.0 or higher (default from React Native 0.77).
+- iOS SDK 9.6.1 is built with Xcode 26. iOS apps must be built with Xcode 26 or higher.
+
 ## 9.2.0
 
 - Add LevelPlayPrivacySettings API with support for GDPR, CCPA, and COPPA compliance

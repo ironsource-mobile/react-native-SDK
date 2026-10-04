@@ -47,7 +47,7 @@
             @"precision": adInfo.precision ?: [NSNull null],
             @"ab": adInfo.ab ?: [NSNull null],
             @"segmentName": adInfo.segment_name ?: [NSNull null],
-            @"encryptedCpm": adInfo.encrypted_cpm ?: [NSNull null],
+            @"encryptedCPM": adInfo.encrypted_cpm ?: [NSNull null],
             @"conversionValue": adInfo.conversion_value != nil ? @(adInfo.conversion_value.doubleValue) : [NSNull null],
     };
 }

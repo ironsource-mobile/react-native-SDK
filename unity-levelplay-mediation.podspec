@@ -11,7 +11,7 @@ Pod::Spec.new do |s|
   s.authors      = package["author"]
 
   s.platforms    = { :ios => "12.0" }
-  s.source       = { :git => "https://github.com/ironsource-mobile/react-native-SDK.git", :tag => "v_9.2.0" }
+  s.source       = { :git => "https://github.com/ironsource-mobile/react-native-SDK.git", :tag => "v_#{s.version}" }
 
   s.source_files = "ios/**/*.{h,mm}"
 
@@ -19,7 +19,7 @@ Pod::Spec.new do |s|
     'unity_levelplay_mediation' => ['ios/**/*.xib']
   }
 
-  s.dependency "IronSourceSDK", "9.4.0.0"
+  s.dependency "IronSourceSDK", "9.6.1.0"
 
   # React Native integration
   if respond_to?(:install_modules_dependencies, true)

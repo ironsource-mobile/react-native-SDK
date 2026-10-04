@@ -1,6 +1,6 @@
 {
   "name": "unity-levelplay-mediation",
-  "version": "9.2.0",
+  "version": "9.3.0",
   "description": "Unity LevelPlay ad mediation React-Native plugin. Monetize apps with rewarded video, interstitial, banner, and native ads.",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
@@ -114,6 +114,9 @@
         "LevelPlayNativeAdView": "LevelPlayNativeAdView"
       }
     }
+  },
+  "overrides": {
+    "image-size": "^2.0.3",
+    "fast-xml-parser": "^5.7.0"
   }
 }
-

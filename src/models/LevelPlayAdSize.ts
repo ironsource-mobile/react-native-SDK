@@ -8,6 +8,9 @@ import {
   MEDIUM_RECTANGLE_WIDTH,
   MEDIUM_RECTANGLE_HEIGHT,
   SIZE_MEDIUM_RECTANGLE_LABEL,
+  LEADERBOARD_WIDTH,
+  LEADERBOARD_HEIGHT,
+  SIZE_LEADERBOARD_LABEL,
   SIZE_CUSTOM_LABEL,
 } from '../utils/LevelPlayConstants'
 import NativeLevelPlayMediation from '../specs/NativeLevelPlayMediation'
@@ -49,6 +52,11 @@ export class LevelPlayAdSize {
     MEDIUM_RECTANGLE_HEIGHT,
     SIZE_MEDIUM_RECTANGLE_LABEL
   )
+  static LEADERBOARD = new LevelPlayAdSize(
+    LEADERBOARD_WIDTH,
+    LEADERBOARD_HEIGHT,
+    SIZE_LEADERBOARD_LABEL
+  )
 
   /**
    * Creates a custom ad size.
@@ -74,6 +82,8 @@ export class LevelPlayAdSize {
         return LevelPlayAdSize.LARGE
       case SIZE_MEDIUM_RECTANGLE_LABEL:
         return LevelPlayAdSize.MEDIUM_RECTANGLE
+      case SIZE_LEADERBOARD_LABEL:
+        return LevelPlayAdSize.LEADERBOARD
       default:
         throw new Error('Wrong Ad Size')
     }

@@ -51,6 +51,7 @@
                                                           initWithAdId:interstitialAd.adId
                                                           eventEmitter:eventEmitter];
   [interstitialAd setDelegate:interstitialAdDelegate];
+  [interstitialAd setImpressionDataDelegate:interstitialAdDelegate];
 
   // Store references
   self.interstitialDelegatesDict[interstitialAd.adId] = interstitialAdDelegate;
@@ -114,6 +115,7 @@
                                                           initWithAdId:rewardedAd.adId
                                                           eventEmitter:eventEmitter];
   [rewardedAd setDelegate:rewardedAdDelegate];
+  [rewardedAd setImpressionDataDelegate:rewardedAdDelegate];
 
   // Store references
   self.rewardedDelegatesDict[rewardedAd.adId] = rewardedAdDelegate;

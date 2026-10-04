@@ -80,9 +80,9 @@ class LevelPlayMediationModuleShared(private val reactContext: ReactApplicationC
 
   /**
    * Sets the user's consent status for data collection.
-   * @deprecated Use LevelPlayPrivacySettings.setGDPRConsents() instead for more granular control per network.
+   * @deprecated Use LevelPlayPrivacySettings.setGDPRConsent() instead.
    */
-  @Deprecated("Use LevelPlayPrivacySettings.setGDPRConsents() instead")
+  @Deprecated("Use LevelPlayPrivacySettings.setGDPRConsent() instead")
   fun setConsent(isConsent: Boolean, promise: Promise) {
     LevelPlay.setConsent(isConsent)
     promise.resolve(null)
@@ -149,6 +149,15 @@ class LevelPlayMediationModuleShared(private val reactContext: ReactApplicationC
    * the user has granted consent for each network to collect and share data. Consent is used for
    * GDPR compliance.
    */
+  fun setGDPRConsent(consent: Boolean, promise: Promise) {
+    LevelPlayPrivacySettings.setGDPRConsent(consent)
+    promise.resolve(null)
+  }
+
+  /**
+   * @deprecated Use setGDPRConsent() instead.
+   */
+  @Suppress("DEPRECATION")
   fun setGDPRConsents(networkConsents: ReadableMap, promise: Promise) {
     val consentsMap = mutableMapOf<String, Boolean>()
     networkConsents.entryIterator.forEach { entry ->

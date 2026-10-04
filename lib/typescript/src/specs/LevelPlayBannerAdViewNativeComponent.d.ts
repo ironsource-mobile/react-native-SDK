@@ -216,6 +216,26 @@ export interface AdLeftApplicationEvent {
 export interface AdIdGeneratedEvent {
     adId: string;
 }
+export interface AdImpressionDataEvent {
+    impressionData: {
+        auctionId: string;
+        mediationAdUnitName: string;
+        mediationAdUnitId: string;
+        adFormat: string;
+        country: string;
+        ab: string;
+        segmentName: string;
+        placement: string;
+        adNetwork: string;
+        instanceName: string;
+        instanceId: string;
+        revenue: Double | null;
+        precision: string;
+        encryptedCPM: string;
+        conversionValue: Double | null;
+        creativeId: string;
+    };
+}
 export interface NativeProps extends ViewProps {
     creationParams: CreationParams;
     onAdLoadedEvent?: DirectEventHandler<AdLoadedEvent>;
@@ -227,6 +247,7 @@ export interface NativeProps extends ViewProps {
     onAdCollapsedEvent?: DirectEventHandler<AdCollapsedEvent>;
     onAdLeftApplicationEvent?: DirectEventHandler<AdLeftApplicationEvent>;
     onAdIdGeneratedEvent?: DirectEventHandler<AdIdGeneratedEvent>;
+    onAdImpressionDataEvent?: DirectEventHandler<AdImpressionDataEvent>;
 }
 type LevelPlayBannerAdViewNativeComponentType = HostComponent<NativeProps>;
 /**

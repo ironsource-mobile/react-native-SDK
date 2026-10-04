@@ -1,6 +1,6 @@
 import React from 'react';
 import { type NativeMethods, type ViewProps } from 'react-native';
-import { type LevelPlayAdError, type LevelPlayAdInfo, LevelPlayAdSize, type LevelPlayBannerAdViewListener } from '../models';
+import { type LevelPlayAdError, type LevelPlayAdInfo, LevelPlayAdSize, type LevelPlayBannerAdViewListener, type LevelPlayImpressionData, type LevelPlayImpressionDataListener } from '../models';
 export type LevelPlayBannerAdViewType = React.Component<LevelPlayBannerAdViewCreationParams> & NativeMethods;
 export type LevelPlayBannerAdViewCreationParams = {
     creationParams: {
@@ -21,6 +21,13 @@ export interface LevelPlayBannerAdViewProps extends ViewProps {
     adUnitId: string;
     adSize: LevelPlayAdSize;
     listener?: LevelPlayBannerAdViewListener;
+    /**
+     * Listener for impression-level revenue data of this banner instance.
+     *
+     * Android: setImpressionDataListener
+     *     iOS: setImpressionDataDelegate
+     */
+    impressionDataListener?: LevelPlayImpressionDataListener;
     placementName: string | null;
     bidFloor?: number | null;
 }
@@ -69,6 +76,11 @@ export type LevelPlayBannerAdViewNativeEvents = {
     onAdIdGeneratedEvent(event: {
         nativeEvent: {
             adId: string;
+        };
+    }): void;
+    onAdImpressionDataEvent(event: {
+        nativeEvent: {
+            impressionData: LevelPlayImpressionData;
         };
     }): void;
 };

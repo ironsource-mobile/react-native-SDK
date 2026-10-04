@@ -13,10 +13,10 @@
 
 using namespace facebook::react;
 
-@interface LevelPlayBannerAdView() <RCTLevelPlayBannerAdViewViewProtocol, LPMBannerAdViewDelegate>
+@interface LevelPlayBannerAdView() <RCTLevelPlayBannerAdViewViewProtocol, LPMBannerAdViewDelegate, LPMImpressionDataDelegate>
 @property (nonatomic, assign) facebook::react::LevelPlayBannerAdViewProps::Shared _props;
 #else
-@interface LevelPlayBannerAdView()<LPMBannerAdViewDelegate>
+@interface LevelPlayBannerAdView()<LPMBannerAdViewDelegate, LPMImpressionDataDelegate>
 #endif
 
 @end
@@ -185,6 +185,7 @@ static bool safeBannerBoolFromDict(NSDictionary *dict, NSString *key) {
     self.bannerAdView = [[LPMBannerAdView alloc] initWithAdUnitId:self.adUnitId config:adConfig];
 
     [self.bannerAdView setDelegate:self];
+    [self.bannerAdView setImpressionDataDelegate:self];
 
     // Add the banner view to the view hierarchy
     [self addBannerViewWithSize:bannerSize];
@@ -284,6 +285,8 @@ static bool safeBannerBoolFromDict(NSDictionary *dict, NSString *key) {
         return [LPMAdSize largeSize];
     } else if ([adLabel isEqualToString:@"MEDIUM_RECTANGLE"]) {
         return [LPMAdSize mediumRectangleSize];
+    } else if ([adLabel isEqualToString:@"LEADERBOARD"]) {
+        return [LPMAdSize leaderBoardSize];
     } else if ([adLabel isEqualToString:@"CUSTOM"]) {
         return [LPMAdSize customSizeWithWidth:width height:height];
     } else {
@@ -593,6 +596,34 @@ static bool safeBannerBoolFromDict(NSDictionary *dict, NSString *key) {
             fabricEventEmitter->onAdCollapsedEvent(fabricEvent);
         }
     };
+
+    // onAdImpressionDataEvent
+    self.onAdImpressionDataEvent = [self](NSDictionary *event) {
+        if (_eventEmitter) {
+            auto fabricEventEmitter = std::static_pointer_cast<const facebook::react::LevelPlayBannerAdViewEventEmitter>(_eventEmitter);
+            NSDictionary *impressionDataDict = event[@"impressionData"];
+
+            facebook::react::LevelPlayBannerAdViewEventEmitter::OnAdImpressionDataEvent fabricEvent;
+            fabricEvent.impressionData.auctionId = safeBannerStringFromDict(impressionDataDict, @"auctionId");
+            fabricEvent.impressionData.mediationAdUnitName = safeBannerStringFromDict(impressionDataDict, @"mediationAdUnitName");
+            fabricEvent.impressionData.mediationAdUnitId = safeBannerStringFromDict(impressionDataDict, @"mediationAdUnitId");
+            fabricEvent.impressionData.adFormat = safeBannerStringFromDict(impressionDataDict, @"adFormat");
+            fabricEvent.impressionData.country = safeBannerStringFromDict(impressionDataDict, @"country");
+            fabricEvent.impressionData.ab = safeBannerStringFromDict(impressionDataDict, @"ab");
+            fabricEvent.impressionData.segmentName = safeBannerStringFromDict(impressionDataDict, @"segmentName");
+            fabricEvent.impressionData.placement = safeBannerStringFromDict(impressionDataDict, @"placement");
+            fabricEvent.impressionData.adNetwork = safeBannerStringFromDict(impressionDataDict, @"adNetwork");
+            fabricEvent.impressionData.instanceName = safeBannerStringFromDict(impressionDataDict, @"instanceName");
+            fabricEvent.impressionData.instanceId = safeBannerStringFromDict(impressionDataDict, @"instanceId");
+            fabricEvent.impressionData.revenue = safeBannerDoubleFromDict(impressionDataDict, @"revenue");
+            fabricEvent.impressionData.precision = safeBannerStringFromDict(impressionDataDict, @"precision");
+            fabricEvent.impressionData.encryptedCPM = safeBannerStringFromDict(impressionDataDict, @"encryptedCPM");
+            fabricEvent.impressionData.conversionValue = safeBannerDoubleFromDict(impressionDataDict, @"conversionValue");
+            fabricEvent.impressionData.creativeId = safeBannerStringFromDict(impressionDataDict, @"creativeId");
+
+            fabricEventEmitter->onAdImpressionDataEvent(fabricEvent);
+        }
+    };
 #endif
 }
 
@@ -645,6 +676,13 @@ static bool safeBannerBoolFromDict(NSDictionary *dict, NSString *key) {
 - (void)didCollapseAdWithAdInfo:(LPMAdInfo *)adInfo {
   if (self.onAdCollapsedEvent) {
     self.onAdCollapsedEvent(@{@"adInfo": [LevelPlayUtils getDictForLevelPlayAdInfo:adInfo]});
+  }
+}
+
+#pragma mark - LPMImpressionDataDelegate
+- (void)impressionDataDidSucceed:(LPMImpressionData *)impressionData {
+  if (self.onAdImpressionDataEvent) {
+    self.onAdImpressionDataEvent(@{@"impressionData": [LevelPlayUtils getDictForLevelPlayImpressionData:impressionData]});
   }
 }
 

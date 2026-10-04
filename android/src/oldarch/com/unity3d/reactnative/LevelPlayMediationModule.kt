@@ -53,6 +53,11 @@ class LevelPlayMediationModule(reactContext: ReactApplicationContext) :
   /** Privacy Settings API  ===================================================================== **/
 
   @ReactMethod
+  fun setGDPRConsent(consent: Boolean, promise: Promise) {
+    shared.setGDPRConsent(consent, promise)
+  }
+
+  @ReactMethod
   fun setGDPRConsents(networkConsents: ReadableMap, promise: Promise) {
     shared.setGDPRConsents(networkConsents, promise)
   }

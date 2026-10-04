@@ -1,5 +1,6 @@
 import { LevelPlayAdObjectManager } from '../utils/LevelPlayAdObjectManager'
 import type { LevelPlayInterstitialAdListener } from './listeners/LevelPlayInterstitialAdListener'
+import type { LevelPlayImpressionDataListener } from './listeners/LevelPlayImpressionDataListener'
 import NativeLevelPlayMediation from '../specs/NativeLevelPlayMediation'
 
 const levelPlayObjectManager = LevelPlayAdObjectManager.getInstance()
@@ -11,6 +12,7 @@ export class LevelPlayInterstitialAd {
   adUnitId: string
   adId: string = ''
   listener: LevelPlayInterstitialAdListener | null | undefined
+  impressionDataListener: LevelPlayImpressionDataListener | undefined
   bidFloor: number | null | undefined
 
   constructor(adUnitId: string) {
@@ -23,6 +25,20 @@ export class LevelPlayInterstitialAd {
 
   getListener(): LevelPlayInterstitialAdListener | null | undefined {
     return this.listener
+  }
+
+  /**
+   * Sets a listener for impression-level revenue data of this ad instance.
+   *
+   * Android: setImpressionDataListener
+   *     iOS: setImpressionDataDelegate
+   */
+  setImpressionDataListener(listener: LevelPlayImpressionDataListener): void {
+    this.impressionDataListener = listener
+  }
+
+  getImpressionDataListener(): LevelPlayImpressionDataListener | undefined {
+    return this.impressionDataListener
   }
 
   setBidFloor(bidFloor: number): void {

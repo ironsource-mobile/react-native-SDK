@@ -12,8 +12,11 @@ import com.unity3d.mediation.LevelPlayAdInfo
 import com.unity3d.mediation.LevelPlayAdSize
 import com.unity3d.mediation.banner.LevelPlayBannerAdView
 import com.unity3d.mediation.banner.LevelPlayBannerAdViewListener
+import com.unity3d.mediation.impression.LevelPlayImpressionData
+import com.unity3d.mediation.impression.LevelPlayImpressionDataListener
 
-class LevelPlayBannerAdView(private val context: Context) : FrameLayout(context), LevelPlayBannerAdViewListener {
+class LevelPlayBannerAdView(private val context: Context) : FrameLayout(context), LevelPlayBannerAdViewListener,
+  LevelPlayImpressionDataListener {
   private var reactContext: ReactContext = context as ReactContext
   var adUnitId: String = ""
   var adSize: LevelPlayAdSize? = null
@@ -45,6 +48,7 @@ class LevelPlayBannerAdView(private val context: Context) : FrameLayout(context)
 
     levelPlayBanner = LevelPlayBannerAdView(context, adUnitId, adConfig)
     levelPlayBanner!!.bannerListener = this
+    levelPlayBanner!!.setImpressionDataListener(this)
 
     // Set the banner ad view
     addView(levelPlayBanner)
@@ -145,6 +149,12 @@ class LevelPlayBannerAdView(private val context: Context) : FrameLayout(context)
     sendEventToParticularUI(reactContext, id, LevelPlayConstants.ON_AD_LEFT_APPLICATION_EVENT, map)
   }
 
+  override fun onImpressionSuccess(impressionData: LevelPlayImpressionData) {
+    val map = Arguments.createMap()
+    map.putMap("impressionData", impressionData.toReadableMap())
+    sendEventToParticularUI(reactContext, id, LevelPlayConstants.ON_AD_IMPRESSION_DATA_EVENT, map)
+  }
+
   private fun getLevelPlayAdSize(context: Context?, adSizeMap: ReadableMap?): LevelPlayAdSize? {
     if (context == null || adSizeMap == null) return null
 
@@ -164,6 +174,8 @@ class LevelPlayBannerAdView(private val context: Context) : FrameLayout(context)
       LevelPlayAdSize.LARGE
     } else if (adLabel.equals("MEDIUM_RECTANGLE", true)) {
       LevelPlayAdSize.MEDIUM_RECTANGLE
+    } else if (adLabel.equals("LEADERBOARD", true)) {
+      LevelPlayAdSize.LEADERBOARD
     } else if (adLabel.equals("CUSTOM", true)) {
       LevelPlayAdSize.createCustomSize(width, height)
     } else {

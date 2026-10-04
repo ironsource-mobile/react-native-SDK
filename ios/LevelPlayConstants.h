@@ -17,6 +17,7 @@ extern NSString *const ON_INTERSTITIAL_AD_DISPLAYED;
 extern NSString *const ON_INTERSTITIAL_AD_DISPLAY_FAILED;
 extern NSString *const ON_INTERSTITIAL_AD_CLICKED;
 extern NSString *const ON_INTERSTITIAL_AD_CLOSED;
+extern NSString *const ON_INTERSTITIAL_AD_IMPRESSION_DATA;
 #pragma mark - LevelPlay Rewarded Ad
 extern NSString *const ON_REWARDED_AD_LOADED;
 extern NSString *const ON_REWARDED_AD_LOAD_FAILED;
@@ -26,4 +27,5 @@ extern NSString *const ON_REWARDED_AD_DISPLAY_FAILED;
 extern NSString *const ON_REWARDED_AD_CLICKED;
 extern NSString *const ON_REWARDED_AD_CLOSED;
 extern NSString *const ON_REWARDED_AD_REWARDED;
+extern NSString *const ON_REWARDED_AD_IMPRESSION_DATA;
 @end

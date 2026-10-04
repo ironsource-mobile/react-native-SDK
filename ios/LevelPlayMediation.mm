@@ -82,7 +82,7 @@ RCT_EXPORT_METHOD(setAdaptersDebug:(BOOL)isEnabled resolve:(RCTPromiseResolveBlo
 /**
  * Sets the user's consent status for data collection.
  *
- * @deprecated Use LPMPrivacySettings.setGDPRConsents() instead for more granular control per network.
+ * @deprecated Use LPMPrivacySettings.setGDPRConsent() instead.
  * @param isConsent A boolean flag indicating whether the user has given consent.
  */
 RCT_EXPORT_METHOD(setConsent:(BOOL)isConsent resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
@@ -141,6 +141,7 @@ RCT_EXPORT_METHOD(setSegment:(nonnull NSDictionary *)segmentDict resolve:(RCTPro
             }
         } else {
             reject(E_ILLEGAL_ARGUMENT, [NSString stringWithFormat: @"Invalid parameter. param: %@", key], nil);
+            return;
         }
     }
 
@@ -172,10 +173,21 @@ RCT_EXPORT_METHOD(launchTestSuite:(RCTPromiseResolveBlock)resolve reject:(RCTPro
 #pragma mark - Privacy Settings API ===================================================================
 
 /**
+ * Sets the user's GDPR consent.
+ *
+ * @param consent YES if the user has granted consent to collect and share data, NO otherwise.
+ */
+RCT_EXPORT_METHOD(setGDPRConsent:(BOOL)consent resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
+    [LPMPrivacySettings setGDPRConsent:consent];
+    resolve(nil);
+}
+
+/**
  * Sets the consent per network, a dictionary of network keys to boolean values that indicates whether
  * the user has granted consent for each network to collect and share data. Consent is used for
  * GDPR compliance.
  *
+ * @deprecated Use setGDPRConsent instead.
  * @param networkConsents A dictionary where keys are network identifiers (NSString) and values are
  * NSNumber objects wrapping boolean values.
  */
@@ -419,6 +431,7 @@ RCT_EXPORT_METHOD(isRewardedAdPlacementCapped:(NSString *)placementName resolve:
         @"ON_INTERSTITIAL_AD_DISPLAY_FAILED": ON_INTERSTITIAL_AD_DISPLAY_FAILED,
         @"ON_INTERSTITIAL_AD_CLICKED": ON_INTERSTITIAL_AD_CLICKED,
         @"ON_INTERSTITIAL_AD_CLOSED": ON_INTERSTITIAL_AD_CLOSED,
+        @"ON_INTERSTITIAL_AD_IMPRESSION_DATA": ON_INTERSTITIAL_AD_IMPRESSION_DATA,
 
         // LevelPlay Rewarded Ad
         @"ON_REWARDED_AD_LOADED": ON_REWARDED_AD_LOADED,
@@ -429,6 +442,7 @@ RCT_EXPORT_METHOD(isRewardedAdPlacementCapped:(NSString *)placementName resolve:
         @"ON_REWARDED_AD_CLICKED": ON_REWARDED_AD_CLICKED,
         @"ON_REWARDED_AD_CLOSED": ON_REWARDED_AD_CLOSED,
         @"ON_REWARDED_AD_REWARDED": ON_REWARDED_AD_REWARDED,
+        @"ON_REWARDED_AD_IMPRESSION_DATA": ON_REWARDED_AD_IMPRESSION_DATA,
     };
 }
 
@@ -452,8 +466,9 @@ RCT_EXPORT_METHOD(isRewardedAdPlacementCapped:(NSString *)placementName resolve:
         ON_INTERSTITIAL_AD_DISPLAY_FAILED,
         ON_INTERSTITIAL_AD_CLICKED,
         ON_INTERSTITIAL_AD_CLOSED,
+        ON_INTERSTITIAL_AD_IMPRESSION_DATA,
 
-        // LevelPlay Interstitial Ad
+        // LevelPlay Rewarded Ad
         ON_REWARDED_AD_LOADED,
         ON_REWARDED_AD_LOAD_FAILED,
         ON_REWARDED_AD_INFO_CHANGED,
@@ -462,6 +477,7 @@ RCT_EXPORT_METHOD(isRewardedAdPlacementCapped:(NSString *)placementName resolve:
         ON_REWARDED_AD_CLICKED,
         ON_REWARDED_AD_CLOSED,
         ON_REWARDED_AD_REWARDED,
+        ON_REWARDED_AD_IMPRESSION_DATA,
     ];
 }
 

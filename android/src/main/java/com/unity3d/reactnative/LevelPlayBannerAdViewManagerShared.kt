@@ -9,6 +9,7 @@ import com.unity3d.reactnative.LevelPlayConstants.ON_AD_DISPLAYED_EVENT
 import com.unity3d.reactnative.LevelPlayConstants.ON_AD_DISPLAY_FAILED_EVENT
 import com.unity3d.reactnative.LevelPlayConstants.ON_AD_EXPANDED_EVENT
 import com.unity3d.reactnative.LevelPlayConstants.ON_AD_ID_GENERATED_EVENT
+import com.unity3d.reactnative.LevelPlayConstants.ON_AD_IMPRESSION_DATA_EVENT
 import com.unity3d.reactnative.LevelPlayConstants.ON_AD_LEFT_APPLICATION_EVENT
 import com.unity3d.reactnative.LevelPlayConstants.ON_AD_LOADED_EVENT
 import com.unity3d.reactnative.LevelPlayConstants.ON_AD_LOAD_FAILED_EVENT
@@ -65,6 +66,7 @@ class LevelPlayBannerAdViewManagerShared(
       ON_AD_EXPANDED_EVENT to mapOf("registrationName" to ON_AD_EXPANDED_EVENT),
       ON_AD_LEFT_APPLICATION_EVENT to mapOf("registrationName" to ON_AD_LEFT_APPLICATION_EVENT),
       ON_AD_ID_GENERATED_EVENT to mapOf("registrationName" to ON_AD_ID_GENERATED_EVENT),
+      ON_AD_IMPRESSION_DATA_EVENT to mapOf("registrationName" to ON_AD_IMPRESSION_DATA_EVENT),
     )
   }
 

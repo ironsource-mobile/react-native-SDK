@@ -6,6 +6,7 @@ import com.unity3d.reactnative.LevelPlayConstants.ON_INTERSTITIAL_AD_CLICKED
 import com.unity3d.reactnative.LevelPlayConstants.ON_INTERSTITIAL_AD_CLOSED
 import com.unity3d.reactnative.LevelPlayConstants.ON_INTERSTITIAL_AD_DISPLAYED
 import com.unity3d.reactnative.LevelPlayConstants.ON_INTERSTITIAL_AD_DISPLAY_FAILED
+import com.unity3d.reactnative.LevelPlayConstants.ON_INTERSTITIAL_AD_IMPRESSION_DATA
 import com.unity3d.reactnative.LevelPlayConstants.ON_INTERSTITIAL_AD_INFO_CHANGED
 import com.unity3d.reactnative.LevelPlayConstants.ON_INTERSTITIAL_AD_LOADED
 import com.unity3d.reactnative.LevelPlayConstants.ON_INTERSTITIAL_AD_LOAD_FAILED
@@ -13,6 +14,7 @@ import com.unity3d.reactnative.LevelPlayConstants.ON_REWARDED_AD_CLICKED
 import com.unity3d.reactnative.LevelPlayConstants.ON_REWARDED_AD_CLOSED
 import com.unity3d.reactnative.LevelPlayConstants.ON_REWARDED_AD_DISPLAYED
 import com.unity3d.reactnative.LevelPlayConstants.ON_REWARDED_AD_DISPLAY_FAILED
+import com.unity3d.reactnative.LevelPlayConstants.ON_REWARDED_AD_IMPRESSION_DATA
 import com.unity3d.reactnative.LevelPlayConstants.ON_REWARDED_AD_INFO_CHANGED
 import com.unity3d.reactnative.LevelPlayConstants.ON_REWARDED_AD_LOADED
 import com.unity3d.reactnative.LevelPlayConstants.ON_REWARDED_AD_LOAD_FAILED
@@ -20,6 +22,8 @@ import com.unity3d.reactnative.LevelPlayConstants.ON_REWARDED_AD_REWARDED
 import com.unity3d.reactnative.LevelPlayUtils.Companion.sendEvent
 import com.unity3d.mediation.LevelPlayAdError
 import com.unity3d.mediation.LevelPlayAdInfo
+import com.unity3d.mediation.impression.LevelPlayImpressionData
+import com.unity3d.mediation.impression.LevelPlayImpressionDataListener
 import com.unity3d.mediation.interstitial.LevelPlayInterstitialAd
 import com.unity3d.mediation.interstitial.LevelPlayInterstitialAdListener
 import com.unity3d.mediation.rewarded.LevelPlayReward
@@ -45,6 +49,10 @@ class LevelPlayAdObjectManager(
     val interstitialAd = LevelPlayInterstitialAd(adUnitId, adConfigBuilder.build())
     // Set the listener for the interstitial ad
     interstitialAd.setListener(createInterstitialAdListener(interstitialAd.adId))
+    // Set the per-instance impression data listener
+    interstitialAd.setImpressionDataListener(
+      createImpressionDataListener(interstitialAd.adId, ON_INTERSTITIAL_AD_IMPRESSION_DATA)
+    )
     // Store the interstitial ad in the map
     interstitialAdsMap[interstitialAd.adId] = interstitialAd
     // Return the unique adId for the created ad object
@@ -131,6 +139,10 @@ class LevelPlayAdObjectManager(
     val rewardedAd = LevelPlayRewardedAd(adUnitId, adConfigBuilder.build())
     // Set the listener for the rewarded ad
     rewardedAd.setListener(createRewardedAdListener(rewardedAd.adId))
+    // Set the per-instance impression data listener
+    rewardedAd.setImpressionDataListener(
+      createImpressionDataListener(rewardedAd.adId, ON_REWARDED_AD_IMPRESSION_DATA)
+    )
     // Store the rewarded ad in the map
     rewardedAdsMap[rewardedAd.adId] = rewardedAd
     // Return the unique adId for the created ad object
@@ -216,6 +228,17 @@ class LevelPlayAdObjectManager(
   }
 
   // Shared Methods
+
+  private fun createImpressionDataListener(adId: String, eventName: String): LevelPlayImpressionDataListener {
+    return object : LevelPlayImpressionDataListener {
+      override fun onImpressionSuccess(impressionData: LevelPlayImpressionData) {
+        val args = Arguments.createMap()
+        args.putString("adId", adId)
+        args.putMap("impressionData", impressionData.toReadableMap())
+        sendEvent(reactApplicationContext, eventName, args)
+      }
+    }
+  }
 
   fun removeAd(adId: String) {
     if (interstitialAdsMap.containsKey(adId))
