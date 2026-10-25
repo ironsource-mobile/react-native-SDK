@@ -2,16 +2,21 @@
 
 A bridge for LevelPlay SDK
 
-- [LevelPlay Knowledge Center](https://developers.is.com/)
-- [Android SDK](https://developers.ironsrc.com/ironsource-mobile/android/android-sdk/)
-- [iOS SDK](https://developers.ironsrc.com/ironsource-mobile/ios/ios-sdk/)
-- [React-Native Plugin](https://developers.is.com/ironsource-mobile/react-native/react-native-plugin-integration/)
+- [LevelPlay documentation](https://docs.unity.com/en-us/grow/levelplay)
+- [Android SDK](https://docs.unity.com/en-us/grow/levelplay/sdk/android/sdk-integration)
+- [iOS SDK](https://docs.unity.com/en-us/grow/levelplay/sdk/ios/sdk-integration)
+- [React Native Plugin](https://docs.unity.com/en-us/grow/levelplay/sdk/react/plugin-integration)
 
 # Getting Started
 
 ## Prerequisites
 
 Please refer to the [ReactNative official page](https://reactnative.dev/docs/environment-setup) for environment setup.
+
+Requirements:
+
+- **Android**: build your app with Kotlin 2.0 or higher (the default from React Native 0.77). The LevelPlay Android SDK depends on `kotlin-stdlib` 2.1.x.
+- **iOS**: build your app with Xcode 26 or higher, with a minimum deployment target of iOS 13.
 
 ## Installation
 
@@ -25,7 +30,7 @@ yarn add unity-levelplay-mediation
 
 ### Android
 
-- Follow [LevelPlay Knowledge Center](https://developers.ironsrc.com/ironsource-mobile/android/android-sdk/) Android integration guide for required settings.
+- Follow the [LevelPlay Android integration guide](https://docs.unity.com/en-us/grow/levelplay/sdk/android/sdk-integration) for required settings.
 
 ### Gradle Dependencies Included
 
@@ -40,13 +45,12 @@ yarn add unity-levelplay-mediation
 dependencies {
   implementation 'com.google.android.gms:play-services-appset:16.0.2'
   implementation 'com.google.android.gms:play-services-ads-identifier:18.0.1'
-  implementation 'com.google.android.gms:play-services-basement:18.3.0'
 }
 ```
 
 ### iOS
 
-- Follow [LevelPlay Knowledge Center](https://developers.ironsrc.com/ironsource-mobile/ios/ios-sdk/) iOS integration guide for required settings.
+- Follow the [LevelPlay iOS integration guide](https://docs.unity.com/en-us/grow/levelplay/sdk/ios/sdk-integration) for required settings.
 
 ### Pods Included
 
@@ -57,7 +61,7 @@ dependencies {
 #### <ins>SKAdNetwork Support</ins>
 
 - Add the SKAN IDs of your ad networks on your PROJECT_ROOT/ios/PROJECT_NAME/info.plist
-- Get the list of IDs using our [SKAdNetwork IDs Manager](https://developers.is.com/ironsource-mobile/ios/managing-skadnetwork-ids/)
+- Get the list of IDs using our [SKAdNetwork IDs Manager](https://docs.unity.com/en-us/grow/levelplay/sdk/react/skadnetwork-id-manager)
 
 ```xml
 <key>SKAdNetworkItems</key>
@@ -216,6 +220,33 @@ async function init() {
 }
 ```
 
+### Privacy settings
+
+Set the user's privacy choices with `LevelPlayPrivacySettings` before you initialize the SDK:
+
+```typescript
+await LevelPlayPrivacySettings.setGDPRConsent(true)
+await LevelPlayPrivacySettings.setCCPA(false)
+await LevelPlayPrivacySettings.setCOPPA(false)
+```
+
+For more information, refer to [Regulation advanced settings](https://docs.unity.com/en-us/grow/levelplay/sdk/react/regulation-advanced-settings).
+
+### Impression data
+
+Set an impression data listener on each ad to receive its impression-level revenue data. `LevelPlay.addImpressionDataListener` is deprecated.
+
+```typescript
+const impressionDataListener: LevelPlayImpressionDataListener = {
+  onImpressionSuccess: (impressionData: LevelPlayImpressionData) => {},
+}
+interstitialAd.setImpressionDataListener(impressionDataListener)
+rewardedAd.setImpressionDataListener(impressionDataListener)
+// Banners: the impressionDataListener prop of LevelPlayBannerAdView
+```
+
+For more information, refer to [Impression-level revenue integration](https://docs.unity.com/en-us/grow/levelplay/sdk/react/impression-level-revenue-integration).
+
 ### Show Ads Example
 
 #### LevelPlayRewardedVideo
@@ -347,7 +378,7 @@ Refer to the [example app](./example) for the more detailed implementation sampl
 
 Note:
 
-- Make sure to read the official documents at [LevelPlay Knowledge Center](https://developers.ironsrc.com/ironsource-mobile/android/android-sdk/) for proper usage.
+- Make sure to read the [LevelPlay React Native documentation](https://docs.unity.com/en-us/grow/levelplay/sdk/react/plugin-integration) for proper usage.
 - Some config functions must be called before `LevelPlay.init`.
 
 ## Functions Not Supported
@@ -371,14 +402,14 @@ Some functions are not supported.
 
 ## Android
 
-Make sure to follow [LevelPlay Knowledge Center](https://developers.ironsrc.com/ironsource-mobile/android/mediation-networks-android/) document for additional setup.
+Make sure to follow the [Android mediation networks](https://docs.unity.com/en-us/grow/levelplay/sdk/android/mediation-networks) document for additional setup.
 
 - Add adapter/sdk dependencies to `PROJECT_ROOT/android/app/build.gradle`
 - Add required settings to `PROJECT_ROOT/android/app/src/main/AndroidManifest.xml`
 
 ## iOS
 
-Make sure to follow [LevelPlay Knowledge Center](https://developers.ironsrc.com/ironsource-mobile/ios/mediation-networks-ios/) document for additional setup.
+Make sure to follow the [iOS mediation networks](https://docs.unity.com/en-us/grow/levelplay/sdk/ios/mediation-networks) document for additional setup.
 
 - Add adapter/sdk pod dependencies to `PROJECT_ROOT/ios/Podfile`
 - Add required settings to `PROJECT_ROOT/ios/APP_NAME/info.plist`
@@ -415,7 +446,7 @@ yarn run ios
 ```
 
 ## Version history 
-You can find a summary of the LevelPlay SDK version history [here](https://developers.is.com/ironsource-mobile/react-native/sdk-change-log/).
+You can find a summary of the LevelPlay SDK version history [here](https://docs.unity.com/en-us/grow/levelplay/sdk/react/changelog).
 
 ## Contact US 
 For any question please contact us [here](https://ironsrc.formtitan.com/knowledge-center#/). 

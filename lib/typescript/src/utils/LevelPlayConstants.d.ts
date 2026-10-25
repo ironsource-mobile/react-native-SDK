@@ -1,7 +1,7 @@
 export declare const PLUGIN_TYPE = "ReactNative";
-export declare const PLUGIN_VERSION = "9.3.0";
-export declare const ANDROID_SDK_VERSION = "9.6.1";
-export declare const IOS_SDK_VERSION = "9.6.1";
+export declare const PLUGIN_VERSION = "9.4.0";
+export declare const ANDROID_SDK_VERSION = "9.7.0";
+export declare const IOS_SDK_VERSION = "9.7.0";
 export declare const BANNER_WIDTH = 320;
 export declare const BANNER_HEIGHT = 50;
 export declare const LARGE_WIDTH = 320;
