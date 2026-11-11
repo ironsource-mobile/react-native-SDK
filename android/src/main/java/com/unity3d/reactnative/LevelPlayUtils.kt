@@ -6,6 +6,7 @@ import android.util.Log
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContext
 import com.facebook.react.bridge.ReadableMap
+import com.facebook.react.bridge.UiThreadUtil
 import com.facebook.react.bridge.WritableMap
 import com.facebook.react.modules.core.DeviceEventManagerModule
 import com.facebook.react.uimanager.UIManagerHelper
@@ -22,11 +23,15 @@ class LevelPlayUtils {
         eventName: String,
         params: ReadableMap? = null
       ) {
-        reactApplicationContext.currentActivity?.runOnUiThread {
-          reactApplicationContext
-            .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
-            .emit(eventName, params)
-        } ?: Log.w(TAG, "Cannot send JS event - Activity is null")
+        UiThreadUtil.runOnUiThread {
+          if (reactApplicationContext.hasActiveReactInstance()) {
+            reactApplicationContext
+              .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+              .emit(eventName, params)
+          } else {
+            Log.w(TAG, "Cannot send JS event $eventName - React instance is not active")
+          }
+        }
       }
 
       // This method dispatches events to UI components in both architectures.

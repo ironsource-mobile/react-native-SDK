@@ -1,7 +1,6 @@
 package com.unity3d.reactnative
 
 import com.facebook.react.bridge.ReactApplicationContext
-import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
 import com.facebook.react.module.annotations.ReactModule
 import com.facebook.react.uimanager.SimpleViewManager
@@ -51,15 +50,6 @@ abstract class LevelPlayNativeAdViewManager(
     shared.destroyAd(view)
   }
 
-  override fun receiveCommand(
-    root: LevelPlayNativeAdView,
-    commandId: String?,
-    args: ReadableArray?
-  ) {
-    super.receiveCommand(root, commandId, args)
-    shared.receiveCommand(root, commandId)
-  }
-
   override fun getExportedCustomDirectEventTypeConstants(): MutableMap<String, Any> {
     return shared.getExportedCustomDirectEventTypeConstants()
   }
@@ -73,5 +63,4 @@ abstract class LevelPlayNativeAdViewManager(
 
   abstract fun bindNativeAdToView(nativeAd: LevelPlayNativeAd?, nativeAdLayout: NativeAdLayout)
 }
-
 

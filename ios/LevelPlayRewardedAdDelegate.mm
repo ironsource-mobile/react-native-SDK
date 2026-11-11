@@ -57,7 +57,7 @@
             @"adInfo": [LevelPlayUtils getDictForLevelPlayAdInfo:adInfo],
             @"error": [LevelPlayUtils getDictForLevelPlayAdError:error adUnitId:adInfo.adUnitId]
     };
-  [LevelPlayUtils sendEventWithName:@"onInterstitialAdDisplayFailed" args:args eventEmitter:self.eventEmitter];
+  [LevelPlayUtils sendEventWithName:@"onRewardedAdDisplayFailed" args:args eventEmitter:self.eventEmitter];
 }
 
 - (void)didClickAdWithAdInfo:(LPMAdInfo *)adInfo {

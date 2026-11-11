@@ -1,16 +1,21 @@
 import type { ViewProps } from 'react-native';
 import type { HostComponent } from 'react-native';
 import type { DirectEventHandler, Double, Int32 } from 'react-native/Libraries/Types/CodegenTypes';
+export interface NativeAdElementStyle {
+    backgroundColor?: string;
+    textSize?: Double;
+    textColor?: string;
+    fontStyle?: string;
+    cornerRadius?: Double;
+}
 export interface CreationParams {
     placement: string;
     templateStyle?: {
         mainBackgroundColor?: string;
-        titleTextColor?: string;
-        bodyTextColor?: string;
-        advertiserTextColor?: string;
-        ctaBackgroundColor?: string;
-        ctaTextColor?: string;
-        ctaCornerRadius?: Double;
+        titleStyle?: NativeAdElementStyle;
+        bodyStyle?: NativeAdElementStyle;
+        advertiserStyle?: NativeAdElementStyle;
+        callToActionStyle?: NativeAdElementStyle;
     };
     templateType?: string;
     viewType?: string;

@@ -2,7 +2,7 @@
 
 @implementation LevelPlayNativeAdTemplateStyle
 
-- (instancetype)initWithMainBackgroundColor:(NSNumber *)mainBackgroundColor
+- (instancetype)initWithMainBackgroundColor:(NSString *)mainBackgroundColor
                         titleStyle:(LevelPlayNativeAdElementStyle *)titleStyle
                          bodyStyle:(LevelPlayNativeAdElementStyle *)bodyStyle
                    advertiserStyle:(LevelPlayNativeAdElementStyle *)advertiserStyle

@@ -130,6 +130,26 @@ export class LevelPlayAdObjectManager {
     )
   }
 
+  // In-flight native ad creations, so concurrent loadAd() calls on the same ad object share one native ad
+  private pendingCreations = new Map<
+    LevelPlayInterstitialAd | LevelPlayRewardedAd,
+    Promise<string>
+  >()
+
+  private ensureNativeAd<
+    T extends LevelPlayInterstitialAd | LevelPlayRewardedAd,
+  >(ad: T, create: (ad: T) => Promise<string>): Promise<string> {
+    if (ad.adId) {
+      return Promise.resolve(ad.adId)
+    }
+    let pending = this.pendingCreations.get(ad)
+    if (!pending) {
+      pending = create(ad).finally(() => this.pendingCreations.delete(ad))
+      this.pendingCreations.set(ad, pending)
+    }
+    return pending
+  }
+
   async createInterstitialAd(
     interstitialAd: LevelPlayInterstitialAd
   ): Promise<string> {
@@ -153,10 +173,10 @@ export class LevelPlayAdObjectManager {
   async loadInterstitialAd(
     interstitialAd: LevelPlayInterstitialAd
   ): Promise<void> {
-    // If adId is empty or undefined, create the ad first to get an adId
-    const adId = !interstitialAd.adId
-      ? await this.createInterstitialAd(interstitialAd)
-      : interstitialAd.adId
+    // If the native ad doesn't exist yet, create it first to get an adId
+    const adId = await this.ensureNativeAd(interstitialAd, ad =>
+      this.createInterstitialAd(ad)
+    )
 
     // Call native module to load the ad using its adId
     await NativeLevelPlayMediation.loadInterstitialAd(adId)
@@ -271,10 +291,10 @@ export class LevelPlayAdObjectManager {
   }
 
   async loadRewardedAd(rewardedAd: LevelPlayRewardedAd): Promise<void> {
-    // If adId is empty or undefined, create the ad first to get an adId
-    const adId = !rewardedAd.adId
-      ? await this.createRewardedAd(rewardedAd)
-      : rewardedAd.adId
+    // If the native ad doesn't exist yet, create it first to get an adId
+    const adId = await this.ensureNativeAd(rewardedAd, ad =>
+      this.createRewardedAd(ad)
+    )
 
     // Call native module to load the ad using its adId
     await NativeLevelPlayMediation.loadRewardedAd(adId)
@@ -295,13 +315,18 @@ export class LevelPlayAdObjectManager {
   async removeAd(adId: string) {
     let wasRemoved = false
 
-    if (this.interstitialAdsMap && this.interstitialAdsMap.has(adId)) {
+    // Reset the ad object's id so a later loadAd() creates a new native ad
+    const interstitialAd = this.interstitialAdsMap?.get(adId)
+    if (interstitialAd) {
       this.interstitialAdsMap.delete(adId)
+      interstitialAd.adId = ''
       wasRemoved = true
     }
 
-    if (this.rewardedAdsMap && this.rewardedAdsMap.has(adId)) {
+    const rewardedAd = this.rewardedAdsMap?.get(adId)
+    if (rewardedAd) {
       this.rewardedAdsMap.delete(adId)
+      rewardedAd.adId = ''
       wasRemoved = true
     }
 
@@ -311,6 +336,9 @@ export class LevelPlayAdObjectManager {
   }
 
   async removeAllAds() {
+    // Reset the ad objects' ids so a later loadAd() creates new native ads
+    this.interstitialAdsMap.forEach(ad => (ad.adId = ''))
+    this.rewardedAdsMap.forEach(ad => (ad.adId = ''))
     this.interstitialAdsMap.clear()
     this.rewardedAdsMap.clear()
     await NativeLevelPlayMediation.removeAllAds()

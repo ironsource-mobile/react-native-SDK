@@ -10,6 +10,8 @@ export declare class LevelPlayAdObjectManager {
     private constructor();
     static getInstance(): LevelPlayAdObjectManager;
     private handleInterstitialMethodCalls;
+    private pendingCreations;
+    private ensureNativeAd;
     createInterstitialAd(interstitialAd: LevelPlayInterstitialAd): Promise<string>;
     loadInterstitialAd(interstitialAd: LevelPlayInterstitialAd): Promise<void>;
     showInterstitialAd(adId: string, placementName: string): Promise<void>;

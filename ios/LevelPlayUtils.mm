@@ -140,7 +140,7 @@
     return @{
             @"adUnitId": adUnitId?: [NSNull null],
             @"errorCode": [NSNumber numberWithInteger:error.code],
-            @"errorMessage": error.userInfo[NSLocalizedDescriptionKey],
+            @"errorMessage": error.localizedDescription ?: @"",
     };
 }
 

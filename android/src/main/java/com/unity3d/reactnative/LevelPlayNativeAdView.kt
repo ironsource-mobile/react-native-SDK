@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
+import android.util.Log
 import android.view.Choreographer
 import android.view.LayoutInflater
 import android.view.View
@@ -132,6 +133,9 @@ class LevelPlayNativeAdView(context: Context) : FrameLayout(context), LevelPlayN
     layoutId: Int?,
     onBindLevelPlayNativeAdView: (LevelPlayNativeAd?) -> Unit
   ) {
+    // Create the layout once per view, like on iOS
+    if (nativeAdLayout != null) return
+
     // Extract creation params
     placement = value?.getString("placement") ?: ""
     val templateStyle = getTemplateStyleMap(value?.getMap("templateStyle"))
@@ -158,19 +162,44 @@ class LevelPlayNativeAdView(context: Context) : FrameLayout(context), LevelPlayN
     // Set the native ad layout
     addView(nativeAdLayout)
 
-    // Schedule a callback to run on the next frame synchronization point
-    Choreographer.getInstance().postFrameCallback(object: Choreographer.FrameCallback {
-      override fun doFrame(frameTimeNanos: Long) {
-        // Manually layout children to ensure correct measurement and layout
-        manuallyLayoutChildren()
+    // Keep laying out the native views on every frame while this view is attached
+    startLayoutFrameCallback()
+  }
 
-        // Dispatch global layout event to notify listeners observing layout changes
-        viewTreeObserver.dispatchOnGlobalLayout()
+  // Lays out the SDK's native views on every frame (React Native doesn't lay out views it doesn't manage).
+  // Runs only while this view is attached to a window, so unmounted views don't keep a frame callback alive.
+  private var isLayoutFrameCallbackPosted = false
+  private val layoutFrameCallback = object : Choreographer.FrameCallback {
+    override fun doFrame(frameTimeNanos: Long) {
+      isLayoutFrameCallbackPosted = false
+      // Manually layout children to ensure correct measurement and layout
+      manuallyLayoutChildren()
+      // Dispatch global layout event to notify listeners observing layout changes
+      viewTreeObserver.dispatchOnGlobalLayout()
+      // Schedule the next frame callback to continue updating the layout
+      startLayoutFrameCallback()
+    }
+  }
 
-        // Schedule the next frame callback to continue updating the layout
-        Choreographer.getInstance().postFrameCallback(this)
-      }
-    })
+  private fun startLayoutFrameCallback() {
+    if (isLayoutFrameCallbackPosted || !isAttachedToWindow || nativeAdLayout == null) return
+    isLayoutFrameCallbackPosted = true
+    Choreographer.getInstance().postFrameCallback(layoutFrameCallback)
+  }
+
+  private fun stopLayoutFrameCallback() {
+    isLayoutFrameCallbackPosted = false
+    Choreographer.getInstance().removeFrameCallback(layoutFrameCallback)
+  }
+
+  override fun onAttachedToWindow() {
+    super.onAttachedToWindow()
+    startLayoutFrameCallback()
+  }
+
+  override fun onDetachedFromWindow() {
+    stopLayoutFrameCallback()
+    super.onDetachedFromWindow()
   }
 
   /**
@@ -250,10 +279,13 @@ class LevelPlayNativeAdView(context: Context) : FrameLayout(context), LevelPlayN
     }
   }
 
+  // An invalid color is ignored instead of crashing
   private fun parseColor(colorString: String?): Int? {
-    return if (colorString != null) {
+    if (colorString.isNullOrEmpty()) return null
+    return try {
       Color.parseColor(colorString)
-    } else {
+    } catch (e: IllegalArgumentException) {
+      Log.w(TAG, "Invalid native ad template color: $colorString")
       null
     }
   }

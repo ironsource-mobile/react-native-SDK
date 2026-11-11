@@ -11,6 +11,7 @@ import {
   type ViewProps,
   type ColorValue,
   type HostComponent,
+  processColor,
   requireNativeComponent,
 } from 'react-native'
 import { type AdInfo, type IronSourceError, LevelPlayNativeAd } from '../models'
@@ -224,7 +225,7 @@ export const LevelPlayNativeAdView = React.forwardRef<
     <NativeComponent
       creationParams={{
         placement: nativeAd?.placement ?? '',
-        templateStyle: templateStyle,
+        templateStyle: normalizeTemplateStyle(templateStyle),
         templateType: templateType,
         viewType: viewType,
       }}
@@ -270,3 +271,33 @@ export interface LevelPlayNativeAdTemplateStyle {
   advertiserStyle?: LevelPlayNativeAdElementStyle
   callToActionStyle?: LevelPlayNativeAdElementStyle
 }
+
+/** Converts any React Native color to '#AARRGGBB', the format both native sides parse. */
+const normalizeColor = (color?: ColorValue): string | undefined => {
+  if (color == null) return undefined
+  const processed = processColor(color)
+  if (typeof processed !== 'number') return undefined
+  // Signed on Android
+  const argb = processed < 0 ? processed + 0x100000000 : processed
+  return '#' + argb.toString(16).padStart(8, '0').toUpperCase()
+}
+
+const normalizeElementStyle = (
+  style?: LevelPlayNativeAdElementStyle
+): LevelPlayNativeAdElementStyle | undefined =>
+  style && {
+    ...style,
+    backgroundColor: normalizeColor(style.backgroundColor),
+    textColor: normalizeColor(style.textColor),
+  }
+
+const normalizeTemplateStyle = (
+  style?: LevelPlayNativeAdTemplateStyle
+): LevelPlayNativeAdTemplateStyle | undefined =>
+  style && {
+    mainBackgroundColor: normalizeColor(style.mainBackgroundColor),
+    titleStyle: normalizeElementStyle(style.titleStyle),
+    bodyStyle: normalizeElementStyle(style.bodyStyle),
+    advertiserStyle: normalizeElementStyle(style.advertiserStyle),
+    callToActionStyle: normalizeElementStyle(style.callToActionStyle),
+  }

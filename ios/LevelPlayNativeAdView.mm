@@ -122,24 +122,23 @@ static double safeDoubleFromDict(NSDictionary *dict, NSString *key) {
   if (!templateStyleValue.mainBackgroundColor.empty()) {
     templateStyleDict[@"mainBackgroundColor"] = RCTNSStringFromString(templateStyleValue.mainBackgroundColor);
   }
-  if (!templateStyleValue.titleTextColor.empty()) {
-    templateStyleDict[@"titleTextColor"] = RCTNSStringFromString(templateStyleValue.titleTextColor);
-  }
-  if (!templateStyleValue.bodyTextColor.empty()) {
-    templateStyleDict[@"bodyTextColor"] = RCTNSStringFromString(templateStyleValue.bodyTextColor);
-  }
-  if (!templateStyleValue.advertiserTextColor.empty()) {
-    templateStyleDict[@"advertiserTextColor"] = RCTNSStringFromString(templateStyleValue.advertiserTextColor);
-  }
-  if (!templateStyleValue.ctaBackgroundColor.empty()) {
-    templateStyleDict[@"ctaBackgroundColor"] = RCTNSStringFromString(templateStyleValue.ctaBackgroundColor);
-  }
-  if (!templateStyleValue.ctaTextColor.empty()) {
-    templateStyleDict[@"ctaTextColor"] = RCTNSStringFromString(templateStyleValue.ctaTextColor);
-  }
-  if (templateStyleValue.ctaCornerRadius > 0) {
-    templateStyleDict[@"ctaCornerRadius"] = @(templateStyleValue.ctaCornerRadius);
-  }
+  auto elementStyleDict = [](const auto &style) -> NSDictionary * {
+    NSMutableDictionary *dict = [NSMutableDictionary new];
+    if (!style.backgroundColor.empty()) dict[@"backgroundColor"] = RCTNSStringFromString(style.backgroundColor);
+    if (!style.textColor.empty()) dict[@"textColor"] = RCTNSStringFromString(style.textColor);
+    if (!style.fontStyle.empty()) dict[@"fontStyle"] = RCTNSStringFromString(style.fontStyle);
+    if (style.textSize > 0) dict[@"textSize"] = @(style.textSize);
+    if (style.cornerRadius > 0) dict[@"cornerRadius"] = @(style.cornerRadius);
+    return dict.count > 0 ? dict : nil;
+  };
+  NSDictionary *titleStyle = elementStyleDict(templateStyleValue.titleStyle);
+  NSDictionary *bodyStyle = elementStyleDict(templateStyleValue.bodyStyle);
+  NSDictionary *advertiserStyle = elementStyleDict(templateStyleValue.advertiserStyle);
+  NSDictionary *callToActionStyle = elementStyleDict(templateStyleValue.callToActionStyle);
+  if (titleStyle) templateStyleDict[@"titleStyle"] = titleStyle;
+  if (bodyStyle) templateStyleDict[@"bodyStyle"] = bodyStyle;
+  if (advertiserStyle) templateStyleDict[@"advertiserStyle"] = advertiserStyle;
+  if (callToActionStyle) templateStyleDict[@"callToActionStyle"] = callToActionStyle;
 
   if (templateStyleDict.count > 0) {
     creationParams[@"templateStyle"] = templateStyleDict;
@@ -195,6 +194,13 @@ static double safeDoubleFromDict(NSDictionary *dict, NSString *key) {
     [_nativeAd loadAd];
 }
 
+#ifndef RCT_NEW_ARCH_ENABLED
+// Old architecture: views aren't recycled
+- (void)dealloc {
+    [_nativeAd destroyAd];
+}
+#endif
+
 /**
  * Destroys the native ad.
  */
@@ -227,7 +233,7 @@ static double safeDoubleFromDict(NSDictionary *dict, NSString *key) {
     NSString *viewType = [creationParams[@"viewType"] isKindOfClass:[NSString class]] ? creationParams[@"viewType"] : nil;
     NSDictionary *templateStyleDict = [creationParams[@"templateStyle"] isKindOfClass:[NSDictionary class]] ? creationParams[@"templateStyle"] : nil;
     // Parse LevelPlayNativeAdElementStyle objects
-    NSNumber *mainBackgroundColor = templateStyleDict[@"mainBackgroundColor"];
+    NSString *mainBackgroundColor = [templateStyleDict[@"mainBackgroundColor"] isKindOfClass:[NSString class]] ? templateStyleDict[@"mainBackgroundColor"] : nil;
     LevelPlayNativeAdElementStyle *titleStyle = [self parseElementStyle:templateStyleDict[@"titleStyle"]];
     LevelPlayNativeAdElementStyle *bodyStyle = [self parseElementStyle:templateStyleDict[@"bodyStyle"]];
     LevelPlayNativeAdElementStyle *advertiserStyle = [self parseElementStyle:templateStyleDict[@"advertiserStyle"]];
@@ -301,11 +307,8 @@ static double safeDoubleFromDict(NSDictionary *dict, NSString *key) {
                   advertiserView:(UILabel *)advertiserView
                 callToActionView:(UIButton *)callToActionView {
     if (self.templateStyle) {
-        if(self.templateStyle.mainBackgroundColor) {
-            UIColor *mainBackgroundColor = [UIColor colorWithRed:((CGFloat)(([self.templateStyle.mainBackgroundColor integerValue] >> 16) & 0xFF)) / 255.0
-                                                       green:((CGFloat)(([self.templateStyle.mainBackgroundColor integerValue] >> 8) & 0xFF)) / 255.0
-                                                        blue:((CGFloat)([self.templateStyle.mainBackgroundColor integerValue] & 0xFF)) / 255.0
-                                                       alpha:1.0];
+        UIColor *mainBackgroundColor = [self parseColor:self.templateStyle.mainBackgroundColor];
+        if (mainBackgroundColor) {
             self.isNativeAdView.backgroundColor = mainBackgroundColor;
         }
         [self applyStyleToTextView:titleView style:self.templateStyle.titleStyle];
@@ -381,20 +384,25 @@ static double safeDoubleFromDict(NSDictionary *dict, NSString *key) {
     return [UIFont systemFontOfSize:[UIFont systemFontSize]]; // Default font size
 }
 
+// #RRGGBB or #AARRGGBB
 - (UIColor *)parseColor:(NSString *)colorString {
-    if (!colorString || [colorString isEqualToString:@""]) {
+    if (![colorString isKindOfClass:[NSString class]] || ![colorString hasPrefix:@"#"]) {
         return nil;
     }
-
-    unsigned int rgbValue = 0;
-    NSScanner *scanner = [NSScanner scannerWithString:colorString];
-    [scanner setScanLocation:1];
-    [scanner scanHexInt:&rgbValue];
-
-    return [UIColor colorWithRed:((rgbValue & 0xFF0000) >> 16)/255.0
-                           green:((rgbValue & 0xFF00) >> 8)/255.0
-                            blue:(rgbValue & 0xFF)/255.0
-                           alpha:1.0];
+    NSString *hex = [colorString substringFromIndex:1];
+    if (hex.length != 6 && hex.length != 8) {
+        return nil;
+    }
+    unsigned int value = 0;
+    NSScanner *scanner = [NSScanner scannerWithString:hex];
+    if (![scanner scanHexInt:&value] || !scanner.isAtEnd) {
+        return nil;
+    }
+    CGFloat alpha = hex.length == 8 ? ((value >> 24) & 0xFF) / 255.0 : 1.0;
+    return [UIColor colorWithRed:((value >> 16) & 0xFF) / 255.0
+                           green:((value >> 8) & 0xFF) / 255.0
+                            blue:(value & 0xFF) / 255.0
+                           alpha:alpha];
 }
 
 - (LevelPlayNativeAdElementStyle *)parseElementStyle:(NSDictionary *)styleDict {

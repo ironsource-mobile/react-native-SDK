@@ -146,6 +146,16 @@ static bool safeBannerBoolFromDict(NSDictionary *dict, NSString *key) {
   }
 }
 
+- (void)updateEventEmitter:(facebook::react::EventEmitter::Shared const &)eventEmitter
+{
+  [super updateEventEmitter:eventEmitter];
+
+  // The adId event sent from updateProps had no emitter yet
+  if (self.adId != nil && self.onAdIdGeneratedEvent) {
+    self.onAdIdGeneratedEvent(@{@"adId": self.adId});
+  }
+}
+
 - (void)prepareForRecycle
 {
   [super prepareForRecycle];
@@ -219,6 +229,21 @@ static bool safeBannerBoolFromDict(NSDictionary *dict, NSString *key) {
     [self.bannerAdView destroy];
   }
 }
+
+#ifndef RCT_NEW_ARCH_ENABLED
+// Old architecture: props arrive in any order, so send the adId if the banner already exists
+- (void)setOnAdIdGeneratedEvent:(RCTDirectEventBlock)onAdIdGeneratedEvent {
+  _onAdIdGeneratedEvent = [onAdIdGeneratedEvent copy];
+  if (_onAdIdGeneratedEvent && self.adId != nil) {
+    _onAdIdGeneratedEvent(@{@"adId": self.adId});
+  }
+}
+
+// Old architecture: views aren't recycled
+- (void)dealloc {
+  [_bannerAdView destroy];
+}
+#endif
 
 - (void)pauseAutoRefresh {
   if (self.bannerAdView != nil) {
@@ -622,6 +647,16 @@ static bool safeBannerBoolFromDict(NSDictionary *dict, NSString *key) {
             fabricEvent.impressionData.creativeId = safeBannerStringFromDict(impressionDataDict, @"creativeId");
 
             fabricEventEmitter->onAdImpressionDataEvent(fabricEvent);
+        }
+    };
+
+    // onAdIdGeneratedEvent
+    self.onAdIdGeneratedEvent = [self](NSDictionary *event) {
+        if (_eventEmitter) {
+            auto fabricEventEmitter = std::static_pointer_cast<const facebook::react::LevelPlayBannerAdViewEventEmitter>(_eventEmitter);
+            facebook::react::LevelPlayBannerAdViewEventEmitter::OnAdIdGeneratedEvent fabricEvent;
+            fabricEvent.adId = safeBannerStringFromDict(event, @"adId");
+            fabricEventEmitter->onAdIdGeneratedEvent(fabricEvent);
         }
     };
 #endif

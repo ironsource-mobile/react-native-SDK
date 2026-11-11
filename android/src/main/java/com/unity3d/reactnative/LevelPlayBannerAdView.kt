@@ -25,6 +25,9 @@ class LevelPlayBannerAdView(private val context: Context) : FrameLayout(context)
   private var levelPlayBanner: LevelPlayBannerAdView? = null
 
   fun setCreationParams(value: ReadableMap?) {
+    // Create the banner once per view, like on iOS
+    if (levelPlayBanner != null) return
+
     placementName = value?.getString("placementName") ?: ""
     adUnitId = value?.getString("adUnitId") ?: ""
     adSize = getLevelPlayAdSize(context, value?.getMap("adSize"))
@@ -53,24 +56,49 @@ class LevelPlayBannerAdView(private val context: Context) : FrameLayout(context)
     // Set the banner ad view
     addView(levelPlayBanner)
 
-    // Schedule a callback to run on the next frame synchronization point
-    Choreographer.getInstance().postFrameCallback(object: Choreographer.FrameCallback {
-      override fun doFrame(frameTimeNanos: Long) {
-        // Manually layout children to ensure correct measurement and layout
-        manuallyLayoutChildren()
-
-        // Dispatch global layout event to notify listeners observing layout changes
-        viewTreeObserver.dispatchOnGlobalLayout()
-
-        // Schedule the next frame callback to continue updating the layout
-        Choreographer.getInstance().postFrameCallback(this)
-      }
-    })
+    // Keep laying out the native views on every frame while this view is attached
+    startLayoutFrameCallback()
 
     // send the adId to the react-native side
     val map = Arguments.createMap()
     map.putString("adId", levelPlayBanner!!.adId)
     sendEventToParticularUI(reactContext, id, LevelPlayConstants.ON_AD_ID_GENERATED_EVENT, map)
+  }
+
+  // Lays out the SDK's native views on every frame (React Native doesn't lay out views it doesn't manage).
+  // Runs only while this view is attached to a window, so unmounted views don't keep a frame callback alive.
+  private var isLayoutFrameCallbackPosted = false
+  private val layoutFrameCallback = object : Choreographer.FrameCallback {
+    override fun doFrame(frameTimeNanos: Long) {
+      isLayoutFrameCallbackPosted = false
+      // Manually layout children to ensure correct measurement and layout
+      manuallyLayoutChildren()
+      // Dispatch global layout event to notify listeners observing layout changes
+      viewTreeObserver.dispatchOnGlobalLayout()
+      // Schedule the next frame callback to continue updating the layout
+      startLayoutFrameCallback()
+    }
+  }
+
+  private fun startLayoutFrameCallback() {
+    if (isLayoutFrameCallbackPosted || !isAttachedToWindow || levelPlayBanner == null) return
+    isLayoutFrameCallbackPosted = true
+    Choreographer.getInstance().postFrameCallback(layoutFrameCallback)
+  }
+
+  private fun stopLayoutFrameCallback() {
+    isLayoutFrameCallbackPosted = false
+    Choreographer.getInstance().removeFrameCallback(layoutFrameCallback)
+  }
+
+  override fun onAttachedToWindow() {
+    super.onAttachedToWindow()
+    startLayoutFrameCallback()
+  }
+
+  override fun onDetachedFromWindow() {
+    stopLayoutFrameCallback()
+    super.onDetachedFromWindow()
   }
 
   /**
@@ -89,6 +117,7 @@ class LevelPlayBannerAdView(private val context: Context) : FrameLayout(context)
   }
 
   fun destroy() {
+    stopLayoutFrameCallback()
     levelPlayBanner?.destroy()
   }
 

@@ -1,5 +1,14 @@
 # Change Log
 
+## 9.5.0
+
+### SDK Updates
+- Wraps Android SDK 9.8.0 API
+- Wraps iOS SDK 9.8.0 API
+
+### Bug Fixes
+- iOS: fix `LevelPlayRewardedAdListener.onAdDisplayFailed` not being called
+
 ## 9.4.0
 
 ### SDK Updates

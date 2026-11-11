@@ -10,16 +10,22 @@ import type {
 
 // CodeGen-compatible interfaces (no imports from models to avoid class type issues)
 
+export interface NativeAdElementStyle {
+  backgroundColor?: string
+  textSize?: Double
+  textColor?: string
+  fontStyle?: string
+  cornerRadius?: Double
+}
+
 export interface CreationParams {
   placement: string
   templateStyle?: {
     mainBackgroundColor?: string
-    titleTextColor?: string
-    bodyTextColor?: string
-    advertiserTextColor?: string
-    ctaBackgroundColor?: string
-    ctaTextColor?: string
-    ctaCornerRadius?: Double
+    titleStyle?: NativeAdElementStyle
+    bodyStyle?: NativeAdElementStyle
+    advertiserStyle?: NativeAdElementStyle
+    callToActionStyle?: NativeAdElementStyle
   }
   templateType?: string
   viewType?: string
